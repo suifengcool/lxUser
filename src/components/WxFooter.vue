@@ -1,5 +1,9 @@
 <template>
 	<div class="foot-bar">
+		<keep-alive>
+            <router-view></router-view>
+        </keep-alive>
+        
     	<tabbar>
 			<tabbar-item :selected = "$route.path == '/'" link="/">
 				<i slot="icon" class="iconfont icon-daishouhuo"></i>

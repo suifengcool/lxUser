@@ -40,7 +40,7 @@
     │   │   └── index.js
     │   ├── store                           应用级数据（state）
     │   │   └── index.js
-    │   └── views                           页面目录
+    │   └── page                            页面目录
     │       ├── hello.vue
     │       └── notfound.vue
     ├── static                          纯静态资源，不会被wabpack构建。
@@ -115,18 +115,16 @@
 整个应用通过 vue 组件的方式搭建起来，通过 vue-router 控制相应组件的展现，组件树结构如下：
 
     app.vue                         根组件（整个应用只有一个）
-        ├──view1.vue                    页面级组件，放在 views 目录里面，有子组件时，可以建立子目录
-        │   ├──component1.vue               功能组件，公用的放在 components 目录，否则放在 views 子目录
+        ├──page1.vue                    页面级组件，放在 page 目录里面，有子组件时，可以建立子目录
+        │   ├──component1.vue               功能组件，公用的放在 components 目录，否则放在 page 子目录
         │   ├──component2.vue
         │   └──component3.vue
-        ├──view2.vue
+        ├──page2.vue
         │   ├──component1.vue
         │   └──component4.vue
-        └──view3.vue
+        └──page3.vue
             ├──component5.vue
             ……
-
-
 
 ## 联调方式
 

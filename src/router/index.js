@@ -41,7 +41,7 @@ config.forEach((value, index, arr) => {
 // 404 页面
 routes.push({
     path: '*',
-    component: resolve => require(['../views/404.vue'], resolve)
+    component: resolve => require(['../page/404.vue'], resolve)
 })
 
 export default new Router({

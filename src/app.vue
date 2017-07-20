@@ -3,7 +3,12 @@
 	<div id="app" style="height:100%;">
 		<!-- 路由 页面切换 -->
     	<transition name="fade" mode="out-in">
-    		<router-view id="content" :key="$route.fullPath"></router-view>
+    		<template>
+	            <keep-alive v-if="$route.meta.keepAlive">
+	                <router-view></router-view>
+	            </keep-alive>
+            <router-view v-if="!$route.meta.keepAlive"></router-view>
+        </template>
     	</transition>
   	</div>
 </template>
