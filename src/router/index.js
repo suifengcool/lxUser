@@ -42,7 +42,7 @@ config.forEach((value, index, arr) => {
 routes.push({
     path: '/',
     component: resolve => require(
-        [ '../components/footTabBar.vue' ],
+        ['../components/footTabBar.vue'],
         resolve
     ),
     children: [
@@ -50,7 +50,7 @@ routes.push({
         {
             path: '/',
             component: resolve => require(
-                [ '../page/home/index.vue' ],
+                ['../page/home/index.vue'],
                 resolve
             ),
             meta: { keepAlive: true }
@@ -59,7 +59,7 @@ routes.push({
         {
             path: 'order/list',
             component: resolve => require(
-                [ '../page/order/list.vue' ],
+                ['../page/order/list.vue'],
                 resolve
             ),
             meta: { keepAlive: true }
@@ -68,7 +68,7 @@ routes.push({
         {
             path: 'user',
             component: resolve => require(
-                [ '../page/user/index.vue' ],
+                ['../page/user/index.vue'],
                 resolve
             ),
             meta: { keepAlive: true }
