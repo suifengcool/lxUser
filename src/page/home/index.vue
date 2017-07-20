@@ -1,15 +1,10 @@
 <template>
     <div class="home">
-        首页--景点
-
-        <!-- 公用底部 -->
-        <wx-footer></wx-footer>
+        <div @click="a">首页--景点</div>
     </div>
 </template>
 
 <script>
-import WxFooter from '../../components/WxFooter'
-import { Cell, Group } from 'vux'
 export default {
     name: 'home',
 
@@ -19,12 +14,6 @@ export default {
             info: {},                      // 数据
             headImg: ''                    // 头像
         }
-    },
-
-    components: {
-        WxFooter,
-        Group,
-        Cell
     },
  
     created () {
@@ -44,6 +33,10 @@ export default {
                     type: 'text'
                 })
             })
+        },
+
+        a(){
+            this.$dialog.toast({mes: 'aaaa'})
         }
     }
 }

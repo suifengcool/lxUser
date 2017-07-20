@@ -1,14 +1,10 @@
 <template>
     <div class="user">
         我的
-
-        <!-- 公用底部 -->
-        <wx-footer></wx-footer>
     </div>
 </template>
 
 <script>
-import WxFooter from '../../components/WxFooter'
 export default {
     name: 'user',
 
@@ -16,10 +12,6 @@ export default {
         return {
             config: vm.config,                               // 配置
         }
-    },
-
-    components: {
-        WxFooter
     },
 
     created () {

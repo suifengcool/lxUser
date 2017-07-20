@@ -14,7 +14,6 @@
 </template>
 
 <script>
-import './assets/css/common.css'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
@@ -32,6 +31,9 @@ export default {
 </script>
 
 <style lang="sass">
+// styles
+@import 'styles/style'
+
 // css transition: when pages loaded
 .fade-enter-active, .fade-leave-active
     transition: opacity .5s

@@ -7,12 +7,15 @@ import Moment from 'moment'
 import {sync} from 'vuex-router-sync'
 import { mapGetters, mapActions } from 'vuex'
 
-// vux相关组件
-import {ToastPlugin, WechatPlugin, LoadingPlugin, AlertPlugin} from 'vux'
-
 import App from './app'
 import router from './router'
 import store from './store'
+
+// 全局引入 vmui
+import VMUI from 'vmui'
+import 'vmui/dist/vmui.rem.css'
+import 'vmui/dist/vmui.flexible'
+Vue.use(VMUI)
 
 // 点击延迟
 import FastClick from 'fastclick'
@@ -32,10 +35,6 @@ Object.keys(filters).forEach(key => {
 
 // 加载组件
 Vue.use(VueResource)
-Vue.use(WechatPlugin)
-Vue.use(ToastPlugin)
-Vue.use(LoadingPlugin)
-Vue.use(AlertPlugin)
 
 const wx = Vue.wechat
 

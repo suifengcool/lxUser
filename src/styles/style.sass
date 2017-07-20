@@ -1,0 +1,248 @@
+/**
+ * 公用css，包括css reset, base 层，common 层
+ */
+
+// variables
+@import 'variables'
+
+/* css reset：在vmui中已含有 */
+
+/* base css */
+.flex
+	display: flex
+	display: -webkit-flex
+
+// 主轴
+.main-center
+	display: flex
+	display: -webkit-flex
+	justify-content: center
+
+.main-right
+	display: flex
+	display: -webkit-flex
+	justify-content: flex-end
+
+.main-between
+	display: flex
+	display: -webkit-flex
+	justify-content: space-between
+.main-around
+	display: flex
+	display: -webkit-flex
+	justify-content: space-around
+
+// 交叉轴
+.cross-center
+	display: flex
+	display: -webkit-flex
+	align-items: center
+
+.cross-bottom
+	display: flex
+	display: -webkit-flex
+	align-items: flex-end
+
+.column-between
+	display: flex
+	display: -webkit-flex
+	flex-direction: column
+	justify-content: space-between
+.column-around
+	display: flex
+	display: -webkit-flex
+	flex-direction: column
+	justify-content: space-around
+
+// 混合
+.center-center
+	display: flex
+	display: -webkit-flex
+	justify-content: center
+	align-items: center
+.center-bottom
+	display: flex
+	display: -webkit-flex
+	justify-content: center
+	align-items: flex-end
+.center-between
+	display: flex
+	display: -webkit-flex
+	align-items: center
+	flex-direction: column
+	justify-content: space-between
+.center-around
+	display: flex
+	display: -webkit-flex
+	align-items: center
+	flex-direction: column
+	justify-content: space-around
+
+.right-center
+	display: flex
+	display: -webkit-flex
+	justify-content: flex-end
+	align-items: center
+.right-bottom
+	display: flex
+	display: -webkit-flex
+	justify-content: flex-end
+	align-items: flex-end
+.right-between
+	display: flex
+	display: -webkit-flex
+	align-items: flex-end
+	flex-direction: column
+	justify-content: space-between
+.right-around
+	display: flex
+	display: -webkit-flex
+	align-items: flex-end
+	flex-direction: column
+	justify-content: space-around
+
+.between-center
+	display: flex
+	display: -webkit-flex
+	justify-content: space-between
+	align-items: center
+.between-bottom
+	display: flex
+	display: -webkit-flex
+	justify-content: space-between
+	align-items: flex-end
+
+.around-center
+	display: flex
+	display: -webkit-flex
+	justify-content: space-around
+	align-items: center
+.around-bottom
+	display: flex
+	display: -webkit-flex
+	justify-content: space-around
+	align-items: flex-end
+
+// float
+.fl
+	float: left
+.fr
+	float: right
+.cf
+	overflow: hidden
+	&:after
+		content: ''
+		display: table
+		clear: both
+
+// border
+.border-top
+	position: relative
+	&:before
+		content: ''
+		position: absolute
+		top: 0
+		left: 0
+		width: 100%
+		height: 1px
+		transform: scaleY(.5)
+		background: $color-split
+.border-bottom
+	position: relative
+	&:after
+		content: ''
+		position: absolute
+		bottom: 0
+		left: 0
+		width: 100%
+		height: 1px
+		transform: scaleY(.5)
+		background: $color-split
+.border-left
+	position: relative
+	&:before
+		content: ''
+		position: absolute
+		top: 0
+		left: 0
+		width: 1px
+		height: 100%
+		transform: scaleX(.5)
+		background: $color-split
+.border-right
+	position: relative
+	&:after
+		content: ''
+		position: absolute
+		top: 0
+		right: 0
+		width: 1px
+		height: 100%
+		transform: scaleX(.5)
+		background: $color-split
+
+.border-circle
+	position: relative
+	&:after
+		content: ''
+		border: 1px solid $color-split
+		position: absolute
+		top: 0
+		left: 0
+		width: 200%
+		height: 196%
+		border-radius: 100%
+		-webkit-border-radius: 100%
+		transform: scale(.5)
+		-webkit-transform: scale(.5)
+		transform-origin: 0 0 0
+		box-sizing: border-box
+.border-circle2
+    position: relative
+    &:after
+        content: ''
+        border: 1px solid #FE385E
+        position: absolute
+        top: 0
+        left: 0
+        width: 200%
+        height: 196%
+        border-radius: 100px
+        -webkit-border-radius: 100px
+        transform: scale(.5)
+        -webkit-transform: scale(.5)
+        transform-origin: 0 0 0
+        box-sizing: border-box
+/* common css */
+// page
+html body
+	font: $font-size-default/$line-height-default $font-family-default
+	background: $color-bg
+	max-width: $max-width
+	margin: auto
+	background: url('./assets/preview.png')
+	background-size: cover
+body, button, input, optgroup, select, textarea
+	font-family: $font-family-default
+.vm-flexview
+	display: block !important
+	height: auto !important
+	min-height: 100%
+	background: $color-bg
+.vm-scrollview
+	font-size: $font-size-default
+	color: $font-color-default
+	min-height: 100% !important
+	overflow: hidden !important
+	&:after
+		display: none !important
+// iconfont
+.icon
+	width: 1em
+	height: 1em
+	vertical-align: -0.15em
+	fill: currentColor
+	overflow: hidden
+.icon-right
+	font-size: .55rem
+	color: $font-color-gray-light

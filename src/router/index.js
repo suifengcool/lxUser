@@ -6,17 +6,17 @@ Vue.use(Router)
 // 页面路径(相对 ../page)
 let config = [
     // 景点相关
-    '/home/index',                   // 首页(景点列表页面)
+    // '/home/index',                   // 首页(景点列表页面)
     '/scenicspot/detail',            // 景点明细
 
     // 个人相关
-    '/user/index',                   // 我的
+    // '/user/index',                   // 我的
     '/user/collect',                 // 我的收藏
     '/user/support',                 // 帮助与支持
 
     // 订单相关
     '/order/detail',                  // 订单(详情页)
-    '/order/list',                   // 订单(列表页)
+    // '/order/list',                   // 订单(列表页)
     '/order/success',                // 订单成功页
 
     // 评论相关
@@ -36,6 +36,44 @@ config.forEach((value, index, arr) => {
             resolve
         )
     })
+})
+
+// 底部菜单切换
+routes.push({
+    path: '/',
+    component: resolve => require(
+        [ '../components/footTabBar.vue' ],
+        resolve
+    ),
+    children: [
+        // 首页(景点)
+        {
+            path: '/',
+            component: resolve => require(
+                [ '../page/home/index.vue' ],
+                resolve
+            ),
+            meta: { keepAlive: true }
+        },
+        // 订单
+         {
+            path: 'order/list',
+            component: resolve => require(
+                [ '../page/order/list.vue' ],
+                resolve
+            ),
+            meta: { keepAlive: true }
+        },
+        // 用户中心
+        {
+            path: 'user',
+            component: resolve => require(
+                [ '../page/user/index.vue' ],
+                resolve
+            ),
+            meta: { keepAlive: true }
+        }
+    ]
 })
 
 // 404 页面
