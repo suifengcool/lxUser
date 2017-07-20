@@ -1,9 +1,7 @@
 export default {
     // 店族 ajax 请求，增加了与店族后台拟定的默认参数
     fetch (obj) {
-        let begin = ['', '/test'][+/test$/.test(location.search)]
-
-        obj.url = begin + obj.url
+        obj.url = obj.url
 
         obj.showIndicator = obj.showIndicator == undefined ? true : obj.showIndicator
         obj.onloadstart = () => {

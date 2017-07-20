@@ -25,16 +25,13 @@ export default {
 		...mapActions([
 			'setUser'
 		]),
-
 	}
 }
 </script>
 
 <style lang="sass">
-// styles
 @import 'styles/style'
 
-// css transition: when pages loaded
 .fade-enter-active, .fade-leave-active
     transition: opacity .5s
 .fade-enter, .fade-leave-active

@@ -28,11 +28,6 @@ Vue.config.debug = process.env.NODE_ENV === 'dev'
 Moment.locale('zh-cn')
 global.moment = Moment
 
-// 加载过滤器
-Object.keys(filters).forEach(key => {
-    Vue.filter(key, filters[key])
-})
-
 // 加载组件
 Vue.use(VueResource)
 
