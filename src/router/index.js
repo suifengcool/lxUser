@@ -56,7 +56,7 @@ routes.push({
             meta: { keepAlive: true }
         },
         // 订单
-         {
+        {
             path: 'order/list',
             component: resolve => require(
                 [ '../page/order/list.vue' ],
@@ -83,7 +83,7 @@ routes.push({
 })
 
 export default new Router({
-    mode: 'hash',
+    mode: 'history',              // HTML5 history 模式
     linkActiveClass: 'active',
     routes: routes
 })

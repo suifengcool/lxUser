@@ -101,7 +101,6 @@ export default {
                 left: 50%
                 top: 50%
                 transform: translate(-50%,-42%)
-
 #footTabBar .vm-scrollview
     padding-bottom: 2.4rem
 </style>
