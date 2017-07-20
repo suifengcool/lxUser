@@ -1,7 +1,7 @@
 <template>
     <div class="notfound">
         <div class="content">
-            <img src="../assets/images/404.png">
+            <img src="../assets/404.png">
             <p>玩脱了，页面找不到了(o?□?)o</p>
             <p>{{second}}秒后，将自动跳转到首页</p>
             <router-link to="/">

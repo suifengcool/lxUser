@@ -6,17 +6,14 @@ Vue.use(Router)
 // 页面路径(相对 ../page)
 let config = [
     // 景点相关
-    // '/home/index',                   // 首页(景点列表页面)
     '/scenicspot/detail',            // 景点明细
 
     // 个人相关
-    // '/user/index',                   // 我的
     '/user/collect',                 // 我的收藏
     '/user/support',                 // 帮助与支持
 
     // 订单相关
-    '/order/detail',                  // 订单(详情页)
-    // '/order/list',                   // 订单(列表页)
+    '/order/detail',                 // 订单(详情页)
     '/order/success',                // 订单成功页
 
     // 评论相关
