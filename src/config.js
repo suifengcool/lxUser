@@ -2,7 +2,7 @@ export default {
     // 设置 title
     title(title) {
         document.title = title
-            // hack在ios微信等webview中无法修改document.title的情况
+        // hack在ios微信等webview中无法修改document.title的情况
         if (/ip(hone|od|ad)/i.test(navigator.userAgent)) {
             var i = document.createElement('iframe')
             i.src = '//m.baidu.com/favicon.ico'
@@ -22,9 +22,25 @@ export default {
     // token name
     tokenName: 'access_token',
 
+    // 获取token
     getCookie(name) {
         let reg = new RegExp(`(^| )${name}=([^;]*)(;|$)`)
         let arr = document.cookie.match(reg)
         return arr ? unescape(arr[2]) : null
+    },
+
+    // 数组去重
+    editAwrray(arr) {
+        let newArr = [], obj = {}
+        arr.forEach((item, index) =>{
+            if(obj[item]){
+                return
+            }else{
+                obj[item] = 1
+                newArr.push(item)
+            }
+        })
+        arr = newArr
+        return arr
     }
 }

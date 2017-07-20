@@ -3,29 +3,25 @@ import Router from 'vue-router'
 
 Vue.use(Router)
 
-// 页面路径(相对 ./views)
+// 页面路径(相对 ../page)
 let config = [
+    // 景点相关
+    '/home/index',                   // 首页(景点列表页面)
+    '/scenicspot/detail',            // 景点明细
+
     // 个人相关
-    '/home/index',                  // 首页(‘我的’页面)
-
-    '/user/line',                   // 线路管理
-    '/user/create',                 // 旅游内容(修改路线)
-    '/user/money',                  // 我的钱包
-    '/user/detail',                 // 收支明细
-    '/user/getCash',                // 收支明细
-
-    // 完善信息
-    '/info/index',                  // 个人信息-首页
-    '/info/rules',                  // 个人信息-细则
-    '/info/identify',               // 个人信息-审核页
-    '/info/detail',                 // 个人信息详情
+    '/user/index',                   // 我的
+    '/user/collect',                 // 我的收藏
+    '/user/support',                 // 帮助与支持
 
     // 订单相关
-    '/order/index',                 // 订单列表(已确认、未确认)
-    '/order/confirm',               // 确认订单  
+    '/order/detail',                  // 订单(详情页)
+    '/order/list',                   // 订单(列表页)
+    '/order/success',                // 订单成功页
 
-    // 未授权
-    '/auth' // 未授权页
+    // 评论相关
+    '/comment/index',                // 评论页
+    '/comment/list',                 // 评论列表comment页
 ]
 
 // 定义路由
@@ -36,7 +32,7 @@ config.forEach((value, index, arr) => {
     routes.push({
         path: value.replace(/(\/index|home\/index)$/g, ''),
         component: resolve => require(
-            ['../views' + value.replace(/\/(\:|\?)[A-z]+$/g, '') + '.vue'],
+            ['../page' + value.replace(/\/(\:|\?)[A-z]+$/g, '') + '.vue'],
             resolve
         )
     })

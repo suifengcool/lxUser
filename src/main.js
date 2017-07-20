@@ -15,8 +15,6 @@ import App from './app'
 import router from './router'
 import store from './store'
 
-// import NProgress from 'vue-nprogress'
-
 // 点击延迟
 import FastClick from 'fastclick'
 FastClick.attach(document.body)
@@ -28,18 +26,10 @@ Vue.config.debug = process.env.NODE_ENV === 'dev'
 Moment.locale('zh-cn')
 global.moment = Moment
 
-// 设置全局localStorage
-global.storage = Storage
-
 // 加载过滤器
 Object.keys(filters).forEach(key => {
     Vue.filter(key, filters[key])
 })
-
-// 加载进度条
-/*const nprogress = new NProgress({
-    parent: '.nprogress-container'
-})*/
 
 // 加载组件
 Vue.use(VueResource)
@@ -47,7 +37,6 @@ Vue.use(WechatPlugin)
 Vue.use(ToastPlugin)
 Vue.use(LoadingPlugin)
 Vue.use(AlertPlugin)
-// Vue.use(NProgress)
 
 const wx = Vue.wechat
 
@@ -100,7 +89,6 @@ Vue.http.interceptors.push((req, next) => {
 // }
 
 window.vm = new Vue({
-    // nprogress,
     el: '#app',
     router,
     store,

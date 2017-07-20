@@ -1,15 +1,15 @@
 <template>
 	<div class="foot-bar">
     	<tabbar>
-			<tabbar-item :selected = "$route.path == '/user/line'" link="/user/line">
+			<tabbar-item :selected = "$route.path == '/'" link="/">
 				<i slot="icon" class="iconfont icon-daishouhuo"></i>
-				<span slot="label">线路</span>
+				<span slot="label">景点</span>
 			</tabbar-item>
-			<tabbar-item :selected = "$route.path == '/order'" link="/order"> 
+			<tabbar-item :selected = "$route.path == '/order/list'" link="/order/list"> 
 				<i slot="icon" class="iconfont icon-icon-2"></i>
 				<span slot="label">订单</span>
 			</tabbar-item>
-			<tabbar-item :selected = "$route.path == '/'" link="/">
+			<tabbar-item :selected = "$route.path == '/user'" link="/user">
 				<i slot="icon" class="iconfont icon-wode"></i>
 				<span slot="label">我的</span>
 			</tabbar-item>
