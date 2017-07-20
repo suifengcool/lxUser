@@ -27,8 +27,8 @@ export default {
             foots: [{
                 link: '/',
                 text: '景点',
-                icon: 'icon-daishouhuo',
-                activeIcon: 'icon-daishouhuo'
+                icon: 'icon-menpiao',
+                activeIcon: 'icon-menpiao'
             },{
                 link: '/order/list',
                 text: '订单',
