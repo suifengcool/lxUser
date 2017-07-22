@@ -34,8 +34,11 @@
                     v-for="(star, i) in [0,1,2,3,4]"
                 ></i>
             </p>
-            <textarea></textarea>
+            <textarea placeholder="请输入对该导游的评价~"></textarea>
         </div>
+
+        <!-- 按钮 -->
+        <button type="button">提交</button>
     </vm-layout>
 </template>
 
@@ -94,6 +97,7 @@ export default {
 </script>
 
 <style scoped lang="sass">
+// 头部
 .header
     padding: .99rem 0 0 .79rem
     .msg  
@@ -142,6 +146,57 @@ export default {
         line-height: .75rem
         margin-top: .6rem
         font-size: .6rem
+// 评价区域
+.content
+    margin-top: 1.45rem
+    text-align: center
+    color: #979797
+    h3
+        height: .83rem
+        line-height: .83rem
+        font-size: .6rem
+        color: #333
+        text-align: center
+        position: relative
+        font-weight: 300
+        &:before,&:after
+            content: ''
+            display: inline-block
+            position: absolute
+            top: 50%
+            transform: translateY(-50%)
+            height: 1px 
+            transform: scaleY(.5)
+            background: #dedede
+            width: 4.5rem
+        &:after
+            right: 15%
+        &:before
+            left: 15%
+    p   
+        margin: 1rem 0 .85rem 0
+        height: 2rem
+        line-height: 2rem
+        i 
+            font-size: 1.98rem
+    textarea
+        width: 11.75rem
+        height: 7.45rem
+        border-color: #dedede
+        padding: .5rem
+        box-sizing: border-box
+        font-size: .65rem
+// 按钮
+button
+    width: 8.37rem
+    height: 1.9rem
+    line-height: 1.9rem
+    display: block
+    margin: .73rem auto 
+    color: #fff
+    border: none
+    border-radius: .2rem
+    background: #03ca9d
 </style>
 <style lang="sass">
 .vm-flexview
