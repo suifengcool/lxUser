@@ -32,6 +32,13 @@
             <p>联系方式：</p>
             <p>预定人数：</p>
         </div>
+
+        <!-- 底部按钮 -->
+        <vm-tabbar slot="tabbar" class="tabbar-box">
+            <input type="text">
+            <span>支付金额：</span>
+            <button class="tabbar-item" type="button">去支付</button>
+        </vm-tabbar>
     </vm-layout>
 </template>
 
@@ -117,7 +124,7 @@ export default {
             color: #666
             margin-top: 15px
             display: block
-// 列表(公用样式)
+// title
 .title
     height: 40px
     line-height: 40px
@@ -142,9 +149,45 @@ export default {
         line-height: .83rem
         margin-bottom: .2rem
         font-size: .6rem
-        padding-left: 1.12rem 
+        padding-left: 1.12rem
+// 按钮
+.tabbar-box
+    height: 2.5rem
+    text-align: center
+    box-sizing: border-box
+    padding: 0 .75rem
+    button
+        height: 1.9rem
+        line-height: 1.9rem
+        border: none
+        background: #03ca9d
+        border-radius: 4px
+        font-size: .75rem
+        color: #fff 
+        width: 5.3rem
+    input 
+        border: .1rem solid #03ca9d
+        height: 1.9rem
+        line-height: 1.9rem
+        padding-left: 4rem
+        width: 11.37rem
+        margin-right: .59rem
+        border-radius: .2rem
+        color: #03ca9d
+    span
+        position: absolute
+        left: 1.25rem
+        top: 50%
+        transform: translateY(-50%)
+        font-size: .75rem
+        color: #03ca9d
 </style>
 <style lang="sass">
 .vm-flexview
     background: #fff
+.vm-tabbar 
+    position: fixed
+    bottom: 0
+    &:after
+        border-top: none
 </style>
