@@ -3,7 +3,7 @@
         <!-- tab -->
         <vm-tab :change.native="tabHandler" class="tab">
             <vm-tab-panel
-                v-for="(item, index) in ['全部', '已取消', '待评价', '待支付', '已评价']"
+                v-for="(item, index) in ['全部', '待付款', '待评价', '待确认', '待出行']"
                 :label="item"
                 :active="status == index"
             >
@@ -107,13 +107,13 @@ export default {
         background: #f3f3f3
         padding: 0 .2rem
         .item
-            padding: 0 .5rem .4rem .2rem
+            padding: .5rem
             border-radius: .3rem
             background: #fff
             .top
-                height: 1.3rem
-                line-height: 1.3rem
-                margin-bottom: .15rem
+                height: 1.6rem
+                line-height: 1.6rem
+                margin-bottom: .25rem
                 h3
                     font-size: .65rem
                     color: #333

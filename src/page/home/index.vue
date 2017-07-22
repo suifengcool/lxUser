@@ -101,7 +101,7 @@ export default {
 
     methods: {
         fetchInfo() {
-            this.$http.post('/guide/login')
+            this.$http.post('/user/info')
             .then(rst => {
                 
             })

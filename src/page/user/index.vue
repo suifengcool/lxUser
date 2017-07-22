@@ -2,8 +2,9 @@
     <vm-layout id="user">
         <!-- 头部 -->
         <div class="header">
-            <h3>艾子豪</h3>
+            <h3>{{name}}</h3>
             <i class="iconfont icon-write"></i>
+            <input @change="upload($event)" type="file" accept="image/*" id="bUploadBtn" ref="input">
         </div>
 
         <!-- 列表 -->
@@ -33,16 +34,43 @@ export default {
 
     data () {
         return {
-            config: vm.config,                               // 配置
+            config: vm.config,         // 配置
+            name: '',                  // 昵称
+            headImg: '',               // 头像
         }
     },
 
     created () {
         this.config.title('我的')
+        this.fetchInfo()
     },
 
     methods: {
-        
+        // 获取用户信息
+        fetchInfo() {
+            this.$http.get('/user/info?oid=test1234')
+            .then(rst => {
+                this.name = rst.body.data.nick_name
+                this.headImg = rst.body.data.resource_path
+                document.querySelector('.header').style.backgroundImage = `url(${this.headImg ? rst.body.prefix + this.headImg: require('../../assets/bg-home1.jpg')})`
+            })
+            .catch(err => this.$dialog.toast({mes: err.body.msg}))
+        },
+
+        // 上传头像
+        upload(event){
+            var formData = new FormData()
+                formData.append("file", event.target.files[0])
+                formData.append("remotePath", '/agent')
+                formData.append("oid", 'test1234')
+            this.$http.post('/upload/uploadFile',formData)
+            .then(rst => {
+                if(rst.body.res_code === 200){
+                    // this.save(rst.body.data.path)
+                }
+            })
+            .catch(err => this.$dialog.toast({mes: err.body.msg}))
+        },
     }
 }
 </script>
@@ -51,7 +79,7 @@ export default {
 // 头部
 .header
     padding-top: 10rem
-    background: #ccc
+    background-size: cover
     position: relative
     h3
         height: 2.5rem
@@ -59,7 +87,7 @@ export default {
         font-size: 1.10rem
         color: #fff
         padding-left: .75rem
-    i   
+    i,input  
         position: absolute
         right: 1rem
         bottom: -.75rem
@@ -68,10 +96,15 @@ export default {
         line-height: 2rem
         text-align: center
         width: 2rem
+    i 
         background: #03ca9d
         border-radius: 50%
         font-size: 1.1rem
         color: #fff
+    input
+        opacity: 0
+        border: none
+        outline: none
 // 列表
 .list 
     margin-top: .8rem

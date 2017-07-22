@@ -44,7 +44,7 @@
             <i></i><span>出游人数</span>
         </div>
         <div class="chuyouNumBox">
-            <div class="selectTimeTitle"><i class="iconfont icon-search"></i><span>选择出游时间</span></div>
+            <div class="selectTimeTitle"><i class="iconfont icon-wode"></i><span>选择出游时间</span></div>
             <div class="selectTimeInput">
                 <div class="subItem"><span class="subHao"></span></div>
                 <div class="numItem">4</div>
@@ -61,9 +61,11 @@
                 <a href="javascript:;" class="yzBtn">发送验证码</a>
             </div>
             <div class="yzInputBox"><label for="">验证码:</label><input type="text" placeholder="请输入验证码"></div>
+
         </div>
+        
         <div class="captionTitle ydMustKnow">
-            <div><i></i><span>预定须知</span></div>
+            <div class="yudingText"><i></i><span>预定须知</span></div>
             <a href="javascript:;"><i class="iconfont icon-control-arr-copy-copy"></i></a>
         </div>
         <div class="knowContent">
@@ -72,6 +74,7 @@
         <div class="captionTitle ">
             <i></i><span>游客评论</span>
         </div>
+
         <ul class="commantList">
             <li>
                 <div class="touristInfo">
@@ -101,13 +104,16 @@ export default {
     data () {
         return {
             config: vm.config,                               // 配置
+            nendKnowShow:false
         }
     },
     created () {
         this.config.title('出发')
     },
     methods: {
-        
+        needKnowHandle(){
+            this.nendKnowShow = !this.nendKnowShow;
+        },
     }
 }
 </script>
@@ -116,7 +122,13 @@ export default {
 .orderCreate{
     background: #fff;
 }
+
+
+
+
+
 /*头部轮播和导游信息*/
+
 .headerBox{
     padding:0.5rem 0.6rem 0 0.6rem;
 }
@@ -155,6 +167,7 @@ export default {
  font-size:  .9rem;  
 }
 /*出游时间*/
+
 .captionTitle{
     width:100%;
     border-top:0.05rem solid #E7E7E7;
@@ -162,7 +175,7 @@ export default {
     font-size: 0.9rem;
     padding:0.29rem 0rem 0.29rem 0.85rem;
 }
-.captionTitle>i{
+.captionTitle>i,.yudingText>i{
     background: #00C99D;
     margin-right: 0.27rem;
     display: inline-block;
@@ -182,7 +195,9 @@ export default {
     font-size: 0.6rem;
     text-align: center;
 }
+
 /*出游人数*/
+
 .chuyouNumBox{
     display: flex;
     justify-content: space-between;
@@ -227,6 +242,7 @@ export default {
     background: #636769;
     vertical-align: middle;
 }
+
 /*出行人信息*/
 .chuxingrenInfo{
     padding:0.75rem 0.2rem 0.75rem 1.75rem;
@@ -345,6 +361,7 @@ input::-webkit-input-placeholder {
 .chuxingrenInfo{
     padding:0.1rem 0.85rem;
     font-size: 0.75rem;
+
 }
 </style>
 <style lang="sass">
