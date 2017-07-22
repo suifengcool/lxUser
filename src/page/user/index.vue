@@ -3,23 +3,23 @@
         <!-- 头部 -->
         <div class="header">
             <h3>艾子豪</h3>
-            <i class="iconfont icon-right"></i>
+            <i class="iconfont icon-write"></i>
         </div>
 
         <!-- 列表 -->
         <div class="list">
             <router-link to="/order/list" class="border-bottom cf">
-                <i class="iconfont icon-search fl"></i>
+                <i class="iconfont icon-icon-2 fl"></i>
                 <p class="fl">我的订单</p>
                 <i class="iconfont icon-right fr"></i>
             </router-link>
             <router-link to="/user/collect" class="border-bottom cf">
-                <i class="iconfont icon-search fl"></i>
+                <i class="iconfont icon-shoucang1 fl"></i>
                 <p class="fl">我的收藏</p>
                 <i class="iconfont icon-right fr"></i>
             </router-link>
             <router-link to="/user/support" class="border-bottom cf">
-                <i class="iconfont icon-search fl"></i>
+                <i class="iconfont icon-wenhao fl"></i>
                 <p class="fl">帮助支持</p>
                 <i class="iconfont icon-right fr"></i>
             </router-link>

@@ -2,7 +2,7 @@
     <div id="home">
         <!-- 搜索框 -->
         <form action="" class="search center-center">
-            <i v-if="!name" class="iconfont icon-search"></i>
+            <i v-if="!name" class="iconfont icon-search-in"></i>
             <input type="search" v-model="name" placeholder='搜索'>
         </form>
 
@@ -66,7 +66,7 @@
 
         <!-- 右边条字母 -->
         <ul class="nav">
-            <i class="iconfont icon-search"></i>
+            <i class="iconfont icon-search-in"></i>
             <li>A</li>
             <li>B</li>
             <li>C</li>

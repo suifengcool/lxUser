@@ -31,7 +31,8 @@ export default {
 
 <style lang="sass">
 @import 'styles/style'
-
+// iconfont
+@import 'styles/iconfont/iconfont.css'
 .fade-enter-active, .fade-leave-active
     transition: opacity .5s
 .fade-enter, .fade-leave-active
