@@ -14,8 +14,10 @@ let config = [
 
     // 订单相关
     '/order/create',                 // 订单创建(预定页)
-    '/order/detail',                 // 订单(详情页)
     '/order/success',                // 订单成功页
+    '/order/detail/confirm',         // 订单详情-待确认
+    '/order/detail/success',         // 订单详情-预定成功
+    '/order/detail/pay',             // 订单详情-已确认(待支付+pay)
 
     // 评论相关
     '/comment/index',                // 评论页

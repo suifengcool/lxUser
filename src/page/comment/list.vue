@@ -7,7 +7,16 @@
                     <div class="img"></div>
                     <div class="main">
                         <h4>艾子豪</h4>
-                        <div class="star-box"></div>
+                        <div class="star-box cf">
+                            <span class="fl star">
+                                <i
+                                    class="iconfont icon-star-full"
+                                    v-for="(star, i) in [0,1,2,3,4]"
+                                ></i>
+                            </span>
+                            <span class="score fl">5.0</span>
+                            <span class="num fl">45单</span>
+                        </div>
                         <p>服务热情，讲解专业，本地土著</p>
                     </div>
                 </div>
@@ -88,7 +97,30 @@ ul li
                 height: 1.05rem
                 line-height: 1.05rem
                 margin: .1rem 0 .16rem 0
-
+                font-weight: 300
+            .star-box
+                height: .65rem
+                line-height: .65rem
+                font-size: .55rem
+                margin: .15rem 0 .45rem 0
+                .star
+                    i 
+                        font-size: .6rem
+                        color: #FF9500
+                        margin-right: .1rem
+                .score
+                    width: 1.27rem
+                    height: .6rem
+                    line-height: .6rem
+                    background: #FF9500
+                    color: #fff
+                    text-align: center
+                    font-size: .55rem
+                    margin: 0 .69rem 0 .1rem
+                .num
+                    color: #000
+            p 
+                font-size: .6rem
 </style>
 <style lang="sass">
 .vm-flexview
