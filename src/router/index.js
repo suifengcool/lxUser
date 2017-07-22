@@ -13,6 +13,7 @@ let config = [
     '/user/support',                 // 帮助与支持
 
     // 订单相关
+    '/order/create',                 // 订单创建(预定页)
     '/order/detail',                 // 订单(详情页)
     '/order/success',                // 订单成功页
 
