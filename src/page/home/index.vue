@@ -1,7 +1,7 @@
 <template>
-    <div id="home">
+    <vm-layout id="home">
         <!-- 搜索框 -->
-        <form action="" class="search center-center">
+        <form action="/?keyword=1" class="search center-center">
             <i v-if="!name" class="iconfont icon-search-in"></i>
             <input type="search" v-model="name" placeholder='搜索'>
         </form>
@@ -10,30 +10,9 @@
         <div class="hot-point">
             <h3 class="border-bottom">热门景点</h3>
             <ul class="cf">
-                <li class="fl">
-                    <img src="" alt="">
-                    <p>颐和园</p>
-                    <span></span>
-                </li>
-                <!-- 以下重复 -->
-                <li class="fl">
-                    <img src="" alt="">
-                    <p>颐和园</p>
-                    <span></span>
-                </li>
-                <li class="fl">
-                    <img src="" alt="">
-                    <p>颐和园</p>
-                    <span></span>
-                </li>
-                <li class="fl">
-                    <img src="" alt="">
-                    <p>颐和园</p>
-                    <span></span>
-                </li>
-                <li class="fl">
-                    <img src="" alt="">
-                    <p>颐和园</p>
+                <li v-for="(item, index) in hots" class="fl">
+                    <img :src="imgOrigin + item.resource_path" alt="">
+                    <p>{{item.view_name}}</p>
                     <span></span>
                 </li>
             </ul>
@@ -41,45 +20,18 @@
 
         <!-- 按字母分类 -->
         <ul class="item-box">
-            <li class="item">
-                <h3 class="border-top">G</h3>
-                <p class="border-top">故宫</p>
-            </li>
-            <!-- 以下重复 -->
-            <li class="item">
-                <h3 class="border-top">G</h3>
-                <p class="border-top">故宫</p>
-            </li>
-            <li class="item">
-                <h3 class="border-top">G</h3>
-                <p class="border-top">故宫</p>
-            </li>
-            <li class="item">
-                <h3 class="border-top">G</h3>
-                <p class="border-top">故宫</p>
-            </li>
-            <li class="item">
-                <h3 class="border-top">G</h3>
-                <p class="border-top">故宫</p>
+            <li v-for="(item, index) in lists" class="item">
+                <h3 class="border-top">{{item.first_letter}}</h3>
+                <p class="border-top">{{item.view_name}}</p>
             </li>
         </ul>
 
         <!-- 右边条字母 -->
         <ul class="nav">
             <i class="iconfont icon-search-in"></i>
-            <li>A</li>
-            <li>B</li>
-            <li>C</li>
-            <li>D</li>
-            <li>E</li>
-            <li>F</li>
-            <li>G</li>
-            <li>H</li>
-            <li>I</li>
-            <li>J</li>
-            <li>K</li>
+            <li v-for="(item, index) in lists">{{item.first_letter}}</li>
         </ul>
-    </div>
+    </vm-layout>
 </template>
 
 <script>
@@ -89,33 +41,29 @@ export default {
     data () {
         return {
             config: vm.config,             // 配置
-            name: '',                      // 输入景点名称
-
+            hots: [],                      // 热门景点
+            lists: [],                     // 景点列表
+            imgOrigin: '',                 // 图片前缀
+            name: '',                      // 搜索框内容
+            numChoosed: '',                // 被选中的字母
         }
     },
  
     created () {
-        this.config.title('我的')
-        // this.fetchInfo()
+        this.config.title('景点')
+        this.fetchViews()
     },
 
     methods: {
-        fetchInfo() {
-            this.$http.post('/user/info')
-            .then(rst => {
-                
+        fetchViews() {
+            this.$http.get('/view/index?oid=test1234')
+            .then(res => {
+                this.imgOrigin = res.body.prefix 
+                this.hots = res.body.data.hots
+                this.lists = res.body.data.lists
             })
-            .catch(err => {
-                this.$vux.toast.show({
-                    text: err.body.msg,
-                    type: 'text'
-                })
-            })
+            .catch(err => this.$dialog.toast({mes: err.body.msg}))
         },
-
-        a(){
-            this.$dialog.toast({mes: 'aaaa'})
-        }
     }
 }
 </script>

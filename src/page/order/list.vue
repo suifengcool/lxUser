@@ -7,57 +7,32 @@
                 :label="item"
                 :active="status == index"
             >
-            <ul class="list">
-                <li class="border-bottom">
-                    <div class="item">
-                        <div class="top cf">
-                            <h3 class="fl">故宫城墙一日游，让你见证不一样的历史...</h3>
-                            <span class="fr">已取消</span>
-                        </div>
-                        <div class="main">
-                            <div class="img"></div>
-                            <div class="desc">
-                                <h3>游览时间：2017年6月6日</h3>
-                                <p>游客人数：3ren</p>
-                                <span>订单金额：￥500</span>
+                <!-- 分页 -->
+                <vm-infinitescroll :on-infinite="fetchData" class="orderList" v-if="count">
+                    <ul slot="list" class="list">
+                        <li v-for="(item, index) in lists" class="border-bottom" @click="goDetail(item,index)">
+                            <div class="item">
+                                <div class="top cf">
+                                    <h3 class="fl">{{item.view_line_content}}</h3>
+                                    <span class="fr">{{['待确认','已取消','已取消','已取消','待付款','已取消','未出行','已完成','投诉待确认','已退款','待评价','已评价'][+item.book_status]}}</span>
+                                </div>
+                                <!-- 订单状态:1=待导游确认,2=游客取消,3=导游主动取消,4=导游确认超时,5=待游客付款,6=支付超时,7=已付款,8=已出行完成,9=有投诉待确认,10=已退款,11=待评价,12=已评价 -->
+                                <div class="main">
+                                    <vm-lazyimg
+                                        class="img"
+                                        :src= "item.resource_path ? imgOrigin + item.resource_path : ''"
+                                        :defaultSrc="require('../../assets/lazyDefault.png')"
+                                    />
+                                    <div class="desc">
+                                        <h3>游览时间：{{item.visit_date}}</h3>
+                                        <p>游客人数：{{item.person_num}}</p>
+                                        <span>订单金额：￥{{item.amount}}</span>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                </li>
-                <li>
-                    <div class="item">
-                        <div class="top cf">
-                            <h3 class="fl">故宫城墙一日游，让你见证不一样的历史...</h3>
-                            <span class="fr">已取消</span>
-                        </div>
-                        <div class="main">
-                            <div class="img"></div>
-                            <div class="desc">
-                                <h3>游览时间：2017年6月6日</h3>
-                                <p>游客人数：3ren</p>
-                                <span>订单金额：￥500</span>
-                            </div>
-                        </div>
-                    </div>
-                </li>
-                <li>
-                    <div class="item">
-                        <div class="top cf">
-                            <h3 class="fl">故宫城墙一日游，让你见证不一样的历史...</h3>
-                            <span class="fr">已取消</span>
-                        </div>
-                        <div class="main">
-                            <div class="img"></div>
-                            <div class="desc">
-                                <h3>游览时间：2017年6月6日</h3>
-                                <p>游客人数：3ren</p>
-                                <span>订单金额：￥500</span>
-                            </div>
-                        </div>
-                    </div>
-                </li>
-            </ul>
-
+                        </li>
+                    </ul>
+                </vm-infinitescroll>
             </vm-tab-panel>
         </vm-tab>
     </vm-layout>
@@ -69,29 +44,87 @@ export default {
 
     data () {
         return {
-            config: vm.config,                        // 配置
+            config: vm.config,  // 配置
+            page: 0,            // 分页
+            pageSize: 10,       // 分页
+            lists: [],          // 订单列表
+            status: 0,          // 0：全部，1：待付款，2：待评价，3：未出行，4：待确认
+            count: null         // 订单总条数
         }
     },
+
+    filters: vm.$Filters,
 
     created () {
         this.config.title('订单')
-        // this.fetchData()
+        this.init()
     },
 
     methods: {
-        // 获取用户信息
-        fetchData(){
-            this.$http.get(`/guide/order/detail?orderNum=${this.orderNum}`)
-            .then((rst) => {
+        // 初始化
+        init () {
+            this.page = 0
+            this.pageSize = 10
+            this.lists = []
+            this.status = this.$route.query.index ? this.$route.query.index : 0
+            this.fetchData()
+        },
 
+        fetchData () {
+            vm.fetch.post({
+                url: '/user/order/list',
+                data: {
+                    status: this.status,
+                    pageNo: this.page,
+                    pageSize: this.pageSize
+                }
+            })
+            .then(res => {
+                console.log('res.data:',res.data)
+                const _list = res.data.list
+                this.imgOrigin = res.prefix
+                this.lists = [...this.lists, ..._list]
+                this.count = res.data.totalRow
+                if (_list.length < this.pageSize || Math.floor(this.count / this.pageSize) == this.page) {
+                    // 所有数据加载完毕
+                    setTimeout(()=> {
+                        window.$vm.$emit('vmui.infinitescroll.loadedAll')
+                    })
+                    return
+                }
+
+                // 单次请求数据完毕
+                window.$vm.$emit('vmui.infinitescroll.loadedOnce')
+
+                this.page ++
             })
             .catch(err => {
-                this.$vux.toast.show({
-                    text: err.body.msg,
-                    type: 'text'
-                })
-            })
+                console.log('err:',err)
+                this.$dialog.toast({mes: 'csd'})})
+        },
+
+        // tab 切换回调
+        tabHandler (label) {
+            let index = ['全部', '待付款', '待评价', '待确认', '待出行'].indexOf(label)
+            this.$router.replace(`/order/list?index=${index}`)
+            this.status = index
+            this.init()
+        },
+
+        // 点击详情
+        goDetail(item,index) {
+            if(item.book_status === 1){
+                this.$router.push(`/order/detail/confirm?orderNum=${item.order_num}`)
+            }else if(item.book_status === 5){
+                this.$router.push(`/order/detail/pay?orderNum=${item.order_num}`)
+            }else if(item.book_status === 7){
+                this.$router.push(`/order/detail/success?orderNum=${item.order_num}`)
+            }else if(item.book_status === 11){
+                this.$router.push(`/comment?orderNum=${item.order_num}`)
+            }
+            
         }
+
     }
 }
 </script>
