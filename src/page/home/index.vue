@@ -1,7 +1,7 @@
 <template>
     <vm-layout id="home">
         <!-- 搜索框 -->
-        <form action="/?keyword=1" class="search center-center">
+        <form action="/" class="search center-center">
             <i v-if="!name" class="iconfont icon-search-in"></i>
             <input type="search" v-model="name" placeholder='搜索'>
         </form>
@@ -10,10 +10,10 @@
         <div class="hot-point">
             <h3 class="border-bottom">热门景点</h3>
             <ul class="cf">
-                <li v-for="(item, index) in hots" class="fl">
+                <li v-for="(item, index) in hots" class="fl" @click="goViewDetail(item.id)">
                     <img :src="imgOrigin + item.resource_path" alt="">
                     <p>{{item.view_name}}</p>
-                    <span></span>
+                    <!-- <span></span> -->
                 </li>
             </ul>
         </div>
@@ -21,15 +21,20 @@
         <!-- 按字母分类 -->
         <ul class="item-box">
             <li v-for="(item, index) in lists" class="item">
-                <h3 class="border-top">{{item.first_letter}}</h3>
-                <p class="border-top">{{item.view_name}}</p>
+                <h3 class="border-top">
+                    {{item[0].first_letter}}
+                </h3>
+                <p v-for="(ele, index) in item" 
+                    class="border-top"
+                    @click="goViewDetail(ele.view_spot_id)"
+                >{{ele.view_name}}</p>
             </li>
         </ul>
 
         <!-- 右边条字母 -->
         <ul class="nav">
             <i class="iconfont icon-search-in"></i>
-            <li v-for="(item, index) in lists">{{item.first_letter}}</li>
+            <li v-for="(item, index) in lists">{{item[0].first_letter}}</li>
         </ul>
     </vm-layout>
 </template>
@@ -56,14 +61,20 @@ export default {
 
     methods: {
         fetchViews() {
-            this.$http.get('/view/index?oid=test1234')
-            .then(res => {
-                this.imgOrigin = res.body.prefix 
-                this.hots = res.body.data.hots
-                this.lists = res.body.data.lists
+            vm.fetch.get({
+                url: '/view/index',
             })
-            .catch(err => this.$dialog.toast({mes: err.body.msg}))
+            .then(res => {
+                this.imgOrigin = res.prefix 
+                this.hots = res.data.hots
+                this.lists = res.data.list
+            })
+            .catch(err => this.$dialog.toast({mes: err.msg}))
         },
+
+        goViewDetail(id){
+            this.$router.push('/scenicspot/detail?id=' + id)
+        }
     }
 }
 </script>
@@ -122,7 +133,6 @@ export default {
             width: 78%
             height: 2.1rem
             border-radius: .2rem
-            background: green
             display: inline
         p 
             height: 1.2rem
@@ -163,7 +173,7 @@ export default {
 .nav
     top: 50%
     transform: translateY(-50%)
-    position: absolute
+    position: fixed
     right: 0
     width: 1rem
     text-align: center

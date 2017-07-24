@@ -7,7 +7,7 @@
                         <vm-lazyimg
                             class="img"
                             :src="imgOrigin + item.resource_path"
-                            :defaultSrc="require('../../assets/lazyDefault.png')"
+                            :defaultSrc="require('../../assets/lazyDefault.jpg')"
                         />
                         <div class="msg-main">
                             <h3>导游：{{item.real_name}}</h3>
@@ -17,10 +17,17 @@
                     </div>
                     <div class="desc">
                         导游简介：{{item.introduce}}
-                    </div>  
+                    </div> 
+                    <div class="cancel" @click="cancel(item.id)">取消收藏</div> 
                 </li>
             </ul>
         </vm-infinitescroll>
+
+        <!-- 空态 -->
+        <dummyStatus v-if="!count" :text="text"></dummyStatus>
+
+        <!-- backtop -->
+        <backTop content='.vm-scrollview'></backTop>
     </vm-layout>
 </template>
 
@@ -36,6 +43,7 @@ export default {
             count: 10,                     // 分页，总条数
             lists: [],                     // 列表
             imgOrigin: '',                 // 图片前缀
+            text: '暂时还没有收藏哦~'
         }
     },
 
@@ -46,35 +54,19 @@ export default {
 
     methods: {
         fetchData () {
-            this.$http.get(`/user/favorite/list?pageNo=${this.page}&pageSize=${this.pageSize}`)
-            .then(res => {
-                res.body = {
-                    "msg": "success",
-                    "data": {
-                        "totalRow": 1,//总条数
-                        "pageNumber": 1,//当前第几页
-                        "lastPage": true,//是否最后一页
-                        "firstPage": true,//是否为最后一页
-                        "totalPage": 1,//总页数
-                        "pageSize": 10,//每页行数
-                        "list": [
-                            {
-                                "id": 1,//收藏ID
-                                "real_name": "矮子好",//导游姓名
-                                "score": 5,//导游评分
-                                "introduce": "专业导游30年",//导游介绍
-                                "user_id": 10,//导游ID
-                                "resource_path": '201707/16/201707161619588485.JPG',//导游头像地址
-                            }
-                        ]
-                    },
-                    "prefix": "http://r.361web.net/lx/",
-                    "res_code": 200
+            vm.fetch.get({
+                url: '/user/favorite/list',
+                data: {
+                    pageNo: this.page,
+                    pageSize: this.pageSize
                 }
-                const _list = res.body.data.list
+            })
+            .then(res => {
+                const _list = res.data.list
                 this.lists = [...this.lists, ..._list]
-                this.imgOrigin = res.body.prefix
-                this.count = res.body.data.totalRow
+                this.imgOrigin = res.prefix
+                this.count = res.data.totalRow
+                console.log('this.count:',this.count)
 
                 if (this.page && (_list.length < this.pageSize || Math.floor(this.count / this.pageSize) == this.page)) {
                     // 所有数据加载完毕
@@ -87,8 +79,29 @@ export default {
 
                 this.page ++
             })
-            .catch(err => this.$dialog.toast({mes: err.errMsg}))
+            .catch(err => this.$dialog.toast({mes: err.msg}))
         },
+
+        // 取消收藏
+        cancel(id){
+            vm.fetch.post({
+                url: '/user/favorite/cancel',
+                data: {
+                    favoriteId: id
+                }
+            })
+            .then(res => {
+                if(res.res_code === 200){
+                    this.$dialog.toast({mes: '取消收藏成功'})
+                    this.page = 0
+                    this.pageSize = 10
+                    this.fetchData()
+                }else{
+                    this.$dialog.toast({mes: res.msg})
+                }
+            })
+            .catch(err => {this.$dialog.toast({mes: err.msg})})
+        }
     }
 }
 </script>
@@ -97,7 +110,9 @@ export default {
 ul li 
     padding: .75rem
     font-size: .6rem
-    color: #979797
+    color: #666
+    background: #fff
+    position: relative
     .msg  
         display: flex
         .img    
@@ -114,7 +129,7 @@ ul li
                 line-height: .9rem
                 font-weight: 300
                 font-size: .75rem
-                color: #333
+                color: #000
                 margin: .4rem 0 .8rem 0
             p 
                 height: .85rem
@@ -122,4 +137,19 @@ ul li
     .desc
         line-height: .75rem
         margin-top: .35rem
+    .cancel
+        position: absolute
+        right: .15rem
+        top: .15rem
+        height: 1rem
+        line-height: 1rem
+        padding: 0 .25rem
+        background: rgba(0, 0, 0, 0.25)
+        text-align: right
+        font-size: .6rem
+        color: #fff
+</style>
+<style lang="sass">
+// .vm-flexview
+//     height: 100% !important
 </style>

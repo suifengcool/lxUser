@@ -3,31 +3,19 @@
         <div class="headerBox">
             <div class="bannerBox">
                 <div class="demo-small-pitch">
-
-                    <vm-slider autoplay="3000" initIndex="2">
-                        <vm-slider-item>
-                            <div class="item">
-                                item <span>1</span>
-                            </div>
-                        </vm-slider-item>
-                        <vm-slider-item>
-                            <div class="item">
-                                item <span>2</span>
-                            </div>
-                        </vm-slider-item>
-                        <vm-slider-item>
-                            <div class="item">
-                                item <span>3</span>
-                            </div>
+                    <vm-slider :ready="readySlider" initIndex="1">
+                        <vm-slider-item v-for="(image, index) in images">
+                            <img :src="imgOrigin + image"/>
                         </vm-slider-item>
                     </vm-slider>
-
                 </div>
             </div>
             <div class="plaseInfo">
-                <h3>故宫 IMPERIALACE</h3>
-                <p>故宫旧称为紫禁城，位于北京中轴线的中心，是中国古代宫廷故宫旧称为紫禁城，位于北京中轴线的中心，是中国古代宫廷故宫旧称为紫禁城，位于北京中轴线的中心，是中国古代宫廷故宫旧称为紫禁城，位于北京中轴线的中心，是中国古代宫廷故宫旧称为紫禁城，位于北京中轴线的中心，是中国古代宫廷故宫旧称为紫禁城，位于北京中轴线的中心，是中国古代宫廷</p>
-                <a href="javascript:;" class="moreBtn">更多<i class="iconfont icon-icon-copy"></i></a>
+                <h3>{{init.view_name}}</h3>
+                <p>{{init.intruduce}}</p>
+                <div class="moreBtnBox">
+                    <a href="javascript:;" class="moreBtn" @click="showHandle=true">更多<i class="iconfont icon-icon-copy"></i></a>
+                </div>
             </div>
         </div>
         <div class="daoyouListCaptionBox">
@@ -85,22 +73,41 @@
 <script>
 export default {
     name: 'user',
-
     data () {
         return {
-            config: vm.config,                               // 配置
+            config: vm.config,                 // 配置
+            id: this.$route.query.id,          // 景点id
+            init: {},                          // 数据
+            images: [],                        // 图片
+            isShow: false,
+            showIntroduce: false,
+            readySlider: false
         }
     },
-
-    components: {
-    },
-
+    
     created () {
         this.config.title('出发')
+        this.fetchViews()
+        this.readySlider = true
     },
-
     methods: {
-        
+        fetchViews() {
+            vm.fetch.post({
+                url: `/view/detail/${this.id}`,
+            })
+            .then(res => {
+                this.imgOrigin = res.prefix 
+                this.init = res.data
+                this.images.push(res.data.resource_path)
+                this.images.push(res.data.resource_path)
+                this.images.push(res.data.resource_path)
+                console.log('this.init:',this.init)
+            })
+            .catch(err => this.$dialog.toast({mes: err.body.msg}))
+        },
+        showHandle () {
+            this.isShow = !this.isShow;
+        }
     }
 }
 </script>
@@ -114,11 +121,10 @@ export default {
     padding:0.5rem 0.6rem 0 0.6rem;
 }
 .bannerBox{
-    width:100%;
     /*height:5.89rem;*/
 }
 .item {
-    padding: 2rem 0;
+    padding: 0;
     text-align: center;
     background: #ccc;
     
@@ -139,15 +145,18 @@ export default {
 .plaseInfo p{
     font-size: 0.6rem;
     line-height: 0.83rem;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
+    
+}
+.plaseInfo .showIntroduce{
+    height:;
     overflow: hidden;
 }
+.moreBtnBox{
+    display: flex;
+    justify-content:flex-end;
+}
 .moreBtn{
-    position: absolute;
-    right: 0.6rem;
-    bottom: 0;
+    
 }
 .daoyouListCaptionBox{
     display: flex;
@@ -209,12 +218,13 @@ export default {
     border-radius: 0.1rem;
     text-align: center;
     line-height: 0.6rem;
+    font-size: 0.55rem;
 }
 .intersting{
     font-size: 0.6rem;
     margin-top:0.38rem;
 }
-.patb{
+.path{
     font-size: 0.5rem;
 }
 .money{
@@ -225,4 +235,9 @@ export default {
 }
 </style>
 <style lang="sass">
+.vm-slider-pagination
+    left: 7rem
+    bottom: 0.25rem
+.vm-slider-pagination>.vm-slider-pagination-item.vm-slider-pagination-item-active
+    background: #fff
 </style>

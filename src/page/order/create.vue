@@ -46,9 +46,9 @@
         <div class="chuyouNumBox">
             <div class="selectTimeTitle"><i class="iconfont icon-wode"></i><span>选择出游时间</span></div>
             <div class="selectTimeInput">
-                <div class="subItem"><span class="subHao"></span></div>
-                <div class="numItem">4</div>
-                <div class="addItem"><span class="addHao"></span></div>
+                <div class="subItem"><span class="subHao" @click="selectTime(-1)"></span></div>
+                <input type="text" class="numItem" v-model="chuyouTime"></input>
+                <div class="addItem"><span class="addHao" @click="selectTime(1)"></span></div>
             </div>
         </div>
         <div class="captionTitle ">
@@ -66,9 +66,9 @@
         
         <div class="captionTitle ydMustKnow">
             <div class="yudingText"><i></i><span>预定须知</span></div>
-            <a href="javascript:;"><i class="iconfont icon-control-arr-copy-copy"></i></a>
+            <a href="javascript:;" v-on:click="needKnowHandle"><i v-bind:class="['iconfont', isUp ? 'icon-arrow-left-copy' : 'icon-control-arr-copy-copy']"></i></a>
         </div>
-        <div class="knowContent">
+        <div class="knowContent" v-show="nendKnowShow">
             <p>this is need knowthis is need knowthis is need knowthis is need knowthis is need knowthis is need knowthis is need knowthis is need know</p>
         </div>
         <div class="captionTitle ">
@@ -104,7 +104,9 @@ export default {
     data () {
         return {
             config: vm.config,                               // 配置
-            nendKnowShow:false
+            nendKnowShow:false,
+            isUp:false,
+            chuyouTime:0
         }
     },
     created () {
@@ -113,7 +115,14 @@ export default {
     methods: {
         needKnowHandle(){
             this.nendKnowShow = !this.nendKnowShow;
+            this.isUp=!this.isUp;
         },
+        selectTime(type){
+             this.chuyouTime +=type;
+            if(this.chuyouTime<0){
+                this.chuyouTime = 0;
+            }
+        }
     }
 }
 </script>
@@ -122,13 +131,7 @@ export default {
 .orderCreate{
     background: #fff;
 }
-
-
-
-
-
 /*头部轮播和导游信息*/
-
 .headerBox{
     padding:0.5rem 0.6rem 0 0.6rem;
 }
@@ -167,7 +170,6 @@ export default {
  font-size:  .9rem;  
 }
 /*出游时间*/
-
 .captionTitle{
     width:100%;
     border-top:0.05rem solid #E7E7E7;
@@ -195,9 +197,7 @@ export default {
     font-size: 0.6rem;
     text-align: center;
 }
-
 /*出游人数*/
-
 .chuyouNumBox{
     display: flex;
     justify-content: space-between;
@@ -213,7 +213,7 @@ export default {
 .selectTimeInput{
     margin-right: 1.25rem;
 }
-.selectTimeInput>div{
+.selectTimeInput>div,.selectTimeInput input{
     display: inline-block;
     height:1.35rem;
     width:1.35rem;
@@ -223,9 +223,11 @@ export default {
     vertical-align: middle;
     line-height: 1.35rem;
     margin-left:0.3rem;
+    border: none;
 }
 .selectTimeInput .numItem{
     background: #FD7139;
+    display: inline-block;
 }
 .subHao{
     display: inline-block;
@@ -242,7 +244,6 @@ export default {
     background: #636769;
     vertical-align: middle;
 }
-
 /*出行人信息*/
 .chuxingrenInfo{
     padding:0.75rem 0.2rem 0.75rem 1.75rem;
@@ -361,7 +362,6 @@ input::-webkit-input-placeholder {
 .chuxingrenInfo{
     padding:0.1rem 0.85rem;
     font-size: 0.75rem;
-
 }
 </style>
 <style lang="sass">

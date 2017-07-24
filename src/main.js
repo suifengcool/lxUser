@@ -3,7 +3,6 @@ import Vue from 'vue'
 import Config from './config'
 import VueResource from 'vue-resource'
 import Moment from 'moment'
-import * as filters from './filters'
 import {sync} from 'vuex-router-sync'
 import { mapGetters, mapActions } from 'vuex'
 import Fetch from './components/Fetch'
@@ -17,6 +16,14 @@ import VMUI from 'vmui'
 import 'vmui/dist/vmui.rem.css'
 import 'vmui/dist/vmui.flexible'
 Vue.use(VMUI)
+
+// 全局注册空态
+import dummyStatus from './components/dummyStatus'
+Vue.component('dummyStatus',dummyStatus)
+
+// 全局注册回到顶部按钮
+import backTop from './components/backTop'
+Vue.component('backTop',backTop)
 
 // 点击延迟
 import FastClick from 'fastclick'
