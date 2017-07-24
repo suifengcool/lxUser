@@ -22,7 +22,7 @@ export default {
         }
 
         obj.data = vm.$.extend({
-            token: vm.$.getCookie(vm.config.tokenName)
+            oid: 'test1234'
         }, obj.data || {})
 
         obj.headers = obj.headers || {

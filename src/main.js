@@ -6,6 +6,7 @@ import Moment from 'moment'
 import * as filters from './filters'
 import {sync} from 'vuex-router-sync'
 import { mapGetters, mapActions } from 'vuex'
+import Fetch from './components/Fetch'
 
 import App from './app'
 import router from './router'
@@ -88,6 +89,7 @@ window.vm = new Vue({
     render: h => h(App),
     data: {
         config: Config, // 全局注入配置
+        fetch: Fetch,   // fetch
         mapGetters,     // 全局引入 vuex mapGetters 函数
         mapActions      // 全局引入 vuex mapActions 函数
     }

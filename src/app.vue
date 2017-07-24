@@ -30,8 +30,11 @@ export default {
 </script>
 
 <style lang="sass">
+// 导入css
 @import 'styles/style'
-
+// 导入iconfont
+@import 'styles/iconfont/iconfont.css'
+// 动画
 .fade-enter-active, .fade-leave-active
     transition: opacity .5s
 .fade-enter, .fade-leave-active
