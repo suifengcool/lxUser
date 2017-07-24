@@ -34,14 +34,14 @@
             </div>
         </div>
         <div class="captionTitle">
-            <i></i><span>出游时间</span>
+           <i>|</i><span>出游时间</span>
         </div>
         <div class="startTimeBox">
             <p class="timeTitle"><i class="iconfont icon-rl"></i><span>出发时间</span></p>
             <p class="timeDetail">2016年6月25日9:00AM</p>
         </div>
         <div class="captionTitle">
-            <i></i><span>出游人数</span>
+            <i>|</i><span>出游人数</span>
         </div>
         <div class="chuyouNumBox">
             <div class="selectTimeTitle"><i class="iconfont icon-wode"></i><span>选择出游时间</span></div>
@@ -52,27 +52,27 @@
             </div>
         </div>
         <div class="captionTitle ">
-            <i></i><span>出行人信息</span>
+            <i>|</i><span>出行人信息</span>
         </div>
         <div class="chuxingrenInfo">
-            <div class="nameInputBox"><label for="">姓&nbsp;&nbsp;名:</label><input type="text" placeholder="请输入姓名"></div>
+            <div class="nameInputBox"><label for="">姓&nbsp;&nbsp;&nbsp;名:</label><input type="text" placeholder="请输入姓名"></div>
             <div class="phoneInputBox">
-                <div class="nameInputBox"><label for="">电&nbsp;&nbsp;话:</label><input type="text" placeholder="请输入电话"></div>
+                <div class="nameInputBox"><label for="">电&nbsp;&nbsp;&nbsp;话:</label><input type="text" placeholder="请输入电话"></div>
                 <a href="javascript:;" class="yzBtn">发送验证码</a>
             </div>
             <div class="yzInputBox"><label for="">验证码:</label><input type="text" placeholder="请输入验证码"></div>
 
         </div>
         
-        <div class="captionTitle ydMustKnow">
-            <div class="yudingText"><i></i><span>预定须知</span></div>
-            <a href="javascript:;" v-on:click="needKnowHandle"><i v-bind:class="['iconfont', isUp ? 'icon-arrow-left-copy' : 'icon-control-arr-copy-copy']"></i></a>
+        <div class="captionTitle ydMustKnow" v-on:click="needKnowHandle">
+            <div class="yudingText"><i>|</i><span>预定须知</span></div>
+            <a href="javascript:;"><i v-bind:class="['iconfont', isUp ? 'icon-arrow-left-copy' : 'icon-control-arr-copy-copy']"></i></a>
         </div>
         <div class="knowContent" v-show="nendKnowShow">
             <p>this is need knowthis is need knowthis is need knowthis is need knowthis is need knowthis is need knowthis is need knowthis is need know</p>
         </div>
         <div class="captionTitle ">
-            <i></i><span>游客评论</span>
+            <i>|</i><span>游客评论</span>
         </div>
 
         <ul class="commantList">
@@ -131,7 +131,13 @@ export default {
 .orderCreate{
     background: #fff;
 }
+
+
+
+
+
 /*头部轮播和导游信息*/
+
 .headerBox{
     padding:0.5rem 0.6rem 0 0.6rem;
 }
@@ -141,9 +147,10 @@ export default {
     margin-bottom:0.87rem;
 }
 .item {
-    padding: 2rem 0;
+    /*padding: 2rem 0;*/
     text-align: center;
     background: #ccc;
+    height:5.89rem;
     
 }
 .item span {
@@ -162,28 +169,29 @@ export default {
 .textInfo{
     flex:1; 
     padding:1.1rem 0 0 0.75rem; 
+
 }
 .textInfo h3{
     font-size: 0.9rem;
+    font-weight: 300;
 }
 .textInfo p{
- font-size:  .9rem;  
+ font-size:  .9rem; 
+ color:#666; 
 }
 /*出游时间*/
 .captionTitle{
     width:100%;
+    height:1.7rem;
+    line-height: 1.7rem;
     border-top:0.05rem solid #E7E7E7;
     border-bottom:0.05rem solid #E7E7E7;
     font-size: 0.9rem;
-    padding:0.29rem 0rem 0.29rem 0.85rem;
+    padding:0 0.6rem;
 }
 .captionTitle>i,.yudingText>i{
-    background: #00C99D;
+    color: #00C99D;
     margin-right: 0.27rem;
-    display: inline-block;
-    height:0.9rem;
-    width:0.13rem;
-    vertical-align: middle;
 }
 .startTimeBox{
     padding:0.75rem 0 0.8rem 0;
@@ -192,12 +200,18 @@ export default {
     text-align:center;
     font-size: 0.9rem;
 }
+.timeTitle i{
+    vertical-align: 3%;
+    margin-right: 0.15rem;
+}
 .timeDetail{
     color:#00CA9D;
     font-size: 0.6rem;
     text-align: center;
 }
+
 /*出游人数*/
+
 .chuyouNumBox{
     display: flex;
     justify-content: space-between;
@@ -244,13 +258,16 @@ export default {
     background: #636769;
     vertical-align: middle;
 }
+
 /*出行人信息*/
 .chuxingrenInfo{
     padding:0.75rem 0.2rem 0.75rem 1.75rem;
     font-size: 0.75rem;
     color:#666666;
     line-height: 1.3rem;
+
 }
+
 .chuxingrenInfo input{
     border:none;
     color: #DFDFDF;
@@ -267,22 +284,30 @@ input::-webkit-input-placeholder {
 .phoneInputBox{
     display: flex;
     justify-content: space-between;
+    line-height: 1.3rem;
+    height: 1.3rem;
 }
 .yzBtn{
-    display: inline;
-    width:3.7rem;
+    display: inline-block;
     height:0.88rem;
     line-height: 0.88rem;
+    padding:0rem 0.3rem;
     background: #00C99D;
     font-size: 0.5rem;
     text-align:center;
     border-radius: .4rem;
+    color:#fff;
+    margin-top:0.2rem;
+
 }
 /*预定须知*/
 .captionTitle.ydMustKnow{
    display: flex;
    justify-content: space-between;
    padding-right: 0.4rem
+}
+.ydMustKnow>a>i{
+    font-size: 0.3rem
 }
 .knowContent p{
     padding:0.75rem 0.85rem;
@@ -334,15 +359,18 @@ input::-webkit-input-placeholder {
     border:2px solid #7DEDCF;
     color:#7DEDCF;
     text-align: center;
-    line-height: 1.5rem;
-    vertical-align: top;
+    
+    
 }
 .commitBtn i{
-    vertical-align: middle;
+    
 }
 .commitBtn span{
     font-size: 0.45rem;
     vertical-align: middle;
+    display: inline-block;
+    margin-top:0.25rem;
+
 }
 .yudingBtnBox{
     margin:3rem 0 1rem 0;
@@ -362,6 +390,7 @@ input::-webkit-input-placeholder {
 .chuxingrenInfo{
     padding:0.1rem 0.85rem;
     font-size: 0.75rem;
+
 }
 </style>
 <style lang="sass">

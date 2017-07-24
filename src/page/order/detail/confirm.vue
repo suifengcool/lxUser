@@ -55,7 +55,7 @@
 
         <!-- 底部按钮 -->
         <vm-tabbar slot="tabbar" class="tabbar-box">
-            <button class="tabbar-item" type="button">查看订单</button>
+            <button class="tabbar-item" type="button">取消订单</button>
         </vm-tabbar>
     </vm-layout>
 </template>
@@ -68,47 +68,58 @@ export default {
         return {
             config: vm.config,                        // 配置
             orderNum: this.$route.query.orderNum,     // 订单号
-            init: {}                                  // 数据
+            init: {},                                 // 数据
+            imgOrigin: ''                             // 图片前缀
         }
     },
 
     created () {
-        this.config.title('订单号：')
-        // this.fetchData()
+        this.config.title('订单号：'+ this.orderNum)
+        this.fetchData()
     },
 
     methods: {
-        // 获取用户信息
+        // 获取订单信息
         fetchData(){
-            this.$http.get(`/guide/order/detail?orderNum=${this.orderNum}`)
-            .then((rst) => {
-                this.init = rst.body.data
+            vm.fetch.get({
+                url: '/user/order/detail',
+                data:{
+                    orderNum: this.orderNum
+                }
             })
-            .catch(err => {
-                this.$vux.toast.show({
-                    text: err.body.msg,
-                    type: 'text'
-                })
+            .then(res => {
+                if(res.res_code === 200){
+                    this.imgOrigin = res.prefix 
+                }else{
+                    this.$dialog.toast({mes: res.msg})
+                }
             })
+            .catch(err => this.$dialog.toast({mes: err.msg}))
         },
 
         // 取消订单
         cancel() {
-            this.$http.get(`/guide/order/cancel?orderNum=${this.orderNum}`)
-            .then((rst) => {
-                if(rst.body && rst.body.res_code === 200){
-                    this.$vux.toast.show({
-                        text: '订单取消成功',
-                        type: 'text'
-                    })
+            vm.fetch.get({
+                url: '/user/order/cancel',
+                data:{
+                    orderNum: this.orderNum
                 }
             })
-            .catch(err => {
-                this.$vux.toast.show({
-                    text: err.body.msg,
-                    type: 'text'
-                })
+            .then(res => {
+                if(res.res_code === 200){
+                    this.$dialog.toast({
+                        mes: '订单取消成功',
+                        timeout: 1500,
+                        callback: () => {
+                            this.$router.replace('/order/list')
+                        }
+                    })
+                }else{
+                    this.$dialog.toast({mes: res.msg})
+                }
+                
             })
+            .catch(err => this.$dialog.toast({mes: err.msg}))
         }
     }
 }

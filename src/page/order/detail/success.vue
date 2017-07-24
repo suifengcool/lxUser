@@ -13,17 +13,16 @@
         <div class="title border-bottom">订单详情</div>
 
         <!-- 列表 -->
-        <p>订单号：20170606110523</p>
+        <p>订单号：{{init.order_num}}</p>
         <p>故宫城墙一日游</p>
-        <p>路线：从故宫正门出发，沿着XX到正阳门，沿途</p>
-        <p>带您领略不一样的故宫建筑文化...</p>
-        <p>出发时间：</p>
+        <p>路线：{{init.view_line_content}}</p>
+        <p>出发时间：{{init.visit_date}}&nbsp;{{init.visit_time}}</p>
         <p>导游：张泉灵</p>
         <p>联系方式：13428888888</p>
         <p>集合地点：天安门广场</p>
-        <p>预订人：5人</p>
-        <p>联系电话：1342xxxxxxx</p>
-        <p>预定人数：5人</p>
+        <p>预订人：{{init.contact_name}}</p>
+        <p>联系电话：{{init.contact_phone}}</p>
+        <p>预定人数：{{init.person_num}}人</p>
     </vm-layout>
 </template>
 
@@ -41,42 +40,28 @@ export default {
 
     created () {
         this.config.title('预定成功')
-        // this.fetchData()
+        this.fetchData()
     },
 
     methods: {
-        // 获取用户信息
+        // 获取订单信息
         fetchData(){
-            this.$http.get(`/guide/order/detail?orderNum=${this.orderNum}`)
-            .then((rst) => {
-                this.init = rst.body.data
-            })
-            .catch(err => {
-                this.$vux.toast.show({
-                    text: err.body.msg,
-                    type: 'text'
-                })
-            })
-        },
-
-        // 取消订单
-        cancel() {
-            this.$http.get(`/guide/order/cancel?orderNum=${this.orderNum}`)
-            .then((rst) => {
-                if(rst.body && rst.body.res_code === 200){
-                    this.$vux.toast.show({
-                        text: '订单取消成功',
-                        type: 'text'
-                    })
+            vm.fetch.get({
+                url: '/user/order/detail',
+                data:{
+                    orderNum: this.orderNum
                 }
             })
-            .catch(err => {
-                this.$vux.toast.show({
-                    text: err.body.msg,
-                    type: 'text'
-                })
+            .then(res => {
+                if(res.res_code === 200){
+                    this.imgOrigin = res.prefix 
+                    this.init = res.data
+                }else{
+                    this.$dialog.toast({mes: res.msg})
+                }
             })
-        }
+            .catch(err => this.$dialog.toast({mes: err.msg}))
+        },
     }
 }
 </script>

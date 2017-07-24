@@ -21,7 +21,7 @@
         <!-- 按字母分类 -->
         <ul class="item-box">
             <li v-for="(item, index) in lists" class="item">
-                <h3 class="border-top">
+                <h3 class="border-top" :id="item[0].first_letter">
                     {{item[0].first_letter}}
                 </h3>
                 <p v-for="(ele, index) in item" 
@@ -34,7 +34,7 @@
         <!-- 右边条字母 -->
         <ul class="nav">
             <i class="iconfont icon-search-in"></i>
-            <li v-for="(item, index) in lists">{{item[0].first_letter}}</li>
+            <li v-for="(item, index) in lists"><a :href="'#'+item[0].first_letter">{{item[0].first_letter}}</a></li>
         </ul>
     </vm-layout>
 </template>

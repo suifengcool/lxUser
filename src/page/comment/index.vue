@@ -30,15 +30,17 @@
             <h3>匿名评价导游</h3>
             <p class="star">
                 <i
-                    class="iconfont icon-star-full"
+                    :class="['iconfont', {'red': score > i}, score > i ? 'icon-star-full' : 'icon-star']"
                     v-for="(star, i) in [0,1,2,3,4]"
+                    @click="changeStar(star, i)"
                 ></i>
             </p>
-            <textarea placeholder="请输入对该导游的评价~"></textarea>
+            <textarea v-model= "content" placeholder="请输入对该导游的评价~" maxlength="100"></textarea>
+            <span>{{num}}/100</span>
         </div>
 
         <!-- 按钮 -->
-        <button type="button">提交</button>
+        <button type="button" @click="save()">提交</button>
     </vm-layout>
 </template>
 
@@ -50,48 +52,89 @@ export default {
         return {
             config: vm.config,                        // 配置
             orderNum: this.$route.query.orderNum,     // 订单号
-            init: {}                                  // 数据
+            init: {},                                 // 数据
+            guideId: '',                              // 导游id
+            score: 0,                                 // 分数
+            num: 0,                                   // 已输入字数
+            content: '',                              // 评论内容
         }
     },
 
     created () {
         this.config.title('已完成订单')
-        // this.fetchData()
+        this.fetchData()
+    },
+
+    watch: {
+        content: function(val,oldVal){
+            this.num = val.length
+            if(this.num === 100){
+                this.$dialog.toast({mes: '已超过字数限制'})
+            }
+        }
     },
 
     methods: {
-        // 获取用户信息
+        // 获取订单信息
         fetchData(){
-            this.$http.get(`/guide/order/detail?orderNum=${this.orderNum}`)
-            .then((rst) => {
-                this.init = rst.body.data
-            })
-            .catch(err => {
-                this.$vux.toast.show({
-                    text: err.body.msg,
-                    type: 'text'
-                })
-            })
-        },
-
-        // 取消订单
-        cancel() {
-            this.$http.get(`/guide/order/cancel?orderNum=${this.orderNum}`)
-            .then((rst) => {
-                if(rst.body && rst.body.res_code === 200){
-                    this.$vux.toast.show({
-                        text: '订单取消成功',
-                        type: 'text'
-                    })
+            vm.fetch.get({
+                url: '/user/order/detail',
+                data:{
+                    orderNum: this.orderNum
                 }
             })
-            .catch(err => {
-                this.$vux.toast.show({
-                    text: err.body.msg,
-                    type: 'text'
-                })
+            .then(res => {
+                if(res.res_code === 200){
+                    this.imgOrigin = res.prefix 
+                    this.init = res.data
+                }else{
+                    this.$dialog.toast({mes: res.msg})
+                }
             })
-        }
+            .catch(err => this.$dialog.toast({mes: err.msg}))
+        },
+
+        // 点击星星
+        changeStar(star,i){
+            console.log('star:',star)
+            console.log('i:',i)
+        },
+
+        // 保存评论
+        save(){
+            if (!this.score) {
+                this.$dialog.toast({mes: "请勾选星级"})
+                return
+            }
+            if (!this.content) {
+                this.$dialog.toast({mes: "请填写评论内容"})
+                return
+            }
+            vm.fetch.post({
+                url: '/user/comment/save',
+                data:{
+                    guideId: this.guideId,
+                    score: this.score,
+                    content: this.content
+                }
+            })
+            .then(res => {
+                if(res.res_code === 200){
+                    this.$dialog.toast({
+                        mes: '发表评论成功',
+                        timeout: 1500,
+                        callback: () => {
+                            this.$router.replace('/order/list')
+                        }
+                    })
+                }else{
+                    this.$dialog.toast({mes: res.msg})
+                }
+            })
+            .catch(err => this.$dialog.toast({mes: err.msg}))
+        },
+
+        
     }
 }
 </script>
@@ -127,6 +170,8 @@ export default {
                         font-size: .6rem
                         color: #FF9500
                         margin-right: .1rem
+                    .red
+
                 .score
                     width: 1.27rem
                     height: .6rem
@@ -151,6 +196,7 @@ export default {
     margin-top: 1.45rem
     text-align: center
     color: #979797
+    position: relative
     h3
         height: .83rem
         line-height: .83rem
@@ -186,6 +232,10 @@ export default {
         padding: .5rem
         box-sizing: border-box
         font-size: .65rem
+    span
+        position: absolute
+        bottom: .5rem
+        right: 4rem
 // 按钮
 button
     width: 8.37rem

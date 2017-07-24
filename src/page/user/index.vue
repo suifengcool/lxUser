@@ -157,6 +157,6 @@ export default {
         margin-bottom: .3rem
 </style>
 <style lang="sass">
-.vm-flexview
+#user .vm-flexview
     background: #fff
 </style>

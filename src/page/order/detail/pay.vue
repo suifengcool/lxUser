@@ -16,11 +16,10 @@
         <div class="title border-bottom">订单详情</div>
 
         <div class="order-msg border-bottom item">
-            <p>订单号：20170606110523</p>
+            <p>订单号：{{init.order_num}}</p>
             <p>故宫城墙一日游</p>
-            <p>路线：从故宫正门出发，沿着XX到正阳门，沿途</p>
-            <p>带您领略不一样的故宫建筑文化...</p>
-            <p>出发时间：</p>
+            <p>路线：{{init.view_line_content}}</p>
+            <p>出发时间：{{init.visit_date}}&nbsp;{{init.visit_time}}</p>
         </div>
         <div class="guide-msg border-bottom item">
             <p>导游：</p>
@@ -28,15 +27,15 @@
             <p>集合地点：</p>
         </div>
         <div class="user-msg border-bottom item">
-            <p>预订人：</p>
-            <p>联系方式：</p>
-            <p>预定人数：</p>
+            <p>预订人：{{init.contact_name}}</p>
+            <p>联系方式：{{init.contact_phone}}</p>
+            <p>预定人数：{{init.person_num}}</p>
         </div>
 
         <!-- 底部按钮 -->
         <vm-tabbar slot="tabbar" class="tabbar-box">
             <input type="text">
-            <span>支付金额：</span>
+            <span>支付金额：{{init.amount}}</span>
             <button class="tabbar-item" type="button">去支付</button>
         </vm-tabbar>
     </vm-layout>
@@ -56,42 +55,28 @@ export default {
 
     created () {
         this.config.title('支付旅费')
-        // this.fetchData()
+        this.fetchData()
     },
 
     methods: {
-        // 获取用户信息
+        // 获取订单信息
         fetchData(){
-            this.$http.get(`/guide/order/detail?orderNum=${this.orderNum}`)
-            .then((rst) => {
-                this.init = rst.body.data
-            })
-            .catch(err => {
-                this.$vux.toast.show({
-                    text: err.body.msg,
-                    type: 'text'
-                })
-            })
-        },
-
-        // 取消订单
-        cancel() {
-            this.$http.get(`/guide/order/cancel?orderNum=${this.orderNum}`)
-            .then((rst) => {
-                if(rst.body && rst.body.res_code === 200){
-                    this.$vux.toast.show({
-                        text: '订单取消成功',
-                        type: 'text'
-                    })
+            vm.fetch.get({
+                url: '/user/order/detail',
+                data:{
+                    orderNum: this.orderNum
                 }
             })
-            .catch(err => {
-                this.$vux.toast.show({
-                    text: err.body.msg,
-                    type: 'text'
-                })
+            .then(res => {
+                if(res.res_code === 200){
+                    this.imgOrigin = res.prefix 
+                    this.init = res.data
+                }else{
+                    this.$dialog.toast({mes: res.msg})
+                }
             })
-        }
+            .catch(err => this.$dialog.toast({mes: err.msg}))
+        },
     }
 }
 </script>
