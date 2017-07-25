@@ -12,7 +12,6 @@ export default {
         }
 
         obj.onloadend = (xhr) => {
-            // err = -1，进行微信授权
             let res = xhr.response
             if (res && res.err == -1 && !!res.data)
                 location.href = res.data
@@ -33,13 +32,14 @@ export default {
         return new Promise(function (resolve, reject) {
             vm.$.fetch(obj)
             .then(res => {
-                if (!res.err) resolve(res)
-                else if (res.err > 0)  reject(res)
-                // err = -1，进行微信授权
-                else if (res.err == -1 && !!res.data)
-                    location.href = res.data
+                if (res.res_code === 200){
+                    resolve(res)
+                }else{
+                    vm.$dialog.toast({mes: res.msg})
+                }
+               
             })
-            .catch(err => vm.$dialog.toast({mes: '请求失败'}))
+            .catch(err => vm.$dialog.toast({mes: res.msg}))
         })
     },
 
