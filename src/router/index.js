@@ -6,7 +6,8 @@ Vue.use(Router)
 // 页面路径(相对 ../page)
 let config = [
     // 景点相关
-    '/scenicspot/detail',            // 景点明细
+    '/view/detail',                  // 景点明细
+    '/view/search',                  // 景点明细
 
     // 个人相关
     '/user/collect',                 // 我的收藏
@@ -21,7 +22,7 @@ let config = [
 
     // 评论相关
     '/comment/index',                // 评论页
-    '/comment/list',                 // 评论列表comment页
+    '/comment/list',                 // 评论列表页
 ]
 
 // 定义路由
