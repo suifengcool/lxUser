@@ -9,15 +9,16 @@
                     <div class="star-box cf">
                         <span class="fl star">
                             <i
-                                class="iconfont icon-star-full"
+                                :class="['iconfont', {'red': stars > i}, Math.round(stars) > i ? 'icon-xing2' : 'icon-xing1',]"
                                 v-for="(star, i) in [0,1,2,3,4]"
                             ></i>
+
                         </span>
-                        <span class="score fl">5.0</span>
+                        <span class="score fl">{{stars}}</span>
                         <span class="num fl">45单</span>
                     </div>
                     <p>旅行时长：2小时</p>
-                    <p>擅长内容：古建筑 胡同游 书画展</p>
+                    <!-- <p>擅长内容：古建筑 胡同游 书画展</p> -->
                 </div>
             </div>
             <div class="desc">
@@ -26,17 +27,17 @@
         </div> 
 
         <!-- 评价 -->
-        <div class="content">
+        <div class="content" @click.self="score=0">
             <h3>匿名评价导游</h3>
-            <p class="star">
+            <p class="star" @click.self="score=0">
                 <i
-                    :class="['iconfont', {'red': score > i}, score > i ? 'icon-star-full' : 'icon-star']"
+                    :class="['iconfont', {'red': score > i}, score > i ? 'icon-xing2' : 'icon-xing1']"
                     v-for="(star, i) in [0,1,2,3,4]"
                     @click="changeStar(star, i)"
                 ></i>
             </p>
             <textarea v-model= "content" placeholder="请输入对该导游的评价~" maxlength="100"></textarea>
-            <span>{{num}}/100</span>
+            <span><i :class="{on:num==100}">{{num}}</i>/100</span>
         </div>
 
         <!-- 按钮 -->
@@ -54,15 +55,21 @@ export default {
             orderNum: this.$route.query.orderNum,     // 订单号
             init: {},                                 // 数据
             guideId: '',                              // 导游id
-            score: 0,                                 // 分数
+            score: 0,                                 // 分数(点击星星评论)
+            stars: 3.4,                                 // 平均分数
             num: 0,                                   // 已输入字数
             content: '',                              // 评论内容
+            starList: [0.5,1.5,2.5,3.5,4.5]
         }
     },
 
     created () {
         this.config.title('已完成订单')
         this.fetchData()
+        // if(parseInt(this.stars) != this.stars){
+        //     console.log(Math.floor(this.stars))
+        //     $('.star i').eq(Math.floor(this.stars) + 1).addClass('icon-xing3').removeClass('icon-xing1')
+        // }
     },
 
     watch: {
@@ -71,6 +78,10 @@ export default {
             if(this.num === 100){
                 this.$dialog.toast({mes: '已超过字数限制'})
             }
+        },
+
+        score: function(val,oldVal){
+            console.log('score:',val)
         }
     },
 
@@ -96,8 +107,7 @@ export default {
 
         // 点击星星
         changeStar(star,i){
-            console.log('star:',star)
-            console.log('i:',i)
+            this.score = i +1
         },
 
         // 保存评论
@@ -168,10 +178,9 @@ export default {
                 .star
                     i 
                         font-size: .6rem
-                        color: #FF9500
                         margin-right: .1rem
                     .red
-
+                        color: #FF9500
                 .score
                     width: 1.27rem
                     height: .6rem
@@ -225,6 +234,8 @@ export default {
         line-height: 2rem
         i 
             font-size: 1.98rem
+        .red
+            color: #FF9500
     textarea
         width: 11.75rem
         height: 7.45rem
@@ -236,6 +247,9 @@ export default {
         position: absolute
         bottom: .5rem
         right: 4rem
+    .on 
+        color: red
+
 // 按钮
 button
     width: 8.37rem
