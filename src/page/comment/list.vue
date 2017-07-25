@@ -1,27 +1,29 @@
 <template>
     <vm-layout id="commmentList">
-        <ul>
-            <Li>
-                <h3 class="border-bottom">2017年6月</h3>
-                <div class="msg border-bottom">
-                    <div class="img"></div>
-                    <div class="main">
-                        <h4>艾子豪</h4>
-                        <div class="star-box cf">
-                            <span class="fl star">
-                                <i
-                                    class="iconfont icon-star-full"
-                                    v-for="(star, i) in [0,1,2,3,4]"
-                                ></i>
-                            </span>
-                            <span class="score fl">5.0</span>
-                            <span class="num fl">45单</span>
+        <vm-infinitescroll :on-infinite="fetchData" class="orderList">
+            <ul slot="list">
+                <Li v-for="(item, index) in lists">
+                    <h3 class="border-bottom">2017年6月</h3>
+                    <div class="msg border-bottom">
+                        <div class="img"></div>
+                        <div class="main">
+                            <h4>{{item.nick_name}}</h4>
+                            <div class="star-box cf">
+                                <span class="fl star">
+                                    <i
+                                        class="iconfont icon-star-full"
+                                        v-for="(star, i) in [0,1,2,3,4]"
+                                    ></i>
+                                </span>
+                                <span class="score fl">5.0</span>
+                                <span class="num fl">45单</span>
+                            </div>
+                            <p>{{item.COMMENT}}</p>
                         </div>
-                        <p>服务热情，讲解专业，本地土著</p>
                     </div>
-                </div>
-            </Li>
-        </ul>
+                </Li>
+            </ul>
+        </vm-infinitescroll>
     </vm-layout>
 </template>
 
@@ -31,7 +33,13 @@ export default {
 
     data () {
         return {
-            config: vm.config,            // 配置
+            config: vm.config,                         // 配置
+            imgOrigin: '',                             // 图片前缀
+            page: 0,                                   // 分页
+            pageSize: 10,                              // 分页
+            lists: [],                                 // 列表
+            count: null,                               // 总条数
+            guideId: this.$route.query.guideId,        // 导游id
         }
     },
 
@@ -41,22 +49,47 @@ export default {
 
     created () {
         this.config.title('全部评价')
-        // this.fetchList()
+        this.init()
     },
     
     methods: {
-        fetchList() {
-            this.$http.get(`/guide/order/list?pageNo=${this.pageNo}&status=${this.status}&pageSize=${this.pageSize}`)
-            .then(rst => {
-                
-            }) 
-            .catch(err => {
-                this.$vux.toast.show({
-                    text: err.body.msg,
-                    type: 'text'
-                })
+        // 初始化
+        init () {
+            this.page = 0
+            this.pageSize = 10
+            this.lists = []
+            this.fetchData()
+        },
+
+        fetchData () {
+            vm.fetch.post({
+                url: '/user/comment/list',
+                data: {
+                    pageNo: this.page,
+                    pageSize: this.pageSize,
+                    guideId: this.guideId
+                }
             })
-        }
+            .then(res => {
+                const _list = res.data.list
+                this.imgOrigin = res.prefix
+                this.lists = [...this.lists, ..._list]
+                this.count = res.data.totalRow
+                if (_list.length < this.pageSize || Math.floor(this.count / this.pageSize) == this.page) {
+                    // 所有数据加载完毕
+                    setTimeout(()=> {
+                        window.$vm.$emit('vmui.infinitescroll.loadedAll')
+                    })
+                    return
+                }
+
+                // 单次请求数据完毕
+                window.$vm.$emit('vmui.infinitescroll.loadedOnce')
+
+                this.page ++
+            })
+            .catch(err => {this.$dialog.toast({mes: err.msg})})
+        },
     }
 }
 </script>
