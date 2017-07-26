@@ -6,7 +6,7 @@
 
         <!-- 底部按钮 -->
         <vm-tabbar slot="tabbar" class="tabbar-box">
-            <button class="tabbar-item" type="button">查看订单</button>
+            <button class="tabbar-item" type="button" @click="goOrderDetail()">查看订单</button>
         </vm-tabbar>
     </vm-layout>
 </template>
@@ -20,14 +20,10 @@ export default {
         }
     },
 
-    components: {
-    },
-
-    created () {
-    },
-
     methods: {
-        
+        goOrderDetail(){
+            this.$router.push('/order/list')
+        }
     }
 }
 </script>

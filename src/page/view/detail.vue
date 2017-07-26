@@ -5,7 +5,7 @@
             <!-- 轮播图 -->
             <div class="bannerBox">
                 <div class="demo-small-pitch">
-                    <vm-slider autoplay="3000" initIndex="1">
+                    <vm-slider autoplay="3000" initIndex="0">
                         <vm-slider-item>
                             <div class="item">
                                 <img :src="imgOrigin + images[0]" alt=""><span>{{index}}</span>
@@ -22,7 +22,6 @@
                             </div>
                         </vm-slider-item>
                     </vm-slider>
-
                 </div>
             </div>
             <!-- 景区介绍 -->
@@ -49,36 +48,39 @@
         <!-- 导游列表 -->
         <vm-infinitescroll :on-infinite="fetchGuides" class="orderList" v-if="count">
             <ul slot="list" class="daoyouList">
-                <li v-for="(item, index) in lists" class="border-bottom">
+                <li v-for="(item, index) in lists" class="border-bottom" @click="createOrder(item,index)">
                     <div class="imgBox">
-                        <div class="img"></div>
+                        <img :src="item.resource_path.indexOf('http') > -1 ? item.resource_path : (imgOrigin+ item.resource_path)" alt="">
                     </div>
                     <div class="daoyouDesc">
                         <div class="nameSexGoal">
                             <div class="nameSex">
                                 <label for="">导游：</label>
-                                <span class="name">张歆艺</span>
-                                <i>男</i>
+                                <span class="name">{{item.real_name}}</span>
+                                <i>{{['女','男'][item.gender]}}</i>
                             </div>
                             <div class="goal">
                                 <div class="starNum">
-                                    <i class="iconfont icon-star-full"></i>
-                                    <span>5.0</span>
+                                    <i
+                                        :class="['iconfont', {'red': item.score > i}, Math.round(item.score) > i ? 'icon-xing2' : 'icon-xing1',]"
+                                        v-for="(star, i) in [0,1,2,3,4]"
+                                    ></i>   
+                                    <span>{{item.score}}</span>
                                 </div>
                             </div>
                         </div>
-                        <!-- <div class="intersting">
-                            <label for="">擅长：</label>
-                            <span>建筑艺术  胡同游  书画展</span>
-                        </div> -->
+                        <div class="intersting">
+                            <label for="">介绍：</label>
+                            <span>{{item.introduce}}</span>
+                        </div>
                         <div class="path">
-                            <div>
+                            <div class="path-left">
                                 <label for="">路线：</label>
-                                <span>经典西线两小时</span>
+                                <span>{{item.line_name}}</span>
                             </div>
                             <div class="money">
-                                <span>￥2</span>
-                                <span>小</span>
+                                <span>￥{{item.price}}</span>
+                                <!-- <span>小</span> -->
                             </div>
                         </div>
                     </div>
@@ -89,6 +91,7 @@
 </template>
 
 <script>
+var dtCache = window.localStorage
 export default {
     name: 'user',
 
@@ -120,6 +123,7 @@ export default {
     },
 
     methods: {
+        // 获取景点信息
         fetchViews() {
             vm.fetch.post({
                 url: `/view/detail/${this.id}`,
@@ -148,8 +152,13 @@ export default {
             console.log('item:',item)
             console.log('index:',index)
             this.orderBy = index + 1
+            this.sortType = 0
+            this.page = 0
+            this.lists = []
+            this.fetchGuides()
         },
 
+        // 获取导游列表
         fetchGuides() {
             vm.fetch.get({
                 url: `/view/guides/${this.id}`,
@@ -182,7 +191,19 @@ export default {
             .catch(err => this.$dialog.toast({mes: err.msg}))
         },
 
-
+        // 点击导游列表项,进入创建订单
+        createOrder(item,index) {
+            let guideInfo = {} 
+            guideInfo.real_name = item.real_name
+            guideInfo.introduce = item.introduce
+            guideInfo.visit_length = item.visit_length
+            guideInfo.id = item.id
+            guideInfo.imgOrigin = this.imgOrigin
+            guideInfo.images = this.images
+            guideInfo.resource_path = item.resource_path
+            dtCache.setItem('guideInfo',JSON.stringify(guideInfo))
+            this.$router.push('/order/create')
+        }
     }
 }
 </script>
@@ -265,6 +286,9 @@ export default {
         background: red
         border-radius: 50%
         margin-right: 0.75rem
+        overflow: hidden
+        img 
+            width: 100%
     .daoyouDesc
         flex: 1
         .nameSexGoal,.path
@@ -286,15 +310,25 @@ export default {
                 text-align: center
                 line-height: 0.6rem
                 font-size: 0.55rem
+                color: #fff
         .intersting
             font-size: 0.6rem
-            margin-top: 0.38rem
+            margin: 0.38rem 0 .3rem 0
+            width: 88%
+            white-space: nowrap
+            overflow: hidden
+            text-overflow: ellipsis
         .path
             font-size: 0.5rem
+            .path-left
+                width: 88%
+                white-space: nowrap
+                overflow: hidden
+                text-overflow: ellipsis
         .money
             color: #EF667C
-            span:first-child
-                margin-right: 1.5rem  
+            // span:first-child
+            //     margin-right: 1.5rem  
 </style>
 <style lang="sass">
 </style>

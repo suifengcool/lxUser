@@ -36,8 +36,19 @@
         <vm-tabbar slot="tabbar" class="tabbar-box">
             <input type="text">
             <span>支付金额：{{init.amount}}</span>
-            <button class="tabbar-item" type="button">去支付</button>
+            <button class="tabbar-item" type="button" @click="showPop=true">去支付</button>
         </vm-tabbar>
+
+        <!-- 验证码弹框 -->
+        <vm-popup v-model="showPop" position="center" width="75%" class="codePop">
+            <h3 class="border-bottom"><i class="iconfont icon-shutdown"></i>支付</h3>
+            <p class="border-bottom">$500</p>
+            <div class="payMethod border-bottom cf">
+                <span class="fl">微信支付</span>
+                <i class="iconfont icon-right fr" @click="showPop=false"></i>
+            </div>
+            <button>确认支付</button>
+        </vm-popup>
     </vm-layout>
 </template>
 
@@ -49,13 +60,14 @@ export default {
         return {
             config: vm.config,                        // 配置
             orderNum: this.$route.query.orderNum,     // 订单号
-            init: {}                                  // 数据
+            init: {},                                  // 数据
+            showPop: false                             // 支付弹框
         }
     },
 
     created () {
         this.config.title('支付旅费')
-        this.fetchData()
+        // this.fetchData()
     },
 
     methods: {
@@ -166,13 +178,59 @@ export default {
         transform: translateY(-50%)
         font-size: .75rem
         color: #03ca9d
+// 支付弹框
+.codePop
+    width: 10.18rem
+    margin-left: 32%
+    margin-top: -2rem
+    z-index: 100000
+    text-align: center
+    color: #333
+    h3
+        height: 1.9rem
+        line-height: 1.9rem
+        font-size: .75rem
+        position: relative
+        i 
+            position: absolute
+            left: .25rem
+            top: 0
+            font-size: .65rem
+            display: inline-block
+            width: 2rem
+    p 
+        height: 3.73rem
+        line-height: 3.73rem
+        font-size: 1.3rem
+        color: #000
+    .payMethod
+        height: 1.68rem
+        line-height: 1.68rem
+        padding: 0 .75rem
+        i 
+            font-size: .7rem
+    button
+        margin: .6rem auto .6rem
+        border: none
+        height: 1.45rem
+        line-height: 1.45rem
+        width: 9.18rem
+        display: blcok
+        background: #00C99D
+        color: #fff
+        border-radius: .3rem
 </style>
 <style lang="sass">
 .vm-flexview
     background: #fff
+.vm-scrollview
+    height: 30rem
 .vm-tabbar 
     position: fixed
     bottom: 0
     &:after
         border-top: none
+// 支付弹框边框圆角
+#confirm .vm-popup-center
+    border-radius: .5rem
 </style>
