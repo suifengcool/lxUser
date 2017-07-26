@@ -3,7 +3,7 @@
         <!-- tab -->
         <vm-tab :change.native="tabHandler" class="tab">
             <vm-tab-panel
-                v-for="(item, index) in ['全部', '待付款', '待评价', '待确认', '待出行']"
+                v-for="(item, index) in ['全部', '待付款', '待评价', '待出行' , '待确认']"
                 :label="item"
                 :active="status == index"
             >
@@ -67,7 +67,7 @@ export default {
     methods: {
         // 初始化
         init () {
-            this.page = 0
+            this.page = 1
             this.pageSize = 10
             this.lists = []
             this.status = this.$route.query.index ? this.$route.query.index : 0
@@ -75,98 +75,17 @@ export default {
         },
 
         fetchData () {
-            vm.fetch.post({
-                url: '/user/order/list',
-                data: {
-                    status: this.status,
-                    pageNo: this.page,
-                    pageSize: this.pageSize
-                }
+            this.$http.post('/user/order/list',{
+                status: parseInt(this.status),
+                pageNo: this.page,
+                pageSize: this.pageSize,
+                oid: 'test1234'.toString()
             })
             .then(res => {
-                res = {
-                    "msg": "success",
-                    "data": {
-                        "totalRow": 4,//总条数
-                        "pageNumber": 1,//当前第几页
-                        "lastPage": true,//是否最后一页
-                        "firstPage": true,//是否为最后一页
-                        "totalPage": 1,//总页数
-                        "pageSize": 10,//每页行数
-                        "list": [
-                            {
-                                "order_num": "2017071021590013411",//订单编号
-                                "book_user_id": 13,//游客ID
-                                "create_time": "2017-07-10 01:02:10",//创建时间
-                                "view_line_content": "故宫西线慢悠悠",//线路内容
-                                "visit_date": "2017-07-12",//出行日期
-                                "visit_time": "09:00",//出行时间
-                                "contact_name": "小小罩",//联系人姓名
-                                "contact_phone": "13184060728",//联系人电话
-                                "resource_path": null,//景点默认图处相对路径
-                                "view_spot_id": null,//景点ID
-                                "person_num": 5,//出行人数
-                                "amount": 300.00,//总费用
-                                "book_status": 1,//订单状态:1=待导游确认,2=游客取消,3=导游主动取消,4=导游确认超时,5=待游客付款,6=支付超时,7=已付款,8=已出行完成,9=有投诉待确认,10=已退款,11=待评价,12=已评价
-                                "update_time": "2017-07-10 01:02:10" //上一次更新时间
-                            },
-                            {
-                                "order_num": "2017071021590013411",//订单编号
-                                "book_user_id": 13,//游客ID
-                                "create_time": "2017-07-10 01:02:10",//创建时间
-                                "view_line_content": "故宫西线慢悠悠",//线路内容
-                                "visit_date": "2017-07-12",//出行日期
-                                "visit_time": "09:00",//出行时间
-                                "contact_name": "小小罩",//联系人姓名
-                                "contact_phone": "13184060728",//联系人电话
-                                "resource_path": null,//景点默认图处相对路径
-                                "view_spot_id": null,//景点ID
-                                "person_num": 5,//出行人数
-                                "amount": 300.00,//总费用
-                                "book_status": 5,//订单状态:1=待导游确认,2=游客取消,3=导游主动取消,4=导游确认超时,5=待游客付款,6=支付超时,7=已付款,8=已出行完成,9=有投诉待确认,10=已退款,11=待评价,12=已评价
-                                "update_time": "2017-07-10 01:02:10" //上一次更新时间
-                            },
-                            {
-                                "order_num": "2017071021590013411",//订单编号
-                                "book_user_id": 13,//游客ID
-                                "create_time": "2017-07-10 01:02:10",//创建时间
-                                "view_line_content": "故宫西线慢悠悠",//线路内容
-                                "visit_date": "2017-07-12",//出行日期
-                                "visit_time": "09:00",//出行时间
-                                "contact_name": "小小罩",//联系人姓名
-                                "contact_phone": "13184060728",//联系人电话
-                                "resource_path": null,//景点默认图处相对路径
-                                "view_spot_id": null,//景点ID
-                                "person_num": 5,//出行人数
-                                "amount": 300.00,//总费用
-                                "book_status": 7,//订单状态:1=待导游确认,2=游客取消,3=导游主动取消,4=导游确认超时,5=待游客付款,6=支付超时,7=已付款,8=已出行完成,9=有投诉待确认,10=已退款,11=待评价,12=已评价
-                                "update_time": "2017-07-10 01:02:10" //上一次更新时间
-                            },
-                            {
-                                "order_num": "2017071021590013411",//订单编号
-                                "book_user_id": 13,//游客ID
-                                "create_time": "2017-07-10 01:02:10",//创建时间
-                                "view_line_content": "故宫西线慢悠悠",//线路内容
-                                "visit_date": "2017-07-12",//出行日期
-                                "visit_time": "09:00",//出行时间
-                                "contact_name": "小小罩",//联系人姓名
-                                "contact_phone": "13184060728",//联系人电话
-                                "resource_path": null,//景点默认图处相对路径
-                                "view_spot_id": null,//景点ID
-                                "person_num": 5,//出行人数
-                                "amount": 300.00,//总费用
-                                "book_status": 11,//订单状态:1=待导游确认,2=游客取消,3=导游主动取消,4=导游确认超时,5=待游客付款,6=支付超时,7=已付款,8=已出行完成,9=有投诉待确认,10=已退款,11=待评价,12=已评价
-                                "update_time": "2017-07-10 01:02:10" //上一次更新时间
-                            }
-                        ]
-                    },
-                    "prefix": "http://127.0.0.1:6070/",
-                    "res_code": 200
-                }
-                const _list = res.data.list
-                this.imgOrigin = res.prefix
+                const _list = res.body.data.list
+                this.imgOrigin = res.body.prefix
                 this.lists = [...this.lists, ..._list]
-                this.count = res.data.totalRow
+                this.count = res.body.data.totalRow
                 if (_list.length < this.pageSize || Math.floor(this.count / this.pageSize) == this.page) {
                     // 所有数据加载完毕
                     setTimeout(()=> {
@@ -187,9 +106,9 @@ export default {
 
         // tab 切换回调
         tabHandler (label) {
-            let index = ['全部', '待付款', '待评价', '待确认', '待出行'].indexOf(label)
+            let index = ['全部', '待付款', '待评价', '待出行' ,'待确认'].indexOf(label)
             this.$router.replace(`/order/list?index=${index}`)
-            this.status = index
+            this.status = index 
             this.init()
         },
 

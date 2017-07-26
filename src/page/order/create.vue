@@ -100,13 +100,16 @@
         <div class="captionTitle border-bottom">
             <i>|</i><span>游客评论</span>
         </div>
+        <p v-if="!count" class="noComment">暂无相关评论~</p>
         <ul class="commantList border-bottom">
-            <li>
+            <li v-for="(item,index) in commentList">
                 <div class="touristInfo">
-                    <div class="pic"></div>
-                    <span>zhangsan</span>
+                    <div class="pic">
+                        <img :src="item.avatar_img.indexOf('http')>-1 ? item.avatar_img : imgOrigin + item.avatar_img" alt="">
+                    </div>
+                    <span>{{item.nick_name}}</span>
                 </div>
-                <p>景点知道的内容很多，文艺又清新，很赞！</p>
+                <p>{{item.COMMENT}}</p>
             </li>
         </ul>
 
@@ -114,7 +117,7 @@
         <div class="danzanBox">
             <div class="dianzanItem">
                 <span class="plNum"><i class="iconfont icon-kefu"></i><label for="">24</label></span>
-                <span class="dzNum"><i class="iconfont icon-shoucang"></i><label for="">23</label></span>
+                <span class="dzNum" @click="collect()"><i class="iconfont icon-shoucang"></i><label for="">23</label></span>
             </div>
             <a href="javascript:;" class="commitBtn">更多评论<i class="iconfont icon-jiantou1"></i></a>
         </div>
@@ -129,6 +132,7 @@
 <script>
 var dtCache = window.localStorage
 var guideInfo = JSON.parse(dtCache.getItem('guideInfo'))
+console.log('guideInfo:',guideInfo)
 export default {
     name: 'user',
     data () {
@@ -141,18 +145,22 @@ export default {
             introduce: guideInfo.introduce || '专业导游二十年', // 导游描述
             visit_length: guideInfo.visit_length,            // 旅行时长
             lineId: guideInfo.id,                            // 线路id
+            guideId: guideInfo.guideId,                      // 导游id
             images: guideInfo.images,                        // 景点图片(数组)
             imgOrigin: guideInfo.imgOrigin,                  // 图片前缀
             resource_path: guideInfo.resource_path,          // 导游照片
             contactName: '',                                 // 游客姓名
             phone: '',                                      // 游客电话
             code: '',                                        // 验证码
+            commentList: [],                                 // 评论列表
+            count: null,                                    // 评论条数
             nendKnowShow:false,
             isUp:false,
         }
     },
     created () {
         this.config.title('出发')
+        this.fetchCommentList()
     },
 
     methods: {
@@ -183,12 +191,17 @@ export default {
             if(!this.isClicked){
                 this.isClicked = true
                 vm.fetch.get({
-                    url: `/user/code?mobile=${this.phone}`,
-                })
-                .then(res => {
-                    this.countDown()
-                })
-                .catch(err => this.$dialog.toast({mes: err.msg}))
+                    url: '/user/code',
+                    data: {
+                       mobile: this.phone
+                    }
+                }).then(res => {
+                    if(res.res_code === 200){
+                        this.countDown()
+                    }else{
+                        this.$dialog.toast({mes: res.msg})
+                    }
+                }).catch(err => this.$dialog.toast({mes: err.msg}))
             }
         },
 
@@ -228,30 +241,65 @@ export default {
                 this.$dialog.toast({mes: '请输入验证码'})
                 return
             }
-            vm.fetch.post({
-                url: '/user/order/save',
-                data: {
-                   lineId: this.lineId,
-                   visitDate: '2017-10-12',
-                   visitTime: '09:00',
-                   contactName: this.contactName,
-                   phone: this.phone,
-                   personCount: this.personCount,
-                   code: this.code 
-                }
-            }).then(res => {
-                if(res.res_code === 200){
+            this.$http.post('/user/order/save',{
+                lineId: this.lineId,
+                visitDate: '2017-8-12',
+                visitTime: '09:00',
+                contactName: this.contactName,
+                phone: this.phone,
+                personCount: this.personCount,
+                code: this.code,
+                oid: 'test1234'
+            })
+            .then(rst => {
+                if(rst.body.res_code === 200){
                     this.$dialog.toast({
                         mes: '预订成功',
                         timeout: 1500,
                         callback: () => {
-                            this.$router.push('/order/success')
+                            this.$router.push(`/order/success?real_name=${this.real_name}`)
                         }
                     })
+                }else{
+                    this.$dialog.toast({mes: rst.body.msg})
+                }
+            })
+            .catch(err => this.$dialog.toast({mes: err.body.msg}))
+        },
+
+        // 获取评论列表
+        fetchCommentList(){
+            vm.fetch.get({
+                url: '/user/comment/list',
+                data: {
+                   guideId: this.guideId,
+                }
+            }).then(res => {
+                if(res.res_code === 200){
+                    this.count = res.data.totalRow
+                    this.commentList = res.data.list.splice(0,4)
                 }else{
                     this.$dialog.toast({mes: res.msg})
                 }
             }).catch(err => this.$dialog.toast({mes: err.msg}))
+        },
+
+        // 收藏
+        collect(){
+            // vm.fetch.post({
+            //     url: '/user/favorite/add',
+            //     data: {
+            //        guideId: this.guideId
+            //     }
+            // })
+            this.$http.post('/user/favorite/add',{guideId: this.guideId,oid:'test1234'})
+            .then(res => {
+                if(res.body.res_code === 200){
+                    this.$dialog.toast({mes: '收藏成功'})
+                }else{
+                    this.$dialog.toast({mes: res.body.msg})
+                }
+            }).catch(err => this.$dialog.toast({mes: err.body.msg}))
         }
     }
 }
@@ -422,6 +470,10 @@ export default {
         font-size: 0.6rem
         margin-top: 0.5rem
         color: #666
+.noComment
+    padding: .2rem 1rem
+    font-size: 0.6rem
+    color: #666
 // 点赞
 .danzanBox
     display: flex

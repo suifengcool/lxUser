@@ -3,9 +3,11 @@
         <!-- 头部 -->
         <div class="header">
             <div class="msg">
-                <div class="img"></div>
+                <div class="img">
+                    <img :src="init.resource_path.indexOf('http')>-1 ? init.resource_path : imgOrigin + init.resource_path" alt="">
+                </div>
                 <div class="msg-main">
-                    <h3>导游：艾子豪</h3>
+                    <h3>导游：{{init.real_name}}</h3>
                     <div class="star-box cf">
                         <span class="fl star">
                             <i
@@ -15,14 +17,14 @@
 
                         </span>
                         <span class="score fl">{{stars}}</span>
-                        <span class="num fl">45单</span>
+                        <span class="num fl">{{init.orderCount}}单</span>
                     </div>
                     <p>旅行时长：2小时</p>
                     <!-- <p>擅长内容：古建筑 胡同游 书画展</p> -->
                 </div>
             </div>
             <div class="desc">
-                导游简介：北京土著，从小生活在北京，对老北京有特殊的情感。
+                导游简介：{{init.introduce}}
             </div> 
         </div> 
 
@@ -44,7 +46,6 @@
         <button type="button" @click="save()">提交</button>
     </vm-layout>
 </template>
-
 <script>
 export default {
     name: 'confirm',
@@ -88,21 +89,18 @@ export default {
     methods: {
         // 获取订单信息
         fetchData(){
-            vm.fetch.get({
-                url: '/user/order/detail',
-                data:{
-                    orderNum: this.orderNum
-                }
-            })
+            this.$http.get(`/user/order/detail?oid=test1234&orderNum=${this.orderNum}`)
             .then(res => {
-                if(res.res_code === 200){
-                    this.imgOrigin = res.prefix 
-                    this.init = res.data
+                if(res.body.res_code === 200){
+                    this.imgOrigin = res.body.prefix 
+                    this.init = res.body.data
+                    this.stars = res.body.data.scroe
+                    this.guideId = res.body.data.guide_user_id
                 }else{
-                    this.$dialog.toast({mes: res.msg})
+                    this.$dialog.toast({mes: res.body.msg})
                 }
             })
-            .catch(err => this.$dialog.toast({mes: err.msg}))
+            .catch(err => this.$dialog.toast({mes: err.body.msg}))
         },
 
         // 点击星星
@@ -120,16 +118,14 @@ export default {
                 this.$dialog.toast({mes: "请填写评论内容"})
                 return
             }
-            vm.fetch.post({
-                url: '/user/comment/save',
-                data:{
-                    guideId: this.guideId,
-                    score: this.score,
-                    content: this.content
-                }
+            this.$http.post('/user/comment/save',{
+                guideId: this.guideId,
+                score: this.score,
+                content: this.content,
+                orderNum: this.orderNum
             })
             .then(res => {
-                if(res.res_code === 200){
+                if(res.body.res_code === 200){
                     this.$dialog.toast({
                         mes: '发表评论成功',
                         timeout: 1500,
@@ -138,13 +134,11 @@ export default {
                         }
                     })
                 }else{
-                    this.$dialog.toast({mes: res.msg})
+                    this.$dialog.toast({mes: res.body.msg})
                 }
             })
-            .catch(err => this.$dialog.toast({mes: err.msg}))
+            .catch(err => this.$dialog.toast({mes: err.body.msg}))
         },
-
-        
     }
 }
 </script>
@@ -161,6 +155,9 @@ export default {
             border-radius: 50%
             background: #ccc
             margin-right: .81rem
+            overflow: hidden
+            img 
+                width: 100%
         .msg-main
             flex: 1
             h3

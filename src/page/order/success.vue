@@ -2,7 +2,7 @@
     <vm-layout id="success">
         <i class="iconfont icon-duigou"></i>
         <h3>预定成功</h3>
-        <p>请耐心等待艾子豪导游确认</p>
+        <p>请耐心等待{{real_name}}导游确认</p>
 
         <!-- 底部按钮 -->
         <vm-tabbar slot="tabbar" class="tabbar-box">
@@ -17,6 +17,7 @@ export default {
 
     data () {
         return {
+            real_name: this.$route.query.real_name       // 导游姓名
         }
     },
 

@@ -13,21 +13,23 @@
         </div>
 
         <!-- 行程&导游信息 -->
-        <div class="travel-title border-bottom item">故宫城墙一日游</div>
+        <div class="travel-title border-bottom item">{{init.view_line_name}}</div>
         <div class="guide border-bottom">
-            <div class="img"></div>
+            <div class="img">
+                <img :src="init.resource_path.indexOf('http')>-1 ? init.resource_path : imgOrigin + init.resource_path" alt="">
+            </div>
             <div class="guide-desc">
                 <h3 class="cf">
                     <span class="fl">导游：</span>
-                    <span class="fr">艾子豪</span>
+                    <span class="fr">{{init.real_name}}</span>
                 </h3>
                 <p class="cf">
                     <span class="fl">联系方式：</span>
-                    <span class="fr">13797071376</span>
+                    <span class="fr">{{init.phone_num}}</span>
                 </p>
                 <p class="cf">
                     <span class="fl">游览地址：</span>
-                    <span class="fr">北京市西城区西单</span>
+                    <span class="fr">{{init.view_spot_id}}</span>
                 </p>
             </div>
         </div>
@@ -37,25 +39,25 @@
         <div class="desc-change border-bottom">
             <p>
                 <span>导游费：</span>
-                <i>￥500</i>
+                <i>￥{{init.amount}}</i>
             </p>
             <p>
                 <span>预订人：</span>
-                <i>艾子豪</i>
+                <i>{{init.contact_name}}</i>
             </p>
             <p>
                 <span>预订人电话：</span>
-                <i>13797071376</i>
+                <i>{{init.contact_phone}}</i>
             </p>
             <p>
                 <span>预订人数：</span>
-                <i>5人</i>
+                <i>{{init.person_num}}人</i>
             </p>
         </div>
 
         <!-- 底部按钮 -->
         <vm-tabbar slot="tabbar" class="tabbar-box">
-            <button class="tabbar-item" type="button">取消订单</button>
+            <button class="tabbar-item" type="button" @click="cancel">取消订单</button>
         </vm-tabbar>
     </vm-layout>
 </template>
@@ -74,39 +76,30 @@ export default {
     },
 
     created () {
-        this.config.title('订单号：'+ this.orderNum)
         this.fetchData()
+        this.config.title('订单号：'+ this.orderNum)
     },
 
     methods: {
         // 获取订单信息
         fetchData(){
-            vm.fetch.get({
-                url: '/user/order/detail',
-                data:{
-                    orderNum: this.orderNum
-                }
-            })
+            this.$http.get(`/user/order/detail?oid=test1234&orderNum=${this.orderNum}`)
             .then(res => {
-                if(res.res_code === 200){
-                    this.imgOrigin = res.prefix 
+                if(res.body.res_code === 200){
+                    this.imgOrigin = res.body.prefix 
+                    this.init = res.body.data
                 }else{
-                    this.$dialog.toast({mes: res.msg})
+                    this.$dialog.toast({mes: res.body.msg})
                 }
             })
-            .catch(err => this.$dialog.toast({mes: err.msg}))
+            .catch(err => this.$dialog.toast({mes: err.body.msg}))
         },
 
         // 取消订单
         cancel() {
-            vm.fetch.get({
-                url: '/user/order/cancel',
-                data:{
-                    orderNum: this.orderNum
-                }
-            })
+            this.$http.get(`/user/order/cancel?oid=test1234&orderNum=${this.orderNum}`)
             .then(res => {
-                if(res.res_code === 200){
+                if(res.body.res_code === 200){
                     this.$dialog.toast({
                         mes: '订单取消成功',
                         timeout: 1500,
@@ -115,11 +108,11 @@ export default {
                         }
                     })
                 }else{
-                    this.$dialog.toast({mes: res.msg})
+                    this.$dialog.toast({mes: res.body.msg})
                 }
                 
             })
-            .catch(err => this.$dialog.toast({mes: err.msg}))
+            .catch(err => this.$dialog.toast({mes: err.body.msg}))
         }
     }
 }
@@ -195,8 +188,10 @@ export default {
         height: 3.3rem
         width: 3.3rem
         border-radius: 50%
-        background: red
+        overflow: hidden
         margin-right: .64rem
+        img 
+            width: 100%
     .guide-desc
         flex: 1
         h3

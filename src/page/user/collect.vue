@@ -38,7 +38,7 @@ export default {
     data () {
         return {
             config: vm.config,             // 配置
-            page: 0,                       // 分页，第几页
+            page: 1,                       // 分页，第几页
             pageSize: 10,                  // 分页，每页数量
             count: 10,                     // 分页，总条数
             lists: [],                     // 列表
@@ -54,13 +54,14 @@ export default {
 
     methods: {
         fetchData () {
-            vm.fetch.get({
-                url: '/user/favorite/list',
-                data: {
-                    pageNo: this.page,
-                    pageSize: this.pageSize
-                }
-            })
+            this.$http.get(`/user/favorite/list?oid=test1234&pageNo=${this.page}&pageSize=${this.pageSize}`)
+            // vm.fetch.get({
+            //     url: '/user/favorite/list',
+            //     data: {
+            //         pageNo: this.page,
+            //         pageSize: this.pageSize
+            //     }
+            // })
             .then(res => {
                 const _list = res.data.list
                 this.lists = [...this.lists, ..._list]

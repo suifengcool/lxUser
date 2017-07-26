@@ -14,12 +14,12 @@
 
         <!-- 列表 -->
         <p>订单号：{{init.order_num}}</p>
-        <p>故宫城墙一日游</p>
+        <p>{{init.view_line_name}}</p>
         <p>路线：{{init.view_line_content}}</p>
         <p>出发时间：{{init.visit_date}}&nbsp;{{init.visit_time}}</p>
-        <p>导游：张泉灵</p>
-        <p>联系方式：13428888888</p>
-        <p>集合地点：天安门广场</p>
+        <p>导游:{{init.real_name}}</p>
+        <p>联系方式：{{init.phone_num}}</p>
+        <!-- <p>集合地点：天安门广场</p> -->
         <p>预订人：{{init.contact_name}}</p>
         <p>联系电话：{{init.contact_phone}}</p>
         <p>预定人数：{{init.person_num}}人</p>
@@ -46,21 +46,16 @@ export default {
     methods: {
         // 获取订单信息
         fetchData(){
-            vm.fetch.get({
-                url: '/user/order/detail',
-                data:{
-                    orderNum: this.orderNum
-                }
-            })
+            this.$http.get(`/user/order/detail?oid=test1234&orderNum=${this.orderNum}`)
             .then(res => {
-                if(res.res_code === 200){
-                    this.imgOrigin = res.prefix 
-                    this.init = res.data
+                if(res.body.res_code === 200){
+                    this.imgOrigin = res.body.prefix 
+                    this.init = res.body.data
                 }else{
-                    this.$dialog.toast({mes: res.msg})
+                    this.$dialog.toast({mes: res.body.msg})
                 }
             })
-            .catch(err => this.$dialog.toast({mes: err.msg}))
+            .catch(err => this.$dialog.toast({mes: err.body.msg}))
         },
     }
 }

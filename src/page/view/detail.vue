@@ -71,7 +71,7 @@
                         </div>
                         <div class="intersting">
                             <label for="">介绍：</label>
-                            <span>{{item.introduce}}</span>
+                            <span>{{item.introduce || '专业导游二十年'}}</span>
                         </div>
                         <div class="path">
                             <div class="path-left">
@@ -198,6 +198,7 @@ export default {
             guideInfo.introduce = item.introduce
             guideInfo.visit_length = item.visit_length
             guideInfo.id = item.id
+            guideInfo.guideId = item.user_id
             guideInfo.imgOrigin = this.imgOrigin
             guideInfo.images = this.images
             guideInfo.resource_path = item.resource_path

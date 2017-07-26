@@ -35,11 +35,11 @@ export default {
                 if (res.res_code === 200){
                     resolve(res)
                 }else{
+                    reject(res)
                     vm.$dialog.toast({mes: res.msg})
                 }
-               
             })
-            .catch(err => vm.$dialog.toast({mes: res.msg}))
+            .catch(err => vm.$dialog.toast({mes: err.msg}))
         })
     },
 
