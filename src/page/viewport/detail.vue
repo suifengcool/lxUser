@@ -29,7 +29,7 @@
                 <h3>{{init.view_name}}</h3>
                 <p :class="{'showIntroduce':isShow}">{{init.intruduce}}</p>
                 <div class="moreBtnBox">
-                    <a href="javascript:;" class="moreBtn" @click="showHandle">更多<i v-bind:class="['iconfont', !isShow ? 'icon-icon-copy' : 'icon-jiantou']"></i></a>
+                    <a v-if="init.intruduce.length > 3 " href="javascript:;" class="moreBtn" @click="showHandle">更多<i v-bind:class="['iconfont', !isShow ? 'icon-jiantou' : 'icon-icon-copy']"></i></a>
                 </div>
             </div>
         </div>
@@ -39,8 +39,8 @@
             <div class="title"><i>|</i><span>优质导游</span></div>
             <div class="listStyle">
                 <span v-for="(item,index) in sortStatus" @click="searchDaoyou(item,index)">
-                    {{item}}
-                    <i :class="['iconfont', sortType ==1 ? 'icon-arrow-left-copy' : 'icon-control-arr-copy-copy']"></i>
+                    {{item.name}}
+                    <i :class="['iconfont', !item.sortUp ? 'icon-arrow-left-copy' : 'icon-control-arr-copy-copy']"></i>
                 </span>
             </div>
         </div>
@@ -107,14 +107,17 @@ export default {
             pageSize: 10,                      // 分页
             orderBy: 1,                        // 排序字段(1=评分,2=价格,3=性别，默认为1)
             sortType: 0,                       // 排序规则(排序方式,1=正序,0=倒序)
-            sortStatus: ['评分','价格','性别'],  // 排序池
-            isShow: false,                      // “更多”点击切换
+            sortStatus:[],                     // 排序池
+            isShow: true,                     // “更多”箭头朝下
         }
     },
 
     created () {
         this.config.title('出发')
         this.fetchViews()
+        this.sortStatus.push({name:'评分',sortUp:true})
+        this.sortStatus.push({name:'价格',sortUp:true})
+        this.sortStatus.push({name:'性别',sortUp:true})
     },
 
     methods: {
@@ -135,15 +138,20 @@ export default {
             .catch(err => this.$dialog.toast({mes: err.msg}))
         },
 
+        // 点击更多
         showHandle () {
             this.isShow = !this.isShow;
         },
 
+        // 点击排序tab
         searchDaoyou (item,index) {
-            console.log('item:',item)
-            console.log('index:',index)
+            item.sortUp = !item.sortUp
+            if(item.sortUp){
+                this.sortType = 0
+            }else{
+                this.sortType = 1
+            }
             this.orderBy = index + 1
-            this.sortType = 0
             this.page = 0
             this.lists = []
             this.fetchGuides()
@@ -232,11 +240,12 @@ export default {
         p
             font-size: 0.6rem
             line-height: 0.83rem
-            height: 1.5rem
-            overflow: hidden
         .showIntroduce
-            height: auto
-            // overflow:
+            overflow: hidden
+            text-overflow: ellipsis
+            display: -webkit-box
+            -webkit-line-clamp: 2
+            -webkit-box-orient: vertical
         .moreBtnBox
             display: flex
             justify-content: flex-end

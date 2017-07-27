@@ -206,4 +206,6 @@ export default {
             display: none
         &.vm-tab-active
             color: #D01C2B
+#orderList .vm-tab-nav-item.vm-tab-active
+    color: #03ca9d
 </style>

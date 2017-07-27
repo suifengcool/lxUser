@@ -97,6 +97,7 @@ export default {
     input
         flex: 1
         line-height: 1.4rem
+        height: 1.4rem
         border-radius: .2rem
         border: none
         background: #fff
@@ -104,7 +105,7 @@ export default {
         text-align: center
     i 
         position: absolute
-        left: 41%
+        left: 40%
         color: #888
 // 热门景点
 .hot-point

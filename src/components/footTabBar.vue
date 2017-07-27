@@ -103,4 +103,6 @@ export default {
                 transform: translate(-50%,-42%)
 #footTabBar .vm-scrollview
     padding-bottom: 2.4rem
+#footTabBar .vm-tabbar .tabbar-active
+    color: #03ca9d
 </style>
