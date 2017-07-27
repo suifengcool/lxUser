@@ -84,6 +84,8 @@ export default {
                 if(res.body.res_code === 200){
                     this.imgOrigin = res.body.prefix 
                     this.init = res.body.data
+                    let time = moment(res.body.data.visitor_pay_final_time,'X')
+                    console.log('time:',time)
                 }else{
                     this.$dialog.toast({mes: res.body.msg})
                 }
