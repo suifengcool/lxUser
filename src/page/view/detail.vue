@@ -8,17 +8,17 @@
                     <vm-slider autoplay="3000" initIndex="0">
                         <vm-slider-item>
                             <div class="item">
-                                <img :src="imgOrigin + images[0]" alt=""><span>{{index}}</span>
+                                <img :src="(init.resource_path).indexOf('http')>-1 ? init.resource_path : (imgOrigin + init.resource_path)" alt=""><span>{{index}}</span>
                             </div>
                         </vm-slider-item>
                         <vm-slider-item>
                             <div class="item">
-                                <img :src="imgOrigin + images[1]" alt=""><span>{{index}}</span>
+                                <img :src="(init.resource_path).indexOf('http')>-1 ? init.resource_path : (imgOrigin + init.resource_path)" alt=""><span>{{index}}</span>
                             </div>
                         </vm-slider-item>
                         <vm-slider-item>
                             <div class="item">
-                                <img :src="imgOrigin + images[2]" alt=""><span>{{index}}</span>
+                                <img :src="(init.resource_path).indexOf('http')>-1 ? init.resource_path : (imgOrigin + init.resource_path)" alt=""><span>{{index}}</span>
                             </div>
                         </vm-slider-item>
                     </vm-slider>
@@ -50,7 +50,7 @@
             <ul slot="list" class="daoyouList">
                 <li v-for="(item, index) in lists" class="border-bottom" @click="createOrder(item,index)">
                     <div class="imgBox">
-                        <img :src="item.resource_path.indexOf('http') > -1 ? item.resource_path : (imgOrigin+ item.resource_path)" alt="">
+                        <img :src="(item.resource_path).indexOf('http') > -1 ? item.resource_path : (imgOrigin+ item.resource_path)" alt="">
                     </div>
                     <div class="daoyouDesc">
                         <div class="nameSexGoal">
@@ -100,7 +100,6 @@ export default {
             config: vm.config,                 // 配置
             id: this.$route.query.id,          // 景点id
             init: {},                          // 数据
-            images: [],                        // 轮播图数组
             imgOrigin: '',                     // 图片前缀
             lists: [],                         // 导游列表
             count: null,                       // 导游列表条数
@@ -111,10 +110,6 @@ export default {
             sortStatus: ['评分','价格','性别'],  // 排序池
             isShow: false,                      // “更多”点击切换
         }
-    },
-
-    components: {
-
     },
 
     created () {
@@ -132,10 +127,6 @@ export default {
                 if(res.res_code === 200){
                     this.imgOrigin = res.prefix 
                     this.init = res.data
-                    this.images.push(res.data.resource_path)
-                    this.images.push(res.data.resource_path)
-                    this.images.push(res.data.resource_path)
-
                     this.fetchGuides()
                 }else{
                     this.$dialog.toast({mes: res.msg})
@@ -194,16 +185,17 @@ export default {
         // 点击导游列表项,进入创建订单
         createOrder(item,index) {
             let guideInfo = {} 
+            
             guideInfo.real_name = item.real_name
             guideInfo.introduce = item.introduce
             guideInfo.visit_length = item.visit_length
-            guideInfo.id = item.id
-            guideInfo.guideId = item.user_id
             guideInfo.imgOrigin = this.imgOrigin
-            guideInfo.images = this.images
+            guideInfo.image = this.init.resource_path
             guideInfo.resource_path = item.resource_path
+
             dtCache.setItem('guideInfo',JSON.stringify(guideInfo))
-            this.$router.push('/order/create')
+
+            this.$router.push(`/order/create?lineId=${item.id}&guideId=${item.user_id}`)
         }
     }
 }
@@ -284,7 +276,6 @@ export default {
     .imgBox
         height: 3.3rem
         width: 3.3rem
-        background: red
         border-radius: 50%
         margin-right: 0.75rem
         overflow: hidden

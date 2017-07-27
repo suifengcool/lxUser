@@ -53,7 +53,9 @@ export default {
             lists: [],          // 订单列表
             status: 0,          // 0：全部，1：待付款，2：待评价，3：未出行，4：待确认
             count: null,        // 订单总条数
-            text: '还没有订单哦~'
+            text: '还没有订单哦~',
+            loadOnce: false,    // 单次请求完毕
+            lastPage: false,    // 是否为最后一页
         }
     },
 
@@ -67,6 +69,8 @@ export default {
     methods: {
         // 初始化
         init () {
+            this.loadOnce = false
+            this.lastPage = false
             this.page = 1
             this.pageSize = 10
             this.lists = []
@@ -75,33 +79,37 @@ export default {
         },
 
         fetchData () {
-            this.$http.post('/user/order/list',{
-                status: parseInt(this.status),
-                pageNo: this.page,
-                pageSize: this.pageSize,
-                oid: 'test1234'.toString()
-            })
-            .then(res => {
-                const _list = res.body.data.list
-                this.imgOrigin = res.body.prefix
-                this.lists = [...this.lists, ..._list]
-                this.count = res.body.data.totalRow
-                if (_list.length < this.pageSize || Math.floor(this.count / this.pageSize) == this.page) {
-                    // 所有数据加载完毕
-                    setTimeout(()=> {
-                        window.$vm.$emit('vmui.infinitescroll.loadedAll')
-                    })
-                    return
-                }
+            if(!this.loadOnce && !this.lastPage){
+                this.loadOnce = true
+                this.$http.post('/user/order/list',{
+                    status: parseInt(this.status),
+                    pageNo: this.page,
+                    pageSize: this.pageSize,
+                    oid: 'test1234'.toString()
+                })
+                .then(res => {
+                    const _list = res.body.data.list
+                    this.imgOrigin = res.body.prefix
+                    this.lists = [...this.lists, ..._list]
+                    this.count = res.body.data.totalRow
+                    if(res.body && res.body.data && res.body.data.lastPage){
+                        this.lastPage = true
+                        setTimeout(()=> {
+                            window.$vm.$emit('vmui.infinitescroll.loadedAll')
+                        })
+                        return
+                    }else{
+                        this.lastPage = false
+                    }
+                    this.loadOnce = false
+                    
+                    // 单次请求数据完毕
+                    window.$vm.$emit('vmui.infinitescroll.loadedOnce')
 
-                // 单次请求数据完毕
-                window.$vm.$emit('vmui.infinitescroll.loadedOnce')
+                    this.page ++
 
-                this.page ++
-            })
-            .catch(err => {
-                console.log('err:',err)
-                this.$dialog.toast({mes: err.msg})})
+                })
+                .catch(err => {this.$dialog.toast({mes: err.body.msg})})}
         },
 
         // tab 切换回调

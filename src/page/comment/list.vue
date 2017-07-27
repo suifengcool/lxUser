@@ -3,9 +3,11 @@
         <vm-infinitescroll :on-infinite="fetchData" class="orderList">
             <ul slot="list">
                 <Li v-for="(item, index) in lists">
-                    <h3 class="border-bottom">2017年6月</h3>
+                    <h3 class="border-bottom">{{item.create_time}}</h3>
                     <div class="msg border-bottom">
-                        <div class="img"></div>
+                        <div class="img">
+                            <img :src="(item.avatar_img).indexOf('http') > -1 ? item.avatar_img : imgOrigin + item.avatar_img" alt="">
+                        </div>
                         <div class="main">
                             <h4>{{item.nick_name}}</h4>
                             <div class="star-box cf">
@@ -40,6 +42,8 @@ export default {
             lists: [],                                 // 列表
             count: null,                               // 总条数
             guideId: this.$route.query.guideId,        // 导游id
+            loadOnce: false,                           // 单次请求完毕
+            lastPage: false,                           // 是否为最后一页
         }
     },
 
@@ -55,6 +59,8 @@ export default {
     methods: {
         // 初始化
         init () {
+            this.loadOnce = false
+            this.lastPage = false
             this.page = 0
             this.pageSize = 10
             this.lists = []
@@ -62,33 +68,36 @@ export default {
         },
 
         fetchData () {
-            vm.fetch.post({
-                url: '/user/comment/list',
-                data: {
+            if(!this.loadOnce && !this.lastPage){
+                this.loadOnce = true
+                this.$http.post('/user/comment/list',{
                     pageNo: this.page,
                     pageSize: this.pageSize,
                     guideId: this.guideId
-                }
-            })
-            .then(res => {
-                const _list = res.data.list
-                this.imgOrigin = res.prefix
-                this.lists = [...this.lists, ..._list]
-                this.count = res.data.totalRow
-                if (_list.length < this.pageSize || Math.floor(this.count / this.pageSize) == this.page) {
-                    // 所有数据加载完毕
-                    setTimeout(()=> {
-                        window.$vm.$emit('vmui.infinitescroll.loadedAll')
-                    })
-                    return
-                }
+                })
+                .then(res => {
+                    const _list = res.body.data.list
+                    this.imgOrigin = res.body.prefix
+                    this.lists = [...this.lists, ..._list]
+                    this.count = res.body.data.totalRow
+                    if(res.body && res.body.data && res.body.data.lastPage){
+                        this.lastPage = true
+                        setTimeout(()=> {
+                            window.$vm.$emit('vmui.infinitescroll.loadedAll')
+                        })
+                        return
+                    }else{
+                        this.lastPage = false
+                    }
+                    this.loadOnce = false
 
-                // 单次请求数据完毕
-                window.$vm.$emit('vmui.infinitescroll.loadedOnce')
+                    // 单次请求数据完毕
+                    window.$vm.$emit('vmui.infinitescroll.loadedOnce')
 
-                this.page ++
-            })
-            .catch(err => {this.$dialog.toast({mes: err.msg})})
+                    this.page ++
+                })
+                .catch(err => {this.$dialog.toast({mes: err.body.msg})})
+            }
         },
     }
 }
@@ -121,8 +130,10 @@ ul li
             width: 3.18rem
             height: 3.18rem
             border-radius: 50%
-            background: red
+            overflow: hidden
             margin-right: 1.04rem
+            img 
+                width: 100%
         .main
             flex: 1
             h4

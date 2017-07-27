@@ -6,13 +6,13 @@
                     <div class="msg">
                         <vm-lazyimg
                             class="img"
-                            :src="imgOrigin + item.resource_path"
+                            :src="(item.resource_path).indexOf('http')>-1?item.resource_path:imgOrigin+item.resource_path"
                             :defaultSrc="require('../../assets/lazyDefault.jpg')"
                         />
                         <div class="msg-main">
                             <h3>导游：{{item.real_name}}</h3>
                             <p>旅行时长：2小时</p>
-                            <p>擅长内容：古建筑 胡同游 书画展</p>
+                            <!-- <p>擅长内容：古建筑 胡同游 书画展</p> -->
                         </div>
                     </div>
                     <div class="desc">
@@ -43,6 +43,8 @@ export default {
             count: 10,                     // 分页，总条数
             lists: [],                     // 列表
             imgOrigin: '',                 // 图片前缀
+            loadOnce: false,               // 单次请求完毕
+            lastPage: false,               // 是否为最后一页
             text: '暂时还没有收藏哦~'
         }
     },
@@ -54,54 +56,53 @@ export default {
 
     methods: {
         fetchData () {
-            this.$http.get(`/user/favorite/list?oid=test1234&pageNo=${this.page}&pageSize=${this.pageSize}`)
-            // vm.fetch.get({
-            //     url: '/user/favorite/list',
-            //     data: {
-            //         pageNo: this.page,
-            //         pageSize: this.pageSize
-            //     }
-            // })
-            .then(res => {
-                const _list = res.data.list
-                this.lists = [...this.lists, ..._list]
-                this.imgOrigin = res.prefix
-                this.count = res.data.totalRow
-                console.log('this.count:',this.count)
+            if(!this.loadOnce && !this.lastPage){
+                this.loadOnce = true
+                this.$http.get(`/user/favorite/list?oid=test1234&pageNo=${this.page}&pageSize=${this.pageSize}`)
+                .then(res => {
+                    const _list = res.body.data.list
+                    this.lists = [...this.lists, ..._list]
+                    this.imgOrigin = res.body.prefix
+                    this.count = res.body.data.totalRow
+                    console.log('this.count:',this.count)
 
-                if (this.page && (_list.length < this.pageSize || Math.floor(this.count / this.pageSize) == this.page)) {
-                    // 所有数据加载完毕
-                    window.$vm.$emit('vmui.infinitescroll.loadedAll')
-                    return
-                }
+                    if(res.body && res.body.data && res.body.data.lastPage){
+                        this.lastPage = true
+                        setTimeout(()=> {
+                            window.$vm.$emit('vmui.infinitescroll.loadedAll')
+                        })
+                        return
+                    }else{
+                        this.lastPage = false
+                    }
+                    this.loadOnce = false
 
-                // 单次请求数据完毕
-                window.$vm.$emit('vmui.infinitescroll.loadedOnce')
+                    // 单次请求数据完毕
+                    window.$vm.$emit('vmui.infinitescroll.loadedOnce')
 
-                this.page ++
-            })
-            .catch(err => this.$dialog.toast({mes: err.msg}))
+                    this.page ++
+                })
+                .catch(err => this.$dialog.toast({mes: err.body.msg}))
+            }
         },
 
         // 取消收藏
         cancel(id){
-            vm.fetch.post({
-                url: '/user/favorite/cancel',
-                data: {
-                    favoriteId: id
-                }
-            })
+            this.$http.post('/user/favorite/cancel',{favoriteId: id})
             .then(res => {
-                if(res.res_code === 200){
+                if(res.body.res_code === 200){
                     this.$dialog.toast({mes: '取消收藏成功'})
+                    this.loadOnce = false
+                    this.lastPage = false
                     this.page = 0
                     this.pageSize = 10
+                    this.lists = []
                     this.fetchData()
                 }else{
-                    this.$dialog.toast({mes: res.msg})
+                    this.$dialog.toast({mes: res.body.msg})
                 }
             })
-            .catch(err => {this.$dialog.toast({mes: err.msg})})
+            .catch(err => {this.$dialog.toast({mes: err.body.msg})})
         }
     }
 }
