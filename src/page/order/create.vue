@@ -42,7 +42,7 @@
         <div class="captionTitle border-bottom">
            <i>|</i><span>出游时间</span>
         </div>
-        <div class="startTimeBox border-bottom">
+        <div class="startTimeBox border-bottom" @click="showPop=true">
             <p class="timeTitle"><i class="iconfont icon-rl"></i><span>出发时间</span></p>
             <p class="timeDetail">2016年6月25日9:00AM</p>
         </div>
@@ -109,7 +109,7 @@
                     </div>
                     <span>{{item.nick_name}}</span>
                 </div>
-                <p>{{item.COMMENT}}</p>
+                <p>{{item.comment}}</p>
             </li>
         </ul>
 
@@ -128,6 +128,30 @@
         <vm-tabbar slot="tabbar" class="tabbar-box">
             <button class="tabbar-item" type="button" @click="create()">立即预定</button>
         </vm-tabbar>
+        
+        <!-- 日期选择弹框 -->
+        <vm-popup v-model="showPop" position="bottom" height="60%" class="datePop">
+            <div class="title cf">
+                <span class="fl border-right">月</span>
+                <span class="fl border-right">日</span>
+                <span class="fl border-right">小时</span>
+                <span class="fl">分钟</span>
+            </div>
+            <div class="list">
+                <ul class="month">
+                    <li v-for="(item,index) in monthList" class="border-bottom border-right">{{item}}</li>
+                </ul>
+                <ul class="day">
+                    <li v-for="(item,index) in dayList" class="border-bottom border-right">{{item}}</li>
+                </ul>
+                <ul class="hours">
+                    <li v-for="(item,index) in hoursList" class="border-bottom border-right">{{item}}</li>
+                </ul>
+                <ul class="min">
+                    <li v-for="(item,index) in minList" class="border-bottom border-right">{{item}}</li>
+                </ul>
+            </div>
+        </vm-popup>
     </vm-layout>
 </template>
 
@@ -146,7 +170,7 @@ export default {
             introduce: guideInfo.introduce || '专业导游二十年', // 导游描述
             visit_length: guideInfo.visit_length,            // 旅行时长
             lineId: this.$route.query.lineId,                // 线路id
-            guideId: this.$route.query.lineId,               // 导游id
+            guideId: this.$route.query.guideId,               // 导游id
             image: guideInfo.image,                          // 景点图片
             imgOrigin: guideInfo.imgOrigin,                  // 图片前缀
             resource_path: guideInfo.resource_path,          // 导游照片
@@ -156,8 +180,13 @@ export default {
             commentList: [],                                 // 评论列表
             commentCnt: null,                                // 评论条数
             favoriteCnt: null,                               // 收藏条数
+            showPop: false,                                  // 日期弹框
             nendKnowShow:false,
             isUp:false,
+            monthList: ['1','2','3','4','5','6','7','8','9','10','11','12'],
+            dayList: ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31'],
+            hoursList: ['00','01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24'],
+            minList: ['00','15','30','45','60']
         }
     },
     created () {
@@ -455,9 +484,11 @@ export default {
             height: 2rem
             width: 2rem
             border-radius: 50%
-            background: red
+            overflow: hidden
             display: inline-block
             vertical-align: middle
+            img
+                width: 100%
         span
             font-size: 0.6rem
             margin-left: 0.47rem
@@ -528,4 +559,22 @@ export default {
     bottom: 0
     &:after
         border-top: none
+// 日期弹框
+.datePop
+    text-align: center
+    .title
+        width: 100% 
+        span 
+            width: 25%
+            height: 1.2rem
+            line-height: 1.2rem
+            background: #ccc
+    .list
+        display: flex
+        ul 
+            width: 25%
+            overflow-y: scroll
+            li 
+                height: 1.3rem
+                line-height: 1.3rem
 </style>

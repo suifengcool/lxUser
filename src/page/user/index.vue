@@ -72,14 +72,16 @@ export default {
                 formData.append("file", event.target.files[0])
                 formData.append("remotePath", '/agent')
                 formData.append("oid", 'test1234')
-            this.loading = true
-            this.$http.post('/upload/uploadFile',formData)
-            .then(rst => {
-                if(rst.body.res_code === 200){
-                    this.save(rst.body.data.path)
-                }
-            })
-            .catch(err => this.$dialog.toast({mes: err.body.msg}))
+            if(event.target.files[0]){
+                this.loading = true
+                this.$http.post('/upload/uploadFile',formData)
+                .then(rst => {
+                    if(rst.body.res_code === 200){
+                        this.save(rst.body.data.path)
+                    }
+                })
+                .catch(err => this.$dialog.toast({mes: err.body.msg}))
+            }
         },
 
         // 保存头像

@@ -29,11 +29,10 @@ export default {
     data () {
         return {
             config: vm.config,             // 配置
-            hots: [],                      // 热门景点
             lists: [],                     // 景点列表
-            imgOrigin: '',                 // 图片前缀
             name: '',                      // 搜索框内容
-            numChoosed: '',                // 被选中的字母
+            keyWord: this.$route.query.keyword,
+
         }
     },
  
@@ -45,20 +44,30 @@ export default {
     methods: {
         // 获取数据
         fetchViews() {
-            vm.fetch.get({
-                url: '/view/index',
-            })
-            .then(res => {
-                this.imgOrigin = res.prefix 
-                this.hots = res.data.hots
-                this.lists = res.data.list
-            })
-            .catch(err => this.$dialog.toast({mes: err.msg}))
+            if(this.keyWord && this.keyWord.trim() || this.name.trim()){
+                this.$http.post('/view/search',{
+                    oid: 'test1234',
+                    keyWord: this.keyWord.trim()
+                })
+                .then(res => {
+                    this.name = this.keyWord
+                    this.lists = res.body.data
+                })
+                .catch(err => this.$dialog.toast({mes: err.msg}))
+            }else{
+                vm.fetch.get({
+                    url: '/view/index',
+                })
+                .then(res => {
+                    this.lists = res.data.list
+                })
+                .catch(err => this.$dialog.toast({mes: err.msg}))
+            }
         },
 
         // 查看景点明细
         goViewDetail(id){
-            this.$router.push('/view/detail?id=' + id)
+            this.$router.push('/viewport/detail?id=' + id)
         }
     }
 }

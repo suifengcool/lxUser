@@ -11,7 +11,12 @@
                         />
                         <div class="msg-main">
                             <h3>导游：{{item.real_name}}</h3>
-                            <p>旅行时长：2小时</p>
+                            <!-- <p>旅行时长：2小时</p> -->
+                            <p>评分：{{item.score}}分</p>
+                            <i
+                                :class="['iconfont', {'red': item.score > i}, Math.round(item.score) > i ? 'icon-xing2' : 'icon-xing1',]"
+                                v-for="(star, i) in [0,1,2,3,4]"
+                            ></i>
                             <!-- <p>擅长内容：古建筑 胡同游 书画展</p> -->
                         </div>
                     </div>
@@ -132,10 +137,13 @@ ul li
                 font-weight: 300
                 font-size: .75rem
                 color: #000
-                margin: .4rem 0 .8rem 0
+                margin: .75rem 0 .6rem 0
             p 
                 height: .85rem
                 line-height: .85rem
+                margin-bottom: .15rem
+            .red
+                color: #FF9500
     .desc
         line-height: .75rem
         margin-top: .35rem

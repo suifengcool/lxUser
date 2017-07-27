@@ -8,17 +8,17 @@
                     <vm-slider autoplay="3000" initIndex="0">
                         <vm-slider-item>
                             <div class="item">
-                                <img :src="(init.resource_path).indexOf('http')>-1 ? init.resource_path : (imgOrigin + init.resource_path)" alt=""><span>{{index}}</span>
+                                <img :src="init.resource_path && (init.resource_path).indexOf('http')>-1 ? init.resource_path : (imgOrigin + init.resource_path)" alt=""><span>{{index}}</span>
                             </div>
                         </vm-slider-item>
                         <vm-slider-item>
                             <div class="item">
-                                <img :src="(init.resource_path).indexOf('http')>-1 ? init.resource_path : (imgOrigin + init.resource_path)" alt=""><span>{{index}}</span>
+                                <img :src="init.resource_path && (init.resource_path).indexOf('http')>-1 ? init.resource_path : (imgOrigin + init.resource_path)" alt=""><span>{{index}}</span>
                             </div>
                         </vm-slider-item>
                         <vm-slider-item>
                             <div class="item">
-                                <img :src="(init.resource_path).indexOf('http')>-1 ? init.resource_path : (imgOrigin + init.resource_path)" alt=""><span>{{index}}</span>
+                                <img :src="init.resource_path && (init.resource_path).indexOf('http')>-1 ? init.resource_path : (imgOrigin + init.resource_path)" alt=""><span>{{index}}</span>
                             </div>
                         </vm-slider-item>
                     </vm-slider>
@@ -29,7 +29,7 @@
                 <h3>{{init.view_name}}</h3>
                 <p :class="{'showIntroduce':isShow}">{{init.intruduce}}</p>
                 <div class="moreBtnBox">
-                    <a v-if="init.intruduce.length > 3 " href="javascript:;" class="moreBtn" @click="showHandle">更多<i v-bind:class="['iconfont', !isShow ? 'icon-jiantou' : 'icon-icon-copy']"></i></a>
+                    <a v-if="init.intruduce && init.intruduce.length > 50 " href="javascript:;" class="moreBtn" @click="showHandle">更多<i v-bind:class="['iconfont', !isShow ? 'icon-jiantou' : 'icon-icon-copy']"></i></a>
                 </div>
             </div>
         </div>

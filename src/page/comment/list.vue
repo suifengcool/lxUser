@@ -13,12 +13,12 @@
                             <div class="star-box cf">
                                 <span class="fl star">
                                     <i
-                                        class="iconfont icon-star-full"
+                                        :class="['iconfont', {'red': item.score > i}, Math.round(item.score) > i ? 'icon-xing2' : 'icon-xing1',]"
                                         v-for="(star, i) in [0,1,2,3,4]"
-                                    ></i>
+                                    ></i> 
                                 </span>
-                                <span class="score fl">5.0</span>
-                                <span class="num fl">45单</span>
+                                <span class="score fl">{{item.score}}</span>
+                                <!-- <span class="num fl">45单</span> -->
                             </div>
                             <p>{{item.COMMENT}}</p>
                         </div>
@@ -150,8 +150,9 @@ ul li
                 .star
                     i 
                         font-size: .6rem
-                        color: #FF9500
                         margin-right: .1rem
+                    .red
+                        color: #FF9500
                 .score
                     width: 1.27rem
                     height: .6rem

@@ -4,7 +4,7 @@
         <div class="header">
             <div class="msg">
                 <div class="img">
-                    <img :src="init.resource_path.indexOf('http')>-1 ? init.resource_path : imgOrigin + init.resource_path" alt="">
+                    <img :src="init.resource_path && init.resource_path.indexOf('http')>-1 ? init.resource_path : imgOrigin + init.resource_path" alt="">
                 </div>
                 <div class="msg-main">
                     <h3>导游：{{init.real_name}}</h3>
