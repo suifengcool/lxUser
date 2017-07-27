@@ -1,7 +1,7 @@
 <template>
     <vm-layout id="home">
         <!-- 搜索框 -->
-        <form action="/view/search" method="get" class="search center-center">
+        <form action="/viewport/search" method="get" class="search center-center">
             <i v-if="!name" class="iconfont icon-search-in"></i>
             <input type="search" v-model="name" name="keyword" placeholder='搜索'>
         </form>

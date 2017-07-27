@@ -6,8 +6,8 @@ Vue.use(Router)
 // 页面路径(相对 ../page)
 let config = [
     // 景点相关
-    '/view/detail',                  // 景点明细
-    '/view/search',                  // 景点明细
+    '/viewport/detail',                  // 景点明细
+    '/viewport/search',                  // 景点明细
 
     // 个人相关
     '/user/collect',                 // 我的收藏

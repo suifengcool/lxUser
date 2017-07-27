@@ -8,6 +8,12 @@
                     <h3>已确认，待支付</h3>
                     <i>倒计时：10：00</i>
                 </div>
+                <div class="timer">
+                    <!-- <span id="day_show">{{day}}</span>
+                    <strong id="hour_show">{{hour}}</strong> -->
+                    <strong id="minute_show">{{minute}}</strong>
+                    <strong id="second_show">{{second}}</strong>
+                </div>
                 <span>请尽快支付</span>
             </div>
         </div>
@@ -41,11 +47,11 @@
 
         <!-- 验证码弹框 -->
         <vm-popup v-model="showPop" position="center" width="75%" class="codePop">
-            <h3 class="border-bottom"><i class="iconfont icon-shutdown"></i>支付</h3>
-            <p class="border-bottom">${{init.amount}}</p>
+            <h3 class="border-bottom"><i class="iconfont icon-shutdown" @click="showPop=false"></i>支付</h3>
+            <p class="border-bottom">￥{{init.amount}}</p>
             <div class="payMethod border-bottom cf">
                 <span class="fl">微信支付</span>
-                <i class="iconfont icon-right fr" @click="showPop=false"></i>
+                <i class="iconfont icon-right fr"></i>
             </div>
             <button>确认支付</button>
         </vm-popup>
@@ -61,13 +67,19 @@ export default {
             config: vm.config,                        // 配置
             orderNum: this.$route.query.orderNum,     // 订单号
             init: {},                                  // 数据
-            showPop: false                             // 支付弹框
+            showPop: false,                             // 支付弹框
+            totolTime: 600,
+            day:'',
+            hour:'',
+            minute:'',
+            second:''
         }
     },
 
     created () {
         this.config.title('支付旅费')
         this.fetchData()
+        this.countdowm(this.totolTime)
     },
 
     methods: {
@@ -84,6 +96,39 @@ export default {
             })
             .catch(err => this.$dialog.toast({mes: err.body.msg}))
         },
+
+        countdowm (value){
+            let timer = setInterval(()=>{
+               
+                var days=0,
+                  hours=0,
+                  minutes=0,
+                  seconds=0;//时间默认值    
+
+                if(value > 0){
+
+                  days = Math.floor(value / (60 * 60 * 24));
+
+                  hours = Math.floor(value / (60 * 60)) - (days * 24);
+
+                  minutes = Math.floor(value / 60) - (days * 24 * 60) - (hours * 60);
+
+                  seconds = Math.floor(value) - (days * 24 * 60 * 60) - (hours * 60 * 60) - (minutes* 60);
+
+                }
+
+                if (minutes <= 9) minutes = '0' + minutes;
+
+                if (seconds <= 9) seconds = '0' + seconds;
+                this.day=days+'天'
+                this.hour=hours+'时'
+                this.minute = minutes+ ':'
+                this.second = seconds
+
+                value --
+
+                }, 1000);
+          }
     }
 }
 </script>

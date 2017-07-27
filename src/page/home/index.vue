@@ -1,7 +1,7 @@
 <template>
     <vm-layout id="home">
         <!-- 搜索框 -->
-        <form action="/view/search" method="get" class="search center-center">
+        <form action="/viewport/search" method="get" class="search center-center">
             <i v-if="!name" class="iconfont icon-search-in"></i>
             <input type="search" v-model="name" name="keyword" placeholder='搜索'>
         </form>
@@ -33,7 +33,7 @@
 
         <!-- 右边条字母 -->
         <ul class="nav">
-            <router-link to="/view/search"><i class="iconfont icon-search-in"></i></router-link>
+            <router-link to="/viewport/search"><i class="iconfont icon-search-in"></i></router-link>
             <li v-for="(item, index) in lists"><a :href="'#'+item[0].first_letter">{{item[0].first_letter}}</a></li>
         </ul>
     </vm-layout>
@@ -74,7 +74,7 @@ export default {
 
         // 查看景点明细
         goViewDetail(id){
-            this.$router.push('/view/detail?id=' + id)
+            this.$router.push('/viewport/detail?id=' + id)
         }
     }
 }
