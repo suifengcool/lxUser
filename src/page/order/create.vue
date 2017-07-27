@@ -506,7 +506,7 @@ export default {
             margin-left: .15rem
 </style>
 <style lang="sass">
-.vm-scrollview
+#orderCreate .vm-scrollview
     padding-bottom: 4.5rem
     background: #fff
 // 按钮

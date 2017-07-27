@@ -6,7 +6,7 @@
             <div class="header-main">
                 <div class="header-main-top">
                     <span>待确认</span>
-                    <i>倒计时：10：00</i>
+                    <i>倒计时：{{minute}}{{second}}</i>
                 </div>
                 <p>导游正在查看您的订单信息，核实没问题后，接受订单即刻出发旅行</p>
             </div>
@@ -16,7 +16,8 @@
         <div class="travel-title border-bottom item">{{init.view_line_name}}</div>
         <div class="guide border-bottom">
             <div class="img">
-                <img :src="init.resource_path.indexOf('http')>-1 ? init.resource_path : imgOrigin + init.resource_path" alt="">
+                <!-- <img :src="(init.resource_path).indexOf('http')>-1 ? init.resource_path : imgOrigin + init.resource_path" alt=""> -->
+                <img :src="init.resource_path" alt="">
             </div>
             <div class="guide-desc">
                 <h3 class="cf">
@@ -71,13 +72,19 @@ export default {
             config: vm.config,                        // 配置
             orderNum: this.$route.query.orderNum,     // 订单号
             init: {},                                 // 数据
-            imgOrigin: ''                             // 图片前缀
+            imgOrigin: '',                            // 图片前缀
+            totolTime: 600,
+            day:'',
+            hour:'',
+            minute:'',
+            second:''
         }
     },
 
     created () {
         this.fetchData()
         this.config.title('订单号：'+ this.orderNum)
+        this.countdowm(this.totolTime)
     },
 
     methods: {
@@ -113,6 +120,28 @@ export default {
                 
             })
             .catch(err => this.$dialog.toast({mes: err.body.msg}))
+        },
+
+        countdowm (value){
+            let timer = setInterval(()=>{
+               
+                var days=0,hours=0,minutes=0,seconds=0; //时间默认值
+                if(value > 0){
+                    days = Math.floor(value / (60 * 60 * 24))
+                    hours = Math.floor(value / (60 * 60)) - (days * 24)
+                    minutes = Math.floor(value / 60) - (days * 24 * 60) - (hours * 60)
+                    seconds = Math.floor(value) - (days * 24 * 60 * 60) - (hours * 60 * 60) - (minutes* 60)
+                }
+                if (minutes <= 9) minutes = '0' + minutes
+                if (seconds <= 9) seconds = '0' + seconds
+
+                this.day=days+'天'
+                this.hour=hours+'时'
+                this.minute = minutes+ ':'
+                this.second = seconds
+                value --
+
+            }, 1000)
         }
     }
 }

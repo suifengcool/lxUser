@@ -303,6 +303,7 @@ export default {
                 line-height: 0.6rem
                 font-size: 0.55rem
                 color: #fff
+                vertical-align: 15%
         .intersting
             font-size: 0.6rem
             margin: 0.38rem 0 .3rem 0

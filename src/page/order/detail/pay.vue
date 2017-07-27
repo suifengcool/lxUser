@@ -6,13 +6,7 @@
             <div class="header-main">
                 <div class="header-main-top">
                     <h3>已确认，待支付</h3>
-                    <i>倒计时：10：00</i>
-                </div>
-                <div class="timer">
-                    <!-- <span id="day_show">{{day}}</span>
-                    <strong id="hour_show">{{hour}}</strong> -->
-                    <strong id="minute_show">{{minute}}</strong>
-                    <strong id="second_show">{{second}}</strong>
+                    <i>倒计时：{{minute}}{{second}}</i>
                 </div>
                 <span>请尽快支付</span>
             </div>
@@ -66,8 +60,8 @@ export default {
         return {
             config: vm.config,                        // 配置
             orderNum: this.$route.query.orderNum,     // 订单号
-            init: {},                                  // 数据
-            showPop: false,                             // 支付弹框
+            init: {},                                 // 数据
+            showPop: false,                           // 支付弹框
             totolTime: 600,
             day:'',
             hour:'',
@@ -100,35 +94,24 @@ export default {
         countdowm (value){
             let timer = setInterval(()=>{
                
-                var days=0,
-                  hours=0,
-                  minutes=0,
-                  seconds=0;//时间默认值    
-
+                var days=0,hours=0,minutes=0,seconds=0; //时间默认值
                 if(value > 0){
-
-                  days = Math.floor(value / (60 * 60 * 24));
-
-                  hours = Math.floor(value / (60 * 60)) - (days * 24);
-
-                  minutes = Math.floor(value / 60) - (days * 24 * 60) - (hours * 60);
-
-                  seconds = Math.floor(value) - (days * 24 * 60 * 60) - (hours * 60 * 60) - (minutes* 60);
-
+                    days = Math.floor(value / (60 * 60 * 24))
+                    hours = Math.floor(value / (60 * 60)) - (days * 24)
+                    minutes = Math.floor(value / 60) - (days * 24 * 60) - (hours * 60)
+                    seconds = Math.floor(value) - (days * 24 * 60 * 60) - (hours * 60 * 60) - (minutes* 60)
                 }
+                if (minutes <= 9) minutes = '0' + minutes
+                if (seconds <= 9) seconds = '0' + seconds
 
-                if (minutes <= 9) minutes = '0' + minutes;
-
-                if (seconds <= 9) seconds = '0' + seconds;
-                this.day=days+'天'
-                this.hour=hours+'时'
+                this.day = days+'天'
+                this.hour = hours+'时'
                 this.minute = minutes+ ':'
                 this.second = seconds
-
                 value --
 
-                }, 1000);
-          }
+            }, 1000)
+        }
     }
 }
 </script>
