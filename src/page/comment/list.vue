@@ -40,7 +40,7 @@ export default {
             page: 0,                                   // 分页
             pageSize: 10,                              // 分页
             lists: [],                                 // 列表
-            count: null,                               // 总条数
+            count: 1 ,                                 // 总条数
             guideId: this.$route.query.guideId,        // 导游id
             loadOnce: false,                           // 单次请求完毕
             lastPage: false,                           // 是否为最后一页

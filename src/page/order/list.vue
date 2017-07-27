@@ -52,7 +52,7 @@ export default {
             pageSize: 10,       // 分页
             lists: [],          // 订单列表
             status: 0,          // 0：全部，1：待付款，2：待评价，3：未出行，4：待确认
-            count: null,        // 订单总条数
+            count: 1,           // 订单总条数
             text: '还没有订单哦~',
             loadOnce: false,    // 单次请求完毕
             lastPage: false,    // 是否为最后一页
