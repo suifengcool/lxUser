@@ -51,12 +51,12 @@
         <div class="captionTitle border-bottom">
             <i>|</i><span>出游人数</span>
         </div>
-        <div class="chuyouNumBox border-bottom">
+        <div class="chuyouNumBox border-bottom" @click.self="chooseCountPop=true">
             <div class="selectTimeTitle"><i class="iconfont icon-wode"></i><span>选择出游人数</span></div>
             <div class="selectTime">
-                <i class="iconfont icon-minus" @click="chooseCount(1)"></i>
-                <span>{{personCount}}</span>
-                <i class="iconfont icon-plus" @click="chooseCount()"></i>
+                <i class="iconfont icon-minus fl" @click="chooseCount(1)"></i>
+                <span class="fl" @click="chooseCountPop=true">{{personCount}}</span>
+                <i class="iconfont icon-plus fr" @click="chooseCount()"></i>
             </div>
         </div>
 
@@ -152,6 +152,16 @@
                 </ul>
             </div>
         </vm-popup>
+        
+        <!-- 选择出游人数 -->
+        <vm-popup v-model="chooseCountPop" position="center" height="60%" class="CountPop">
+            <h3 class="border-bottom">填写出游人数<i class="iconfont icon-shutdown" @click="chooseCountPop=false"></i></h3>
+            <div class="selectTime">
+                <i class="iconfont icon-minus fl" @click="chooseCount(1)"></i>
+                <input type="tel" v-model="personCount">
+                <i class="iconfont icon-plus fr" @click="chooseCount()"></i>
+            </div>
+        </vm-popup>
     </vm-layout>
 </template>
 
@@ -181,6 +191,7 @@ export default {
             commentCnt: null,                                // 评论条数
             favoriteCnt: null,                               // 收藏条数
             showPop: false,                                  // 日期弹框
+            chooseCountPop: false,                           // 出游人数弹框
             nendKnowShow:false,
             isUp:false,
             monthList: ['1','2','3','4','5','6','7','8','9','10','11','12'],
@@ -404,27 +415,27 @@ export default {
     .selectTime
         margin-right: .75rem
         text-align: center
+        padding-top: .4rem
         i 
             font-size: .3rem
             display: inline-block
             height: 1rem
+            margin-top: .2rem
             line-height: 1rem
             width: 1rem
             border-radius: 50%
             background: #DEDEDE
-            vertical-align: 10%
         span 
             display: inline-block
             height: 1.35rem
             width: 1.35rem
             border-radius: 50%
             background: #FF9500
-            vertical-align: -35%
             line-height: 1.35rem
             border: none
             overflow: hidden
             color: #fff
-            margin: 0 .15rem
+            margin: 0 .35rem
 // 出行人信息
 .chuxingrenInfo
     padding: 0.1rem 1.1rem
@@ -535,6 +546,35 @@ export default {
         i 
             vertical-align: -9%
             margin-left: .15rem
+// 出游人数弹框
+.CountPop 
+    h3 
+        margin: .5rem .5rem 0 .5rem
+        padding-bottom: .5rem 
+        font-size: .75rem
+        font-weight: 300
+        i 
+            margin-left: 3.1rem
+            font-size: .7rem
+            color: #666
+    .selectTime
+        text-align: center
+        margin: 1rem .5rem .5rem .5rem
+        i  
+            display: inline-block
+            height: 1.5rem
+            line-height: 1.5rem
+            width: 2rem
+            background: #ccc
+        input 
+            border: none
+            outline: none
+            height: 1.5rem
+            line-height: 1.5rem
+            background: #f3f3f3
+            width: 4rem
+            margin-left: .1rem
+            text-align: center
 </style>
 <style lang="sass">
 #orderCreate .vm-scrollview

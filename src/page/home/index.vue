@@ -106,6 +106,8 @@ export default {
     i 
         position: absolute
         left: 40%
+        top: 50%
+        transform: translateY(-50%)
         color: #888
 // 热门景点
 .hot-point
