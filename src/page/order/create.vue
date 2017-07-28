@@ -187,6 +187,7 @@ export default {
             day: '',                                         // 日
             mintime: '',                                     // 时间
             todayMonth: '',                                  // 当月
+            sendMintime: ''                                  // 发送的日期
         }
     },
     created () {
@@ -218,7 +219,12 @@ export default {
             let timeArr = value.split('')
             this.month = timeArr[5] + timeArr[6]
             this.day = timeArr[8] + timeArr[9]
-            this.mintime = timeArr[11] + timeArr[12] + ":" + timeArr[14] + timeArr[15]
+            this.sendMintime = timeArr[11] + timeArr[12] + ":" + timeArr[14] + timeArr[15]
+            if(parseInt(timeArr[11] + timeArr[12]) > 12){
+                this.mintime = timeArr[11] + timeArr[12] - 12 + ":" + timeArr[14] + timeArr[15] + 'PM'
+            }else{
+                this.mintime = timeArr[11] + timeArr[12] + ":" + timeArr[14] + timeArr[15] + 'AM'
+            }
             if(parseInt(this.month) > parseInt(this.todayMonth) + 2){
                 this.$dialog.toast({mes: '所选择日期超过两个月'})
                 return
@@ -307,7 +313,7 @@ export default {
             this.$http.post('/user/order/save',{
                 lineId: this.lineId,
                 visitDate: this.year + '-' + this.month + '-'+ this.day,
-                visitTime: this.mintime,
+                visitTime: this.sendMintime,
                 contactName: this.contactName,
                 phone: this.phone,
                 personCount: this.personCount,
