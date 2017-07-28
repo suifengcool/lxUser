@@ -33,7 +33,7 @@ export default {
 // 导入css
 @import 'styles/style'
 // 导入iconfont
-@import 'styles/iconfont/iconfont.css'
+@import '../static2/iconfont/iconfont.css'
 // 动画
 .fade-enter-active, .fade-leave-active
     transition: opacity .5s

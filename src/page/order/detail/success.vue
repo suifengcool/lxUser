@@ -46,7 +46,7 @@ export default {
     methods: {
         // 获取订单信息
         fetchData(){
-            this.$http.get(`/user/order/detail?oid=test1234&orderNum=${this.orderNum}`)
+            this.$http.get(`/user/order/detail?orderNum=${this.orderNum}`)
             .then(res => {
                 if(res.body.res_code === 200){
                     this.imgOrigin = res.body.prefix 

@@ -60,17 +60,12 @@ export default {
             stars: 3.4,                                 // 平均分数
             num: 0,                                   // 已输入字数
             content: '',                              // 评论内容
-            starList: [0.5,1.5,2.5,3.5,4.5]
         }
     },
 
     created () {
         this.config.title('已完成订单')
         this.fetchData()
-        // if(parseInt(this.stars) != this.stars){
-        //     console.log(Math.floor(this.stars))
-        //     $('.star i').eq(Math.floor(this.stars) + 1).addClass('icon-xing3').removeClass('icon-xing1')
-        // }
     },
 
     watch: {
@@ -89,7 +84,7 @@ export default {
     methods: {
         // 获取订单信息
         fetchData(){
-            this.$http.get(`/user/order/detail?oid=test1234&orderNum=${this.orderNum}`)
+            this.$http.get(`/user/order/detail?orderNum=${this.orderNum}`)
             .then(res => {
                 if(res.body.res_code === 200){
                     this.imgOrigin = res.body.prefix 

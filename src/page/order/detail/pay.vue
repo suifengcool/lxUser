@@ -84,7 +84,7 @@ export default {
     methods: {
         // 获取订单信息
         fetchData(){
-            this.$http.get(`/user/order/detail?oid=test1234&orderNum=${this.orderNum}`)
+            this.$http.get(`/user/order/detail?orderNum=${this.orderNum}`)
             .then(res => {
                 if(res.body.res_code === 200){
                     this.imgOrigin = res.body.prefix 
@@ -95,8 +95,7 @@ export default {
                         let starttime = (res.body.data.visitor_pay_final_time).replace(new RegExp("-","gm"),"/")
                         let starttimeHaoMiao = (new Date(starttime)).getTime()
                         let timestamp = Date.parse(new Date())
-                        // this.totolTime = starttimeHaoMiao-timestamp
-                        this.totolTime = 600
+                        this.totolTime = (starttimeHaoMiao - timestamp)/1000
                         this.countdowm(this.totolTime)
                     }
                 }else{
@@ -140,7 +139,6 @@ export default {
         // 调用生成的支付签名
         createPaysign (orderIds) {
             this.$http.post("/user/order/detail",{
-                oid: 'test1234',
                 orderNum: this.orderNum
             })
             .then (res => {

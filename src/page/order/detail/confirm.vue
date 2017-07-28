@@ -93,7 +93,7 @@ export default {
     methods: {
         // 获取订单信息
         fetchData(){
-            this.$http.get(`/user/order/detail?oid=test1234&orderNum=${this.orderNum}`)
+            this.$http.get(`/user/order/detail?orderNum=${this.orderNum}`)
             .then(res => {
                 if(res.body.res_code === 200){
                     this.imgOrigin = res.body.prefix 
@@ -103,12 +103,8 @@ export default {
                     if(res.body.data.guide_confirm_final_time){
                         let starttime = (res.body.data.guide_confirm_final_time).replace(new RegExp("-","gm"),"/")
                         let starttimeHaoMiao = (new Date(starttime)).getTime()
-                        let timestamp = Date.parse(new Date())
-                        // this.totolTime = starttimeHaoMiao - timestamp
-                        this.totolTime = 600
-                        console.log('starttimeHaoMiao:',starttimeHaoMiao)
-                        console.log('timestamp:',timestamp)
-                        console.log('this.totolTime:',this.totolTime)
+                        let timestamp = (new Date()).getTime()
+                        this.totolTime = (starttimeHaoMiao - timestamp)/1000
                         this.countdowm(this.totolTime)
                     }
                 }else{
@@ -120,7 +116,7 @@ export default {
 
         // 取消订单
         cancel() {
-            this.$http.get(`/user/order/cancel?oid=test1234&orderNum=${this.orderNum}`)
+            this.$http.get(`/user/order/cancel?orderNum=${this.orderNum}`)
             .then(res => {
                 if(res.body.res_code === 200){
                     this.$dialog.toast({

@@ -1,7 +1,7 @@
 <template>
     <vm-layout id="home">
         <!-- 搜索框 -->
-        <form action="/viewport/search" method="get" class="search center-center">
+        <form action="" method="get" class="search center-center" @submit.prevent="search">
             <i v-if="!name" class="iconfont icon-search-in"></i>
             <input type="search" v-model="name" name="keyword" placeholder='搜索'>
         </form>
@@ -75,6 +75,10 @@ export default {
         // 查看景点明细
         goViewDetail(id){
             this.$router.push('/viewport/detail?id=' + id)
+        },
+
+        search(){
+            this.$router.push('/viewport/search?keyword=' + name)
         }
     }
 }

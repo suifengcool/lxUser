@@ -40,10 +40,10 @@ var mockDir = path.resolve(__dirname, '../mock');
 
 // serve pure static assets
 var staticPath = path.posix.join(config.build.assetsPublicPath, config.build.assetsSubDirectory)
-app.use(staticPath, express.static(path.resolve(__dirname, '../dist/static')))
+app.use(staticPath, express.static(path.resolve(__dirname, '../dist/static2')))
 
 app.use(function (req, res) {
-  res.sendFile(path.resolve(__dirname, '../dist/index.html'), {
+  res.sendFile(path.resolve(__dirname, '../dist/index2.html'), {
     headers: {
       'Content-Type': 'text/html; charset=UTF-8'
     }

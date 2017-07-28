@@ -33,7 +33,7 @@
                 <div class="textInfo">
                     <h3>旅游导游：{{real_name}}</h3>
                     <p>介绍：{{introduce}}</p>
-                    <p>旅行时长：{{visit_length}}个小时</p>
+                    <p>旅行时长：{{visit_length}}分钟</p>
                 </div>
             </div>
         </div>
@@ -308,8 +308,7 @@ export default {
                 contactName: this.contactName,
                 phone: this.phone,
                 personCount: this.personCount,
-                code: this.code,
-                oid: 'test1234'
+                code: this.code
             })
             .then(rst => {
                 if(rst.body.res_code === 200){
@@ -329,7 +328,7 @@ export default {
 
         // 获取评论列表
         fetchCommentList(){
-            this.$http.get(`/view/guideInfo?oid=test1234&lineId=${this.lineId}`)
+            this.$http.get(`/view/guideInfo?lineId=${this.lineId}`)
             .then(res => {
                 if(res.body.res_code === 200){
                     this.favoriteCnt = res.body.data.info && res.body.data.info.favoriteCnt
@@ -343,7 +342,7 @@ export default {
 
         // 收藏
         collect(){
-            this.$http.post('/user/favorite/add',{guideId: this.guideId,oid:'test1234'})
+            this.$http.post('/user/favorite/add',{guideId: this.guideId})
             .then(res => {
                 if(res.body.res_code === 200){
                     this.favoriteCnt ++

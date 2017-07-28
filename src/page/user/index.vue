@@ -61,7 +61,7 @@ export default {
             .then(res => {
                 this.name = res.data.nick_name
                 this.headImg = res.data.resource_path
-                document.querySelector('.header').style.backgroundImage = `url(${this.headImg ? res.prefix + this.headImg: require('../../assets/bg-home1.jpg')})`
+                document.querySelector('.header').style.backgroundImage = `url(${this.headImg && (this.headImg).indexOf('http') > -1 ? this.headImg :res.prefix + this.headImg})`
             })
             .catch(err => this.$dialog.toast({mes: err.msg}))
         },
@@ -71,7 +71,7 @@ export default {
             var formData = new FormData()
                 formData.append("file", event.target.files[0])
                 formData.append("remotePath", '/agent')
-                formData.append("oid", 'test1234')
+                // formData.append("oid", 'test1234')
             if(event.target.files[0]){
                 this.loading = true
                 this.$http.post('/upload/uploadFile',formData)

@@ -84,7 +84,7 @@ routes.push({
 })
 
 export default new Router({
-    mode: 'history',              // HTML5 history 模式
+    mode: 'hash',              // HTML5 history 模式
     linkActiveClass: 'active',
     routes: routes
 })

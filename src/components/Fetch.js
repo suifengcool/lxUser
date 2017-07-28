@@ -21,7 +21,7 @@ export default {
         }
 
         obj.data = vm.$.extend({
-            oid: 'test1234'
+            // oid: 'test1234'
         }, obj.data || {})
 
         obj.headers = obj.headers || {

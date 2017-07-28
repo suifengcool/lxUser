@@ -84,7 +84,6 @@ export default {
                     status: parseInt(this.status),
                     pageNo: this.page,
                     pageSize: this.pageSize,
-                    oid: 'test1234'.toString()
                 })
                 .then(res => {
                     const _list = res.body.data.list

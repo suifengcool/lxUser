@@ -63,14 +63,12 @@ export default {
         fetchData () {
             if(!this.loadOnce && !this.lastPage){
                 this.loadOnce = true
-                this.$http.get(`/user/favorite/list?oid=test1234&pageNo=${this.page}&pageSize=${this.pageSize}`)
+                this.$http.get(`/user/favorite/list?pageNo=${this.page}&pageSize=${this.pageSize}`)
                 .then(res => {
                     const _list = res.body.data.list
                     this.lists = [...this.lists, ..._list]
                     this.imgOrigin = res.body.prefix
                     this.count = res.body.data.totalRow
-                    console.log('this.count:',this.count)
-
                     if(res.body && res.body.data && res.body.data.lastPage){
                         this.lastPage = true
                         setTimeout(()=> {
