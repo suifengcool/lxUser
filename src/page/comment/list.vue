@@ -3,7 +3,7 @@
         <vm-infinitescroll :on-infinite="fetchData" class="orderList">
             <ul slot="list">
                 <Li v-for="(item, index) in lists">
-                    <h3 class="border-bottom">{{item.create_time}}</h3>
+                    <h3 class="border-bottom">{{item.create_time | date("YYYY-MM-DD")}}</h3>
                     <div class="msg border-bottom">
                         <div class="img">
                             <img :src="(item.avatar_img).indexOf('http') > -1 ? item.avatar_img : imgOrigin + item.avatar_img" alt="">
@@ -47,9 +47,7 @@ export default {
         }
     },
 
-    components: {
-        
-    },
+    filters: vm.$Filters,
 
     created () {
         this.config.title('全部评价')

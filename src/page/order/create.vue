@@ -50,7 +50,6 @@
                 format="YYYY-MM-DD HH:mm" 
                 :minute-list="['00', '15', '30', '45']" 
                 clear-text="today" 
-                @on-clear="setToday"
             >
                 <x-button class="timeTitle"><i class="iconfont icon-rl"></i>出发时间</x-button>
             </datetime>
@@ -206,15 +205,7 @@ export default {
     },    
 
     methods: {
-        setToday (value) {
-            let now = new Date()
-            let cmonth = now.getMonth() + 1
-            let day = now.getDate()
-            if (cmonth < 10) cmonth = '0' + cmonth
-            if (day < 10) day = '0' + day
-            this.$data.value7 = now.getFullYear() + '-' + cmonth + '-' + day
-        },
-
+        // 日历插件点击确认
         change(value){
             let timeArr = value.split('')
             this.month = timeArr[5] + timeArr[6]

@@ -34,7 +34,7 @@
                 </vm-infinitescroll>
             </vm-tab-panel>
         </vm-tab>
-
+        
         <!-- 空态 -->
         <dummyStatus v-if="!count" :text="text"></dummyStatus>
     </vm-layout>
