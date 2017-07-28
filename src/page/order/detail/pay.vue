@@ -47,7 +47,7 @@
                 <span class="fl">微信支付</span>
                 <i class="iconfont icon-right fr"></i>
             </div>
-            <button>确认支付</button>
+            <button type="button" @click="createPaysign()">确认支付</button>
         </vm-popup>
     </vm-layout>
 </template>
@@ -67,7 +67,8 @@ export default {
             hour:'',
             minute:'',
             second:'',
-            timer: ''
+            timer: '',
+            isWeixin: navigator.userAgent.toLowerCase().indexOf('micromessenger/') > -1,
         }
     },
 
@@ -94,7 +95,8 @@ export default {
                         let starttime = (res.body.data.visitor_pay_final_time).replace(new RegExp("-","gm"),"/")
                         let starttimeHaoMiao = (new Date(starttime)).getTime()
                         let timestamp = Date.parse(new Date())
-                        this.totolTime = starttimeHaoMiao-timestamp
+                        // this.totolTime = starttimeHaoMiao-timestamp
+                        this.totolTime = 600
                         this.countdowm(this.totolTime)
                     }
                 }else{
@@ -133,7 +135,80 @@ export default {
                 this.second = seconds
                 value --
             }, 1000)
-        }
+        },
+
+        // 调用生成的支付签名
+        createPaysign (orderIds) {
+            this.$http.post("/user/order/detail",{
+                oid: 'test1234',
+                orderNum: this.orderNum
+            })
+            .then (res => {
+                if (this.isWeixin){
+                    this.weixinPay(res.body.data)
+                }else{
+                    this.$dialog.toast({mes: '暂时只支持微信支付'})
+                    return
+                }
+            }).catch(err => {
+                this.$dialog.toast({mes: err.body.msg})
+
+                if (err.body.msg == '订单已付款')
+                    setTimeout(this.goSuccess(), 1000)
+                else
+                    setTimeout("location.href='/order/list?index=1", 2000)
+            })
+        },
+
+        goSuccess() {
+            this.$router.replace(`/order/detail/success?orderNum=${this.orderNum}`)
+        },
+
+        // 微信支付接口配置
+        weixinPay (data) {
+            let self = this
+
+            function onBridgeReady(){
+                WeixinJSBridge.invoke(
+                    'getBrandWCPayRequest',
+                    data,
+                    // {
+                    //     "timeStamp": "1501232700",
+                    //     "package": "prepay_id=wx201707281704580e429008a20276086579",
+                    //     "paySign": "E78236DC2D0BC42E3BFBEB7642F22855",
+                    //     "appId": "wxda3d8252ef356117",
+                    //     "signType": "MD5",
+                    //     "nonceStr": "1501232700250"
+                    // },
+                    res => {
+                        if (res.err_msg == 'get_brand_wcpay_request:ok') {
+                            // 支付成功
+                            self.$dialog.toast({mes: '支付成功'})
+                            setTimeout(self.goSuccess(), 1000)
+                        } else if (res.err_msg == 'get_brand_wcpay_request:fail') {
+                            self.$dialog.toast({mes: '支付失败'})
+                            setTimeout("location.href='/order/list?index=1'", 2000)
+                        } else if (res.err_msg == 'get_brand_wcpay_request:cancel') {
+                            self.$dialog.toast({mes: '请继续付款，未完成付款，订单将关闭！'})
+                            setTimeout("location.href='/order/list?index=1'", 2000)
+                        } else {
+                            setTimeout("location.href='/order/list?index=0'", 2000)
+                        }
+                    }
+                )
+            }
+
+            if (typeof WeixinJSBridge == "undefined"){
+                if( document.addEventListener ){
+                    document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false)
+                }else if (document.attachEvent){
+                    document.attachEvent('WeixinJSBridgeReady', onBridgeReady)
+                    document.attachEvent('onWeixinJSBridgeReady', onBridgeReady)
+                }
+            } else {
+                onBridgeReady()
+            }
+        },
     }
 }
 </script>

@@ -14,13 +14,13 @@ export default {
     data () {
         return {
             config: vm.config,                  // 配置
-            mobile: 13797071376                 // 电话
+            mobile: '13797071376'                 // 电话
         }
     },
 
     created () {
         this.config.title('帮助支持')
-        $('.tel').attr('href','tel:'+this.mobile)
+        $('.tel').attr('href','tel:' + this.mobile)
     },
 
     methods: {
