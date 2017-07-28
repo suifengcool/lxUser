@@ -104,7 +104,8 @@ export default {
                         let starttime = (res.body.data.guide_confirm_final_time).replace(new RegExp("-","gm"),"/")
                         let starttimeHaoMiao = (new Date(starttime)).getTime()
                         let timestamp = Date.parse(new Date())
-                        this.totolTime = starttimeHaoMiao - timestamp
+                        // this.totolTime = starttimeHaoMiao - timestamp
+                        this.totolTime = 600
                         console.log('starttimeHaoMiao:',starttimeHaoMiao)
                         console.log('timestamp:',timestamp)
                         console.log('this.totolTime:',this.totolTime)
