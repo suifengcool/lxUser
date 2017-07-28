@@ -6,7 +6,7 @@
             <div class="header-main">
                 <div class="header-main-top">
                     <span>待确认</span>
-                    <i>倒计时：{{minute}}{{second}}</i>
+                    <i>{{minute}}{{second}}</i>
                 </div>
                 <p>导游正在查看您的订单信息，核实没问题后，接受订单即刻出发旅行</p>
             </div>
@@ -77,14 +77,14 @@ export default {
             day:'',
             hour:'',
             minute:'',
-            second:''
+            second:'',
+            timer: ''
         }
     },
 
     created () {
         this.fetchData()
         this.config.title('订单号：'+ this.orderNum)
-        this.countdowm(this.totolTime)
     },
 
     methods: {
@@ -95,6 +95,15 @@ export default {
                 if(res.body.res_code === 200){
                     this.imgOrigin = res.body.prefix 
                     this.init = res.body.data
+                    
+                    // 获取倒计时
+                    if(res.body.data.guide_confirm_final_time){
+                        let starttime = (res.body.data.guide_confirm_final_time).replace(new RegExp("-","gm"),"/")
+                        let starttimeHaoMiao = (new Date(starttime)).getTime()
+                        let timestamp = Date.parse(new Date())
+                        this.totolTime = starttimeHaoMiao-timestamp
+                        this.countdowm(this.totolTime)
+                    }
                 }else{
                     this.$dialog.toast({mes: res.body.msg})
                 }
@@ -123,7 +132,17 @@ export default {
         },
 
         countdowm (value){
-            let timer = setInterval(()=>{
+            this.timer = setInterval(()=>{
+                if(value <= 0){
+                    clearInterval(this.timer)
+                    this.$dialog.toast({
+                        mes: '该订单暂无导游接单',
+                        timeout: 1500,
+                        callback: () => {
+                            this.$router.replace('/order/list')
+                        }
+                    })
+                }
                
                 var days=0,hours=0,minutes=0,seconds=0; //时间默认值
                 if(value > 0){

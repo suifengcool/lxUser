@@ -42,9 +42,19 @@
         <div class="captionTitle border-bottom">
            <i>|</i><span>出游时间</span>
         </div>
-        <div class="startTimeBox border-bottom" @click="showPop=true">
-            <p class="timeTitle"><i class="iconfont icon-rl"></i><span>出发时间</span></p>
-            <p class="timeDetail">2016年6月25日9:00AM</p>
+        <div class="startTimeBox border-bottom">
+            <!-- vux日历组件 -->
+            <datetime 
+                v-model="minuteListValue" 
+                @on-change="change" 
+                format="YYYY-MM-DD HH:mm" 
+                :minute-list="['00', '15', '30', '45']" 
+                clear-text="选择两月内日期" 
+                @on-clear="setToday"
+            >
+                <x-button class="timeTitle"><i class="iconfont icon-rl"></i>出发时间</x-button>
+            </datetime>
+            <p class="timeDetail">{{year}}年{{month}}月{{day}}日{{mintime}}</p>
         </div>
 
         <!-- 出游人数 -->
@@ -129,33 +139,9 @@
             <button class="tabbar-item" type="button" @click="create()">立即预定</button>
         </vm-tabbar>
         
-        <!-- 日期选择弹框 -->
-        <vm-popup v-model="showPop" position="bottom" height="60%" class="datePop">
-            <div class="title cf">
-                <span class="fl border-right">月</span>
-                <span class="fl border-right">日</span>
-                <span class="fl border-right">小时</span>
-                <span class="fl">分钟</span>
-            </div>
-            <div class="list">
-                <ul class="month">
-                    <li v-for="(item,index) in monthList" class="border-bottom border-right">{{item}}</li>
-                </ul>
-                <ul class="day">
-                    <li v-for="(item,index) in dayList" class="border-bottom border-right">{{item}}</li>
-                </ul>
-                <ul class="hours">
-                    <li v-for="(item,index) in hoursList" class="border-bottom border-right">{{item}}</li>
-                </ul>
-                <ul class="min">
-                    <li v-for="(item,index) in minList" class="border-bottom border-right">{{item}}</li>
-                </ul>
-            </div>
-        </vm-popup>
-        
         <!-- 选择出游人数 -->
         <vm-popup v-model="chooseCountPop" position="center" height="60%" class="CountPop">
-            <h3 class="border-bottom">填写出游人数<i class="iconfont icon-shutdown" @click="chooseCountPop=false"></i></h3>
+            <h3 class="border-bottom" @click="chooseCountPop=false">填写出游人数<i class="iconfont icon-shutdown"></i></h3>
             <div class="selectTime">
                 <i class="iconfont icon-minus fl" @click="chooseCount(1)"></i>
                 <input type="tel" v-model="personCount">
@@ -168,6 +154,8 @@
 <script>
 var dtCache = window.localStorage
 var guideInfo = JSON.parse(dtCache.getItem('guideInfo'))
+var userInfo2 = JSON.parse(dtCache.getItem('userInfo'))
+import { Datetime ,XButton} from 'vux'
 export default {
     name: 'user',
     data () {
@@ -180,32 +168,63 @@ export default {
             introduce: guideInfo.introduce || '专业导游二十年', // 导游描述
             visit_length: guideInfo.visit_length,            // 旅行时长
             lineId: this.$route.query.lineId,                // 线路id
-            guideId: this.$route.query.guideId,               // 导游id
+            guideId: this.$route.query.guideId,              // 导游id
             image: guideInfo.image,                          // 景点图片
             imgOrigin: guideInfo.imgOrigin,                  // 图片前缀
             resource_path: guideInfo.resource_path,          // 导游照片
-            contactName: '',                                 // 游客姓名
-            phone: '',                                       // 游客电话
+            contactName: userInfo2 ? userInfo2.name : '',    // 游客姓名
+            phone: userInfo2 ? userInfo2.phone : '',         // 游客电话
             code: '',                                        // 验证码
             commentList: [],                                 // 评论列表
             commentCnt: null,                                // 评论条数
             favoriteCnt: null,                               // 收藏条数
-            showPop: false,                                  // 日期弹框
             chooseCountPop: false,                           // 出游人数弹框
-            nendKnowShow:false,
-            isUp:false,
-            monthList: ['1','2','3','4','5','6','7','8','9','10','11','12'],
-            dayList: ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31'],
-            hoursList: ['00','01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24'],
-            minList: ['00','15','30','45','60']
+            minuteListValue: '',                             // 选择日期
+            nendKnowShow:false,                              // 须知
+            isUp:false,                                      // 向上
+            year: '',                                        // 年
+            month: '',                                       // 月
+            day: '',                                         // 日
+            mintime: '',                                     // 时间
+            todayMonth: '',                                  // 当月
         }
     },
     created () {
         this.config.title('出发')
         this.fetchCommentList()
+
+        var today = new Date()                                // 获取当日日历
+        this.year = today.getFullYear()      // 获取当前年份
+        this.month = this.todayMonth = today.getMonth() + 1   // 获取当前月份,注意月份需+1
+        this.day = today.getDate()                            // 获取当前日期
     },
 
+    components: {
+        Datetime,
+        XButton
+    },    
+
     methods: {
+        setToday (value) {
+            let now = new Date()
+            let cmonth = now.getMonth() + 1
+            let day = now.getDate()
+            if (cmonth < 10) cmonth = '0' + cmonth
+            if (day < 10) day = '0' + day
+            this.$data.value7 = now.getFullYear() + '-' + cmonth + '-' + day
+        },
+
+        change(value){
+            let timeArr = value.split('')
+            this.month = timeArr[5] + timeArr[6]
+            this.day = timeArr[8] + timeArr[9]
+            this.mintime = timeArr[11] + timeArr[12] + ":" + timeArr[14] + timeArr[15]
+            if(parseInt(this.month) > parseInt(this.todayMonth) + 2){
+                this.$dialog.toast({mes: '所选择日期超过两个月'})
+                return
+            }
+        },
+
         // 点击预定须知
         needKnowHandle(){
             this.nendKnowShow = !this.nendKnowShow;
@@ -263,14 +282,16 @@ export default {
 
         // 生成订单
         create(){
-            // if(!this.visitDate){
-            //     this.$dialog.toast({mes: '请选择出行日期'})
-            //     return
-            // }
-            // if(!this.visitTime){
-            //     this.$dialog.toast({mes: '请选择出行日期'})
-            //     return
-            // }
+            // 缓存用户信息
+            var userInfo = {}
+            userInfo.name = this.contactName,
+            userInfo.phone = this.phone
+            dtCache.setItem('userInfo',JSON.stringify(userInfo))
+
+            if(parseInt(this.month) > parseInt(this.todayMonth) + 2){
+                this.$dialog.toast({mes: '请选择正确的出行日期'})
+                return
+            }
             if(!this.phone || !(/^1(3|4|5|7|8)\d{9}$/.test(this.phone))){
                 this.$dialog.toast({mes: '请输入正确的手机号码'})
                 return
@@ -285,8 +306,8 @@ export default {
             }
             this.$http.post('/user/order/save',{
                 lineId: this.lineId,
-                visitDate: '2017-8-12',
-                visitTime: '09:00',
+                visitDate: this.year + '-' + this.month + '-'+ this.day,
+                visitTime: this.mintime,
                 contactName: this.contactName,
                 phone: this.phone,
                 personCount: this.personCount,
@@ -392,7 +413,7 @@ export default {
     .timeTitle
         text-align: center
         font-size: 0.7rem
-        margin-bottom: .25rem
+        // margin-bottom: .25rem
         i 
             vertical-align: 0%
             margin-right: 0.15rem
@@ -600,21 +621,11 @@ export default {
     &:after
         border-top: none
 // 日期弹框
-.datePop
-    text-align: center
-    .title
-        width: 100% 
-        span 
-            width: 25%
-            height: 1.2rem
-            line-height: 1.2rem
-            background: #ccc
-    .list
-        display: flex
-        ul 
-            width: 25%
-            overflow-y: scroll
-            li 
-                height: 1.3rem
-                line-height: 1.3rem
+#orderCreate 
+    .weui-btn_default
+        background: #fff
+    .weui-btn:after
+        border: none
+    .weui-cell
+        padding: 0
 </style>

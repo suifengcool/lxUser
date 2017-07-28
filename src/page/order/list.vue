@@ -13,15 +13,14 @@
                         <li v-for="(item, index) in lists" class="border-bottom" @click="goDetail(item,index)">
                             <div class="item">
                                 <div class="top cf">
-                                    <h3 class="fl">{{item.view_line_content}}</h3>
+                                    <h3 class="fl">{{item.view_line_name}}</h3>
                                     <span class="fr">{{['待确认','已取消','已取消','已取消','待付款','已取消','未出行','已完成','投诉待确认','已退款','待评价','已评价'][+item.book_status-1]}}</span>
                                 </div>
-                                <!-- 订单状态:1=待导游确认,2=游客取消,3=导游主动取消,4=导游确认超时,5=待游客付款,6=支付超时,7=已付款,8=已出行完成,9=有投诉待确认,10=已退款,11=待评价,12=已评价 -->
                                 <div class="main">
                                     <vm-lazyimg
                                         class="img"
                                         :src= "item.resource_path ? imgOrigin + item.resource_path : ''"
-                                        :defaultSrc="require('../../assets/lazyDefault.png')"
+                                        :defaultSrc="require('../../assets/lazyDefault.jpg')"
                                     />
                                     <div class="desc">
                                         <h3>游览时间：{{item.visit_date}}</h3>
@@ -131,9 +130,7 @@ export default {
             }else if(item.book_status === 11){
                 this.$router.push(`/comment?orderNum=${item.order_num}`)
             }
-            
         }
-
     }
 }
 </script>
@@ -167,7 +164,6 @@ export default {
                 .img 
                     width: 7rem
                     height: 3.2rem
-                    background: red
                     margin-right: .8rem
                 .desc
                     flex: 1
