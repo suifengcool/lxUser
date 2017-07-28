@@ -16,8 +16,7 @@
         <div class="travel-title border-bottom item">{{init.view_line_name}}</div>
         <div class="guide border-bottom">
             <div class="img">
-                <!-- <img :src="(init.resource_path).indexOf('http')>-1 ? init.resource_path : imgOrigin + init.resource_path" alt=""> -->
-                <img :src="init.resource_path" alt="">
+                <img :src="init.resource_path && (init.resource_path).indexOf('http')>-1 ? init.resource_path : imgOrigin + init.resource_path" alt="">
             </div>
             <div class="guide-desc">
                 <h3 class="cf">
@@ -87,6 +86,10 @@ export default {
         this.config.title('订单号：'+ this.orderNum)
     },
 
+    destroyed() {
+        clearInterval(this.timer)
+    },
+
     methods: {
         // 获取订单信息
         fetchData(){
@@ -101,7 +104,10 @@ export default {
                         let starttime = (res.body.data.guide_confirm_final_time).replace(new RegExp("-","gm"),"/")
                         let starttimeHaoMiao = (new Date(starttime)).getTime()
                         let timestamp = Date.parse(new Date())
-                        this.totolTime = starttimeHaoMiao-timestamp
+                        this.totolTime = starttimeHaoMiao - timestamp
+                        console.log('starttimeHaoMiao:',starttimeHaoMiao)
+                        console.log('timestamp:',timestamp)
+                        console.log('this.totolTime:',this.totolTime)
                         this.countdowm(this.totolTime)
                     }
                 }else{
@@ -126,7 +132,6 @@ export default {
                 }else{
                     this.$dialog.toast({mes: res.body.msg})
                 }
-                
             })
             .catch(err => this.$dialog.toast({mes: err.body.msg}))
         },
@@ -154,12 +159,11 @@ export default {
                 if (minutes <= 9) minutes = '0' + minutes
                 if (seconds <= 9) seconds = '0' + seconds
 
-                this.day=days+'天'
-                this.hour=hours+'时'
-                this.minute = minutes+ ':'
+                this.day = days + '天'
+                this.hour = hours + '时'
+                this.minute = minutes + ':'
                 this.second = seconds
                 value --
-
             }, 1000)
         }
     }

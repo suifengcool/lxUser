@@ -49,7 +49,7 @@
                 @on-change="change" 
                 format="YYYY-MM-DD HH:mm" 
                 :minute-list="['00', '15', '30', '45']" 
-                clear-text="选择两月内日期" 
+                clear-text="today" 
                 @on-clear="setToday"
             >
                 <x-button class="timeTitle"><i class="iconfont icon-rl"></i>出发时间</x-button>

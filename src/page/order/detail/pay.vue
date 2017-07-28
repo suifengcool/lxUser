@@ -76,6 +76,10 @@ export default {
         this.fetchData()
     },
 
+    destroyed() {
+        clearInterval(this.timer)
+    },
+
     methods: {
         // 获取订单信息
         fetchData(){
