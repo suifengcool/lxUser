@@ -58,6 +58,7 @@ export default {
                         this.count = 0
                     }else{
                         this.lists = res.body.data
+                        this.count = 1
                     }
                 })
                 .catch(err => this.$dialog.toast({mes: err.body.msg}))
