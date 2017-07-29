@@ -1,7 +1,7 @@
 <template>
     <vm-layout id="home">
         <!-- 搜索框 -->
-        <form action="" method="get" class="search center-center" @submit.prevent="search">
+        <form class="search center-center" @submit.prevent="search">
             <i v-if="!name" class="iconfont icon-search-in"></i>
             <input type="search" v-model="name" name="keyword" placeholder='搜索'>
         </form>
@@ -78,7 +78,7 @@ export default {
         },
 
         search(){
-            this.$router.push('/viewport/search?keyword=' + name)
+            this.$router.push('/viewport/search?keyword=' + this.name)
         }
     }
 }

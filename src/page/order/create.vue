@@ -5,20 +5,12 @@
             <!-- 轮播图 -->
             <div class="bannerBox">
                 <div class="demo-small-pitch">
-                    <vm-slider autoplay="3000" initIndex="0">
-                        <vm-slider-item>
+                    <vm-slider :ready="readySlider" initIndex="0" autoplay="3000">
+                        <vm-slider-item v-for="(image, index) in images">
                             <div class="item">
-                                <img :src="image.indexOf('http')>-1 ? image : imgOrigin + image" alt=""><span>{{index}}</span>
-                            </div>
-                        </vm-slider-item>
-                        <vm-slider-item>
-                            <div class="item">
-                                <img :src="image.indexOf('http')>-1 ? image : imgOrigin + image" alt=""><span>{{index}}</span>
-                            </div>
-                        </vm-slider-item>
-                        <vm-slider-item>
-                            <div class="item">
-                                <img :src="image.indexOf('http')>-1 ? image : imgOrigin + image" alt=""><span>{{index}}</span>
+                                <img
+                                    :src="image.indexOf('http')>-1 ? image : imgOrigin + image"
+                                />
                             </div>
                         </vm-slider-item>
                     </vm-slider>
@@ -76,7 +68,8 @@
         <div class="chuxingrenInfo border-bottom">
             <div class="nameInputBox chuxingrenInfo-item">
                 <label for="">姓&nbsp;&nbsp;&nbsp;名:</label>
-                <input type="text" placeholder="请输入姓名" v-model.trim="contactName">
+                {{max_count}}
+                <input type="text" placeholder="请输入姓名" v-model.trim="contactName" :maxlength="max_count">
             </div>
             <div class="phoneInputBox">
                 <div class="nameInputBox chuxingrenInfo-item">
@@ -125,17 +118,17 @@
         <!-- 评论,收藏 -->
         <div class="danzanBox">
             <div class="dianzanItem">
-                <a :href="commentCnt ? ('/comment/list?guideId=' + guideId) : 'javascript:;'" class="plNum">
+                <a :href="commentCnt ? ('#/comment/list?guideId=' + guideId) : 'javascript:;'" class="plNum">
                     <i class="iconfont icon-kefu"></i><label for="">{{commentCnt}}</label>
                 </a>
                 <span class="dzNum" @click="collect()"><i class="iconfont icon-shoucang"></i><label for="">{{favoriteCnt}}</label></span>
             </div>
-            <a :href="commentCnt ? ('/comment/list?guideId=' + guideId) : 'javascript:;'" class="commitBtn">更多评论<i class="iconfont icon-jiantou1"></i></a>
+            <a :href="commentCnt ? ('#/comment/list?guideId=' + guideId) : 'javascript:;'" class="commitBtn">更多评论<i class="iconfont icon-jiantou1"></i></a>
         </div>
 
         <!-- 底部按钮 -->
         <vm-tabbar slot="tabbar" class="tabbar-box">
-            <button class="tabbar-item" type="button" @click="create()">立即预定</button>
+            <button class="tabbar-item" type="button" @click="create()">立即预订</button>
         </vm-tabbar>
         
         <!-- 选择出游人数 -->
@@ -152,7 +145,6 @@
 
 <script>
 var dtCache = window.localStorage
-var guideInfo = JSON.parse(dtCache.getItem('guideInfo'))
 var userInfo2 = JSON.parse(dtCache.getItem('userInfo'))
 import { Datetime ,XButton} from 'vux'
 export default {
@@ -160,20 +152,22 @@ export default {
     data () {
         return {
             config: vm.config,                               // 配置
+            readySlider: false,                                // slider 初始化
             codeText: '发送验证码',                            // 按钮文字
             isClicked: false,                                // 是否已点击按钮
             personCount: 1,                                  // 出行人数
-            real_name: guideInfo.real_name,                  // 导游姓名
-            introduce: guideInfo.introduce || '专业导游二十年', // 导游描述
-            visit_length: guideInfo.visit_length,            // 旅行时长
+            real_name: '',                                   // 导游姓名
+            introduce: '',                                   // 导游描述
+            visit_length: '',                                // 旅行时长
             lineId: this.$route.query.lineId,                // 线路id
             guideId: this.$route.query.guideId,              // 导游id
-            image: guideInfo.image,                          // 景点图片
-            imgOrigin: guideInfo.imgOrigin,                  // 图片前缀
-            resource_path: guideInfo.resource_path,          // 导游照片
+            image: '',                                       // 景点图片
+            imgOrigin: '',                                   // 图片前缀
+            resource_path: '',                               // 导游照片
             contactName: userInfo2 ? userInfo2.name : '',    // 游客姓名
             phone: userInfo2 ? userInfo2.phone : '',         // 游客电话
             code: '',                                        // 验证码
+            max_count: '',                                   // 最高出游人数
             commentList: [],                                 // 评论列表
             commentCnt: null,                                // 评论条数
             favoriteCnt: null,                               // 收藏条数
@@ -186,7 +180,8 @@ export default {
             day: '',                                         // 日
             mintime: '',                                     // 时间
             todayMonth: '',                                  // 当月
-            sendMintime: ''                                  // 发送的日期
+            sendMintime: '' ,                                 // 发送的日期
+            images: []
         }
     },
     created () {
@@ -205,6 +200,32 @@ export default {
     },    
 
     methods: {
+        // 获取线路导游信息
+        fetchCommentList(){
+            this.$http.get(`/view/guideInfo?lineId=${this.lineId}`)
+            .then(res => {
+                if(res.body.res_code === 200){
+                    this.favoriteCnt = res.body.data.info && res.body.data.info.favoriteCnt
+                    this.commentCnt = res.body.data.info && res.body.data.info.commentCnt
+                    this.commentList = res.body.data.list && res.body.data.list.splice(0,4)
+                    this.max_count = res.body.data.info && res.body.data.info.max_count
+                    this.real_name =  res.body.data.info && res.body.data.info.real_name
+                    this.introduce =  res.body.data.info && res.body.data.info.commentCnt || '专业导游二十年'
+                    this.visit_length =  res.body.data.info && res.body.data.info.visit_length
+                    this.resource_path =  res.body.data.info && res.body.data.info.user_img
+                    this.image = res.body.data.info && res.body.data.info.view_img
+                    this.imgOrigin = res.body.prefix
+                    this.images.push(this.image)
+                    this.images.push(this.image)
+                    this.images.push(this.image)
+                    this.images = this.images.splice(0,4)
+                    this.readySlider = true
+                }else{
+                    this.$dialog.toast({mes: res.body.msg})
+                }
+            }).catch(err => this.$dialog.toast({mes: err.body.msg}))
+        },
+
         // 日历插件点击确认
         change(value){
             let timeArr = value.split('')
@@ -308,7 +329,8 @@ export default {
                 contactName: this.contactName,
                 phone: this.phone,
                 personCount: this.personCount,
-                code: this.code
+                code: this.code,
+                oid: 'test1234'
             })
             .then(rst => {
                 if(rst.body.res_code === 200){
@@ -324,20 +346,6 @@ export default {
                 }
             })
             .catch(err => this.$dialog.toast({mes: err.body.msg}))
-        },
-
-        // 获取评论列表
-        fetchCommentList(){
-            this.$http.get(`/view/guideInfo?lineId=${this.lineId}`)
-            .then(res => {
-                if(res.body.res_code === 200){
-                    this.favoriteCnt = res.body.data.info && res.body.data.info.favoriteCnt
-                    this.commentCnt = res.body.data.info && res.body.data.info.commentCnt
-                    this.commentList = res.body.data.list && res.body.data.list.splice(0,4)
-                }else{
-                    this.$dialog.toast({mes: res.body.msg})
-                }
-            }).catch(err => this.$dialog.toast({mes: err.body.msg}))
         },
 
         // 收藏

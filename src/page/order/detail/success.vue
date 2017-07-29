@@ -4,7 +4,7 @@
         <div class="header border-bottom">
             <i class="iconfont icon-duigou"></i>
             <div class="header-right">
-                <h3>订单预定成功</h3>
+                <h3>订单预订成功</h3>
                 <span>请务必在约定时间到达集合地点</span>
             </div>
         </div>

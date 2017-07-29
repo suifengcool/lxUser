@@ -65,8 +65,8 @@ export default {
             totolTime: 600,
             day:'',
             hour:'',
-            minute:'',
-            second:'',
+            minute:'30:',
+            second:'00',
             timer: '',
             isWeixin: navigator.userAgent.toLowerCase().indexOf('micromessenger/') > -1,
         }
@@ -154,7 +154,7 @@ export default {
                 if (err.body.msg == '订单已付款')
                     setTimeout(this.goSuccess(), 1000)
                 else
-                    setTimeout("location.href='/order/list?index=1", 2000)
+                    setTimeout("location.href='#/order/list?index=1", 2000)
             })
         },
 
@@ -185,12 +185,12 @@ export default {
                             setTimeout(self.goSuccess(), 1000)
                         } else if (res.err_msg == 'get_brand_wcpay_request:fail') {
                             self.$dialog.toast({mes: '支付失败'})
-                            setTimeout("location.href='/order/list?index=1'", 2000)
+                            setTimeout("location.href='#/order/list?index=1'", 2000)
                         } else if (res.err_msg == 'get_brand_wcpay_request:cancel') {
                             self.$dialog.toast({mes: '请继续付款，未完成付款，订单将关闭！'})
-                            setTimeout("location.href='/order/list?index=1'", 2000)
+                            setTimeout("location.href='#/order/list?index=1'", 2000)
                         } else {
-                            setTimeout("location.href='/order/list?index=0'", 2000)
+                            setTimeout("location.href='#/order/list?index=0'", 2000)
                         }
                     }
                 )

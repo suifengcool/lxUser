@@ -1,7 +1,7 @@
 <template>
     <vm-layout id="home">
         <!-- 搜索框 -->
-        <form action="" method="get" class="search center-center" @submit.prevent="search">
+        <form class="search center-center" @submit.prevent="search">
             <i v-if="!name" class="iconfont icon-search-in"></i>
             <input type="search" v-model="name" name="keyword" placeholder='搜索'>
         </form>
@@ -19,6 +19,8 @@
             </li>
         </ul>
 
+        <!-- 空态 -->
+        <dummyStatus v-if="!count" :text="text"></dummyStatus>
     </vm-layout>
 </template>
 
@@ -32,6 +34,8 @@ export default {
             lists: [],                     // 景点列表
             name: '',                      // 搜索框内容
             keyWord: this.$route.query.keyword,
+            count: 1,
+            text: '未找到相关景点，换个词试试~',
 
         }
     },
@@ -44,15 +48,19 @@ export default {
     methods: {
         // 获取数据
         fetchViews() {
-            if(this.keyWord && this.keyWord.trim() || this.name.trim()){
+            if(this.keyWord && this.keyWord.trim()){
                 this.$http.post('/view/search',{
                     keyWord: this.keyWord.trim()
                 })
                 .then(res => {
                     this.name = this.keyWord
-                    this.lists = res.body.data
+                    if(this.isEmptyObject(res.body.data)){
+                        this.count = 0
+                    }else{
+                        this.lists = res.body.data
+                    }
                 })
-                .catch(err => this.$dialog.toast({mes: err.msg}))
+                .catch(err => this.$dialog.toast({mes: err.body.msg}))
             }else{
                 vm.fetch.get({
                     url: '/view/index',
@@ -60,7 +68,7 @@ export default {
                 .then(res => {
                     this.lists = res.data.list
                 })
-                .catch(err => this.$dialog.toast({mes: err.msg}))
+                .catch(err => this.$dialog.toast({mes: err.body.msg}))
             }
         },
 
@@ -70,8 +78,17 @@ export default {
         },
 
         search(){
+            this.keyWord = this.name
+            this.lists = []
             this.fetchViews()
-        }
+        },
+
+        isEmptyObject(e) {  
+            var t;  
+            for (t in e)  
+                return !1;  
+            return !0  
+        }  
     }
 }
 </script>

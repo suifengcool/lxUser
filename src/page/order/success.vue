@@ -1,7 +1,7 @@
 <template>
     <vm-layout id="success">
         <i class="iconfont icon-duigou"></i>
-        <h3>预定成功</h3>
+        <h3>订单提交成功</h3>
         <p>请耐心等待{{real_name}}导游确认</p>
 
         <!-- 底部按钮 -->

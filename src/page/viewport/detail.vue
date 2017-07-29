@@ -5,25 +5,18 @@
             <!-- 轮播图 -->
             <div class="bannerBox">
                 <div class="demo-small-pitch">
-                    <vm-slider autoplay="3000" initIndex="0">
-                        <vm-slider-item>
+                    <vm-slider :ready="readySlider" initIndex="0" autoplay="3000">
+                        <vm-slider-item v-for="(image, index) in images">
                             <div class="item">
-                                <img :src="init.resource_path && (init.resource_path).indexOf('http')>-1 ? init.resource_path : (imgOrigin + init.resource_path)" alt=""><span>{{index}}</span>
-                            </div>
-                        </vm-slider-item>
-                        <vm-slider-item>
-                            <div class="item">
-                                <img :src="init.resource_path && (init.resource_path).indexOf('http')>-1 ? init.resource_path : (imgOrigin + init.resource_path)" alt=""><span>{{index}}</span>
-                            </div>
-                        </vm-slider-item>
-                        <vm-slider-item>
-                            <div class="item">
-                                <img :src="init.resource_path && (init.resource_path).indexOf('http')>-1 ? init.resource_path : (imgOrigin + init.resource_path)" alt=""><span>{{index}}</span>
+                                <img
+                                    :src="image.indexOf('http')>-1 ? image : imgOrigin + image"
+                                />
                             </div>
                         </vm-slider-item>
                     </vm-slider>
                 </div>
             </div>
+
             <!-- 景区介绍 -->
             <div class="plaseInfo">
                 <h3>{{init.view_name}}</h3>
@@ -57,7 +50,7 @@
                             <div class="nameSex">
                                 <label for="">导游：</label>
                                 <span class="name">{{item.real_name}}</span>
-                                <i>{{['女','男'][item.gender]}}</i>
+                                <i :class="['iconfont',item.gender == 0 ? 'icon-nv' : 'icon-nan1']"></i>
                             </div>
                             <div class="goal">
                                 <div class="starNum">
@@ -91,7 +84,7 @@
 </template>
 
 <script>
-var dtCache = window.localStorage
+// var dtCache = window.localStorage
 export default {
     name: 'user',
 
@@ -109,6 +102,8 @@ export default {
             sortType: 0,                       // 排序规则(排序方式,1=正序,0=倒序)
             sortStatus:[],                     // 排序池
             isShow: true,                     // “更多”箭头朝下
+            readySlider: false,                // slider 初始化
+            images: []
         }
     },
 
@@ -130,6 +125,13 @@ export default {
                 if(res.res_code === 200){
                     this.imgOrigin = res.prefix 
                     this.init = res.data
+
+                    this.images.push(this.init.resource_path)
+                    this.images.push(this.init.resource_path)
+                    this.images.push(this.init.resource_path)
+                    this.images = this.images.splice(0,4)
+                    this.readySlider = true
+                    
                     this.fetchGuides()
                 }else{
                     this.$dialog.toast({mes: res.msg})
@@ -192,16 +194,17 @@ export default {
 
         // 点击导游列表项,进入创建订单
         createOrder(item,index) {
-            let guideInfo = {} 
+            // let guideInfo = {} 
             
-            guideInfo.real_name = item.real_name
-            guideInfo.introduce = item.introduce
-            guideInfo.visit_length = item.visit_length
-            guideInfo.imgOrigin = this.imgOrigin
-            guideInfo.image = this.init.resource_path
-            guideInfo.resource_path = item.resource_path
+            // guideInfo.real_name = item.real_name
+            // guideInfo.introduce = item.introduce
+            // guideInfo.visit_length = item.visit_length
+            // guideInfo.imgOrigin = this.imgOrigin
+            // guideInfo.image = this.init.resource_path
+            // guideInfo.resource_path = item.resource_path
+            // guideInfo.max_count = item.max_count
 
-            dtCache.setItem('guideInfo',JSON.stringify(guideInfo))
+            // dtCache.setItem('guideInfo',JSON.stringify(guideInfo))
 
             this.$router.push(`/order/create?lineId=${item.id}&guideId=${item.user_id}`)
         }
@@ -298,7 +301,11 @@ export default {
         .nameSexGoal .nameSex
             font-size: 0.75rem
             i
-                font-size: 0.55rem
+                font-size: 0.65rem
+                color: #ffc0cb
+            .icon-nan1
+                font-size: .85rem
+                color: #00C99D
         .goal .starNum 
             i
                 color: #FF9500
