@@ -65,8 +65,8 @@ export default {
             totolTime: 600,
             day:'',
             hour:'',
-            minute:'30:',
-            second:'00',
+            minute:'',
+            second:'',
             timer: '',
             isWeixin: navigator.userAgent.toLowerCase().indexOf('micromessenger/') > -1,
         }
@@ -138,7 +138,7 @@ export default {
 
         // 调用生成的支付签名
         createPaysign (orderIds) {
-            this.$http.post("/user/order/detail",{
+            this.$http.post("/user/order/toPay",{
                 orderNum: this.orderNum
             })
             .then (res => {

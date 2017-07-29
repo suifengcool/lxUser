@@ -41,7 +41,6 @@
                 @on-change="change" 
                 format="YYYY-MM-DD HH:mm" 
                 :minute-list="['00', '15', '30', '45']" 
-                clear-text="today" 
             >
                 <x-button class="timeTitle"><i class="iconfont icon-rl"></i>出发时间</x-button>
             </datetime>
@@ -68,8 +67,7 @@
         <div class="chuxingrenInfo border-bottom">
             <div class="nameInputBox chuxingrenInfo-item">
                 <label for="">姓&nbsp;&nbsp;&nbsp;名:</label>
-                {{max_count}}
-                <input type="text" placeholder="请输入姓名" v-model.trim="contactName" :maxlength="max_count">
+                <input type="text" placeholder="请输入姓名" v-model.trim="contactName" maxlength="10">
             </div>
             <div class="phoneInputBox">
                 <div class="nameInputBox chuxingrenInfo-item">
@@ -258,6 +256,10 @@ export default {
                 }
             }else{
                 this.personCount ++
+                if(this.personCount >= this.max_count){
+                    this.$dialog.toast({mes: '出游人数超过导游限制'})
+                    this.personCount = this.max_count
+                }
             }
         },
 
@@ -314,6 +316,10 @@ export default {
                 this.$dialog.toast({mes: '请输入正确的手机号码'})
                 return
             }
+            if(!this.personCount > this.max_count){
+                this.$dialog.toast({mes: '出游人数超过导游限制'})
+                return
+            }
             if(!this.contactName){
                 this.$dialog.toast({mes: '请输入姓名'})
                 return
@@ -329,8 +335,7 @@ export default {
                 contactName: this.contactName,
                 phone: this.phone,
                 personCount: this.personCount,
-                code: this.code,
-                oid: 'test1234'
+                code: this.code
             })
             .then(rst => {
                 if(rst.body.res_code === 200){
