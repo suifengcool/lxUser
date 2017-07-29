@@ -15,7 +15,7 @@
         <!-- title -->
         <div class="title border-bottom">订单详情</div>
 
-        <div class="order-msg border-bottom item">
+        <div class="order-msg border-bottom">
             <p>订单号：{{init.order_num}}</p>
             <p>{{init.view_line_name}}</p>
             <p>路线：{{init.view_line_content}}</p>
@@ -261,6 +261,13 @@ export default {
     padding: .2rem 0
     p 
         height: .83rem
+        line-height: .83rem
+        margin-bottom: .2rem
+        font-size: .6rem
+        padding-left: 1.12rem
+.order-msg
+    padding: .2rem 0
+    p 
         line-height: .83rem
         margin-bottom: .2rem
         font-size: .6rem
