@@ -143,7 +143,7 @@
                 <a :href="commentCnt ? ('#/comment/list?guideId=' + guideId) : 'javascript:;'" class="plNum">
                     <i class="iconfont icon-kefu"></i><label for="">{{info.commentCnt}}</label>
                 </a>
-                <span class="dzNum" @click="collect()"><i class="iconfont icon-shoucang"></i><label for="">{{info.favoriteCnt}}</label></span>
+                <span class="dzNum" @click="collect()"><i class="iconfont icon-shoucang"></i><label for="">{{favoriteCnt}}</label></span>
             </div>
             <a :href="commentCnt ? ('#/comment/list?guideId=' + guideId) : 'javascript:;'" class="commitBtn">更多评论<i class="iconfont icon-jiantou1"></i></a>
         </div>
@@ -198,6 +198,7 @@ export default {
             phone: userInfo2 ? userInfo2.phone : '',         // 游客电话
             code: '',                                        // 验证码
             max_count: '',                                   // 最高出游人数
+            favoriteCnt: null,                               // 收藏人数
             commentList: [],                                 // 评论列表
             chooseCountPop: false,                           // 出游人数弹框
             minuteListValue: '',                             // 选择日期
@@ -238,6 +239,7 @@ export default {
                 if(res.body.res_code === 200){
                     this.info = res.body.data.info
                     this.commentCnt = res.body.data.info && res.body.data.info.commentCnt
+                    this.favoriteCnt = res.body.data.info && res.body.data.info.favoriteCnt
                     this.commentList = res.body.data.list && res.body.data.list.splice(0,4)
                     this.max_count = res.body.data.info && res.body.data.info.max_count
                     this.real_name =  res.body.data.info && res.body.data.info.real_name
