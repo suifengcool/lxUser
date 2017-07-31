@@ -19,12 +19,13 @@
                     <img
                         :src="image && image.indexOf('http')>-1 ? image : imgOrigin + image"
                     />
+                    <!-- <span>￥{{info.price}}</span> -->
                 </div>
             </div>
 
             <!-- 导游信息 -->
             <div class="daoyouInfo">
-                <div class="imgBox">
+                <div class="imgBox" @click="showPicPop=true">
                     <vm-clip
                         :src="resource_path.indexOf('http') > -1 ? resource_path : (imgOrigin+ resource_path)"
                         scale="cover"
@@ -33,9 +34,17 @@
                     ></vm-clip>
                 </div>
                 <div class="textInfo">
-                    <h3>旅游导游：{{real_name}}</h3>
-                    <p>介绍：{{introduce}}</p>
-                    <p>旅行时长：{{visit_length}}个小时</p>
+                    <h3>旅游导游：{{info.real_name}}</h3>
+                    <p :class="{infoMsg:isShowUp==false}">导游介绍：{{info.introduce}}</p>
+                    <p>费用：￥{{info.price}}</p>
+                    <p class="cf" @click="showMoreMsg">
+                        <span class="fl">旅行时长：{{info.visit_length}}个小时</span>
+                        <i :class="['iconfont', isShowUp ? 'icon-icon-3' : 'icon-icon-1' , 'fr']"></i>
+                    </p>
+                    <p v-if="isShowUp">路线名称：{{info.line_name}}</p>
+                    <p v-if="isShowUp">路线介绍：{{info.view_line_content}}</p>
+                    <p v-if="isShowUp">最高接待人数：{{info.max_count}}人</p>
+
                 </div>
             </div>
         </div>
@@ -132,9 +141,9 @@
         <div class="danzanBox">
             <div class="dianzanItem">
                 <a :href="commentCnt ? ('#/comment/list?guideId=' + guideId) : 'javascript:;'" class="plNum">
-                    <i class="iconfont icon-kefu"></i><label for="">{{commentCnt}}</label>
+                    <i class="iconfont icon-kefu"></i><label for="">{{info.commentCnt}}</label>
                 </a>
-                <span class="dzNum" @click="collect()"><i class="iconfont icon-shoucang"></i><label for="">{{favoriteCnt}}</label></span>
+                <span class="dzNum" @click="collect()"><i class="iconfont icon-shoucang"></i><label for="">{{info.favoriteCnt}}</label></span>
             </div>
             <a :href="commentCnt ? ('#/comment/list?guideId=' + guideId) : 'javascript:;'" class="commitBtn">更多评论<i class="iconfont icon-jiantou1"></i></a>
         </div>
@@ -153,6 +162,16 @@
                 <i class="iconfont icon-plus fr" @click="chooseCount()"></i>
             </div>
         </vm-popup>
+
+        <!-- 图片放大弹框 -->
+        <vm-popup v-model="showPicPop" position="center" width='100%' class="Pop">
+            <vm-clip
+                :src="resource_path.indexOf('http') > -1 ? resource_path : (imgOrigin+ resource_path)"
+                scale="cover"
+                width="18.75rem"
+                height="18.75rem"
+            ></vm-clip>
+        </vm-popup>
     </vm-layout>
 </template>
 
@@ -165,12 +184,10 @@ export default {
     data () {
         return {
             config: vm.config,                               // 配置
-            readySlider: false,                                // slider 初始化
+            readySlider: false,                              // slider 初始化
             codeText: '发送验证码',                            // 按钮文字
             isClicked: false,                                // 是否已点击按钮
             personCount: 1,                                  // 出行人数
-            real_name: '',                                   // 导游姓名
-            introduce: '',                                   // 导游描述
             visit_length: '',                                // 旅行时长
             lineId: this.$route.query.lineId,                // 线路id
             guideId: this.$route.query.guideId,              // 导游id
@@ -182,8 +199,6 @@ export default {
             code: '',                                        // 验证码
             max_count: '',                                   // 最高出游人数
             commentList: [],                                 // 评论列表
-            commentCnt: null,                                // 评论条数
-            favoriteCnt: null,                               // 收藏条数
             chooseCountPop: false,                           // 出游人数弹框
             minuteListValue: '',                             // 选择日期
             nendKnowShow:false,                              // 须知
@@ -194,7 +209,10 @@ export default {
             mintime: '',                                     // 时间
             todayMonth: '',                                  // 当月
             sendMintime: '' ,                                 // 发送的日期
-            images: []
+            images: [],
+            isShowUp: false,
+            showPicPop: false,
+            info: {}                                         // 数据集
         }
     },
     created () {
@@ -218,7 +236,7 @@ export default {
             this.$http.get(`/view/guideInfo?lineId=${this.lineId}`)
             .then(res => {
                 if(res.body.res_code === 200){
-                    this.favoriteCnt = res.body.data.info && res.body.data.info.favoriteCnt
+                    this.info = res.body.data.info
                     this.commentCnt = res.body.data.info && res.body.data.info.commentCnt
                     this.commentList = res.body.data.list && res.body.data.list.splice(0,4)
                     this.max_count = res.body.data.info && res.body.data.info.max_count
@@ -260,6 +278,10 @@ export default {
         needKnowHandle(){
             this.nendKnowShow = !this.nendKnowShow;
             this.isUp=!this.isUp;
+        },
+
+        showMoreMsg(){
+            this.isShowUp = !this.isShowUp
         },
 
         // 选择出游人数,传type是减少
@@ -350,7 +372,7 @@ export default {
                 contactName: this.contactName,
                 phone: this.phone,
                 personCount: this.personCount,
-                code: this.code
+                code: this.code,
             })
             .then(rst => {
                 if(rst.body.res_code === 200){
@@ -401,8 +423,17 @@ export default {
             width: 100%
             transform: translateY(-50%)
         span 
-            font-size: 5rem
-            font-weight: 700
+            position: absolute
+            left: 0
+            bottom: 0
+            font-size: .8rem
+            background: rgba(0,0,0,.3)
+            color: #fff
+            display: inline-block
+            height: 1.3rem
+            line-height: 1.3rem
+            text-align: center
+            padding: 0 .5rem
     // 导游信息
     .daoyouInfo
         display: flex
@@ -410,12 +441,12 @@ export default {
         .imgBox
             height: 1.93rem
             width: 1.93rem
+            margin-top: .18rem
             img 
                 width: 100%
         .textInfo
             flex: 1
             margin-left: .5rem
-            // padding: 1.1rem 0 0 0.75rem
             h3
                 font-size: 0.8rem
                 font-weight: 300
@@ -423,6 +454,14 @@ export default {
             p
                 font-size: .65rem
                 color: #666
+                line-height: .9rem
+            .infoMsg
+                height: .9rem
+                overflow: hidden
+            i 
+                font-size: .75rem
+                display: inline-block
+                margin-top: .2rem
 // 出游时间
 .captionTitle
     height: 1.7rem
