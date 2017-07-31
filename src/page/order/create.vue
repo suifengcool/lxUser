@@ -19,7 +19,7 @@
                     <img
                         :src="image && image.indexOf('http')>-1 ? image : imgOrigin + image"
                     />
-                    <!-- <span>￥{{info.price}}</span> -->
+                    <span>￥{{info.price}}</span>
                 </div>
             </div>
 
@@ -35,15 +35,15 @@
                 </div>
                 <div class="textInfo">
                     <h3>旅游导游：{{info.real_name}}</h3>
-                    <p :class="{infoMsg:isShowUp==false}">导游介绍：{{info.introduce}}</p>
-                    <p>费用：￥{{info.price}}</p>
+                    <p :class="{infoMsg:isShowUp==false}"><span>导游介绍：</span>{{info.introduce}}</p>
+                    <!-- <p><span>费用：</span>￥{{info.price}}</p> -->
                     <p class="cf" @click="showMoreMsg">
-                        <span class="fl">旅行时长：{{info.visit_length}}个小时</span>
+                        <i class="fl"><span>旅行时长：</span>{{info.visit_length}}个小时</i>
                         <i :class="['iconfont', isShowUp ? 'icon-icon-3' : 'icon-icon-1' , 'fr']"></i>
                     </p>
-                    <p v-if="isShowUp">路线名称：{{info.line_name}}</p>
-                    <p v-if="isShowUp">路线介绍：{{info.view_line_content}}</p>
-                    <p v-if="isShowUp">最高接待人数：{{info.max_count}}人</p>
+                    <p v-if="isShowUp"><span>路线名称：</span>{{info.line_name}}</p>
+                    <p v-if="isShowUp"><span>路线介绍：</span>{{info.view_line_content}}</p>
+                    <p v-if="isShowUp"><span>最高接待人数：</span>{{info.max_count}}人</p>
 
                 </div>
             </div>
@@ -233,7 +233,7 @@ export default {
     methods: {
         // 获取线路导游信息
         fetchCommentList(){
-            this.$http.get(`/view/guideInfo?lineId=${this.lineId}`)
+            this.$http.get(`/view/guideInfo?oid=test1234&lineId=${this.lineId}`)
             .then(res => {
                 if(res.body.res_code === 200){
                     this.info = res.body.data.info
@@ -373,6 +373,7 @@ export default {
                 phone: this.phone,
                 personCount: this.personCount,
                 code: this.code,
+                oid: 'test1234'
             })
             .then(rst => {
                 if(rst.body.res_code === 200){
@@ -392,7 +393,7 @@ export default {
 
         // 收藏
         collect(){
-            this.$http.post('/user/favorite/add',{guideId: this.guideId})
+            this.$http.post('/user/favorite/add',{guideId: this.guideId,oid:'test1234'})
             .then(res => {
                 if(res.body.res_code === 200){
                     this.favoriteCnt ++
@@ -454,14 +455,18 @@ export default {
             p
                 font-size: .65rem
                 color: #666
-                line-height: .9rem
-            .infoMsg
-                height: .9rem
-                overflow: hidden
-            i 
-                font-size: .75rem
-                display: inline-block
+                line-height: 1.1rem
                 margin-top: .2rem
+                .iconfont
+                    font-size: .75rem
+                    display: inline-block
+                span
+                    font-size: .7rem
+                    color: #333
+                    font-weight: 500
+            .infoMsg
+                height: 1.1rem
+                overflow: hidden
 // 出游时间
 .captionTitle
     height: 1.7rem
