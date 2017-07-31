@@ -34,8 +34,7 @@
 
         <!-- 底部按钮 -->
         <vm-tabbar slot="tabbar" class="tabbar-box">
-            <input type="text">
-            <span>支付金额：{{init.amount}}</span>
+            <div class="tabbar-box-pay"><span>支付金额：{{init.amount}}</span></div>
             <button class="tabbar-item" type="button" @click="showPop=true">去支付</button>
         </vm-tabbar>
 
@@ -287,7 +286,7 @@ export default {
         font-size: .75rem
         color: #fff 
         width: 5.3rem
-    input 
+    .tabbar-box-pay
         border: .1rem solid #03ca9d
         height: 1.9rem
         line-height: 1.9rem

@@ -102,7 +102,7 @@ export default {
         height: 18px
         background: #03ca9d
 p 
-    height: .83rem
+    // height: .83rem
     line-height: .83rem
     margin-bottom: .2rem
     font-size: .6rem

@@ -8,7 +8,7 @@
                     <span>待确认</span>
                     <i>{{minute}}{{second}}</i>
                 </div>
-                <p>导游正在查看您的订单信息，核实没问题后，接受订单即刻出发旅行</p>
+                <p>导游正在查看您的订单，导游确认订单后，即可完成支付。</p>
             </div>
         </div>
 
@@ -33,8 +33,8 @@
                     <span class="fr">{{init.phone_num}}</span>
                 </p>
                 <p class="cf">
-                    <span class="fl">游览地址：</span>
-                    <span class="fr">{{init.view_spot_id}}</span>
+                    <span class="fl">旅游路线：</span>
+                    <span class="fr">{{init.view_line_name}}</span>
                 </p>
             </div>
         </div>
