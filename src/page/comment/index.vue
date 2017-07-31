@@ -4,7 +4,12 @@
         <div class="header">
             <div class="msg">
                 <div class="img">
-                    <img :src="init.resource_path && init.resource_path.indexOf('http')>-1 ? init.resource_path : imgOrigin + init.resource_path" alt="">
+                    <vm-clip
+                        :src="init.resource_path && init.resource_path.indexOf('http')>-1 ? init.resource_path : imgOrigin + init.resource_path"
+                        scale="cover"
+                        width="4.38rem"
+                        height="4.38rem"
+                    ></vm-clip>
                 </div>
                 <div class="msg-main">
                     <h3>导游：{{init.real_name}}</h3>
@@ -16,7 +21,7 @@
                             ></i>
 
                         </span>
-                        <span class="score fl">{{stars}}</span>
+                        <span class="score fl">{{stars && stars.toString().length>1 ? stars : stars + '.0'}}</span>
                         <span class="num fl">{{init.orderCount}}单</span>
                     </div>
                     <p>旅行时长：2小时</p>
@@ -153,6 +158,7 @@ export default {
             overflow: hidden
             img 
                 width: 100%
+                border-radius: 50%
         .msg-main
             flex: 1
             h3

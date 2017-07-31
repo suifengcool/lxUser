@@ -39,7 +39,7 @@ export default {
     },
 
     created () {
-        this.config.title('预定成功')
+        this.config.title('预订成功')
         this.fetchData()
     },
 

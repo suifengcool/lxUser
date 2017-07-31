@@ -1,26 +1,26 @@
 <template>
-	<vm-layout id="footTabBar">
-		<keep-alive>
+    <vm-layout id="footTabBar">
+        <keep-alive>
             <router-view></router-view>
         </keep-alive>
        
-	    <vm-tabbar slot="tabbar">
+        <vm-tabbar slot="tabbar">
             <vm-tabbar-item
                 v-for="(item, index) in foots"
                 :title="item.text"
                 :link="item.link"
-                :active="item.link == pathname"
+                :active="item.link ==  pathname"
                 :dot="false"
             >
                 <i slot="icon" :class="['iconfont', item.link == pathname ? item.activeIcon : item.icon]"></i>
             </vm-tabbar-item>
         </vm-tabbar>
-  	</vm-layout>
+    </vm-layout>
 </template>
 
 <script>
 export default {
-	name: 'footTabBar',
+    name: 'footTabBar',
 
     data () {
         return {
@@ -40,14 +40,14 @@ export default {
                 icon: 'icon-wode',
                 activeIcon: 'icon-wode'
             }],
-            pathname: location.pathname
+            pathname: this.$route.path
         }
     },
 
     watch: {
         // 如果路由有变化，会再次执行该方法: 修复返回bug
         $route (val, old) {
-            this.pathname = location.pathname
+            this.pathname = val.path
         }
     },
 

@@ -4,6 +4,7 @@
         <form class="search center-center" @submit.prevent="search">
             <i v-if="!name" class="iconfont icon-search-in"></i>
             <input type="search" v-model="name" name="keyword" placeholder='搜索'>
+            <span v-if="name" @click="search" class="searchbar-cancel">确认</span>
         </form>
 
         <!-- 按字母分类 -->
@@ -120,7 +121,16 @@ export default {
     i 
         position: absolute
         left: 40%
+        top: 50%
+        transform: translateY(-50%)
         color: #888
+    .searchbar-cancel
+        width: 9.6%
+        border: none
+        height: 2rem
+        line-height: 2rem
+        text-align: center
+        margin-left: .5rem
 // 字母列表
 .item-box
     margin-top: .5rem 

@@ -4,15 +4,23 @@
             <ul slot="list">
                 <li v-for="(item, index) in lists" class="border-bottom">
                     <div class="msg">
-                        <vm-lazyimg
+                        <!-- <vm-lazyimg
                             class="img"
-                            :src="(item.resource_path).indexOf('http')>-1?item.resource_path:imgOrigin+item.resource_path"
+                            :src="item.resource_path && (item.resource_path).indexOf('http')>-1?item.resource_path:imgOrigin+item.resource_path"
                             :defaultSrc="require('../../assets/lazyDefault.jpg')"
-                        />
+                        /> -->
+                        <vm-clip
+                            :src="item.resource_path  && (item.resource_path).indexOf('http')>-1?item.resource_path:imgOrigin+item.resource_path"
+                            :defaultSrc="require('../../assets/lazyDefault.jpg')"
+                            scale="cover"
+                            width="4rem"
+                            height="4rem"
+                            class="img"
+                        ></vm-clip>
                         <div class="msg-main">
                             <h3>导游：{{item.real_name}}</h3>
                             <!-- <p>旅行时长：2小时</p> -->
-                            <p>评分：{{item.score}}分</p>
+                            <p>评分：{{item.score && (item.score).toString().length >1 ? item.score : item.score + '.0'}}分</p>
                             <i
                                 :class="['iconfont', {'red': item.score > i}, Math.round(item.score) > i ? 'icon-xing2' : 'icon-xing1',]"
                                 v-for="(star, i) in [0,1,2,3,4]"
@@ -21,7 +29,7 @@
                         </div>
                     </div>
                     <div class="desc">
-                        导游简介：{{item.introduce}}
+                        导游简介：{{item.introduce || '专业导游~'}}
                     </div> 
                     <div class="cancel" @click="cancel(item.id)">取消收藏</div> 
                 </li>
@@ -30,9 +38,6 @@
 
         <!-- 空态 -->
         <dummyStatus v-if="!count" :text="text"></dummyStatus>
-
-        <!-- backtop -->
-        <backTop content='.vm-scrollview'></backTop>
     </vm-layout>
 </template>
 

@@ -4,7 +4,7 @@
         <div class="headerBox border-bottom">
             <!-- 轮播图 -->
             <div class="bannerBox">
-                <div class="demo-small-pitch">
+                <!-- <div class="demo-small-pitch">
                     <vm-slider :ready="readySlider" initIndex="0" autoplay="3000">
                         <vm-slider-item v-for="(image, index) in images">
                             <div class="item">
@@ -14,18 +14,28 @@
                             </div>
                         </vm-slider-item>
                     </vm-slider>
+                </div> -->
+                <div class="item">
+                    <img
+                        :src="image && image.indexOf('http')>-1 ? image : imgOrigin + image"
+                    />
                 </div>
             </div>
 
             <!-- 导游信息 -->
             <div class="daoyouInfo">
                 <div class="imgBox">
-                    <img :src="resource_path.indexOf('http') > -1 ? resource_path : (imgOrigin+ resource_path)" alt="">
+                    <vm-clip
+                        :src="resource_path.indexOf('http') > -1 ? resource_path : (imgOrigin+ resource_path)"
+                        scale="cover"
+                        width="1.93rem"
+                        height="1.93rem"
+                    ></vm-clip>
                 </div>
                 <div class="textInfo">
                     <h3>旅游导游：{{real_name}}</h3>
                     <p>介绍：{{introduce}}</p>
-                    <p>旅行时长：{{visit_length}}分钟</p>
+                    <p>旅行时长：{{visit_length}}个小时</p>
                 </div>
             </div>
         </div>
@@ -105,7 +115,12 @@
             <li v-for="(item,index) in commentList">
                 <div class="touristInfo">
                     <div class="pic">
-                        <img :src="(item.avatar_img).indexOf('http')>-1 ? item.avatar_img : imgOrigin + item.avatar_img" alt="">
+                        <vm-clip
+                            :src="(item.avatar_img).indexOf('http')>-1 ? item.avatar_img : imgOrigin + item.avatar_img"
+                            scale="cover"
+                            width="2rem"
+                            height="2rem"
+                        ></vm-clip>
                     </div>
                     <span>{{item.nick_name}}</span>
                 </div>
@@ -378,6 +393,7 @@ export default {
         background: #ccc
         height: 5.89rem
         position: relative
+        overflow-y: hidden
         img
             position: absolute
             top: 50%
@@ -398,7 +414,8 @@ export default {
                 width: 100%
         .textInfo
             flex: 1
-            padding: 1.1rem 0 0 0.75rem
+            margin-left: .5rem
+            // padding: 1.1rem 0 0 0.75rem
             h3
                 font-size: 0.8rem
                 font-weight: 300
@@ -530,6 +547,7 @@ export default {
             vertical-align: middle
             img
                 width: 100%
+                border-radius: 50%
         span
             font-size: 0.6rem
             margin-left: 0.47rem

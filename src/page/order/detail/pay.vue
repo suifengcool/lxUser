@@ -266,7 +266,7 @@ export default {
         font-size: .6rem
         padding-left: 1.12rem
 .order-msg
-    padding: .2rem 0
+    padding: .2rem .75rem 0 0
     p 
         line-height: .83rem
         margin-bottom: .2rem
@@ -346,11 +346,11 @@ export default {
         border-radius: .3rem
 </style>
 <style lang="sass">
-.vm-flexview
+#confirm .vm-flexview
     background: #fff
-.vm-scrollview
+#confirm .vm-scrollview
     height: 30rem
-.vm-tabbar 
+#confirm .vm-tabbar 
     position: fixed
     bottom: 0
     &:after

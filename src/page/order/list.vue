@@ -19,7 +19,7 @@
                                 <div class="main">
                                     <vm-lazyimg
                                         class="img"
-                                        :src= "item.resource_path ? imgOrigin + item.resource_path : ''"
+                                        :src= "item.resource_path &&  (item.resource_path).indexOf('http')>-1 ? item.resource_path : imgOrigin + item.resource_path"
                                         :defaultSrc="require('../../assets/lazyDefault.jpg')"
                                     />
                                     <div class="desc">

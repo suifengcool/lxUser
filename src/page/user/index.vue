@@ -4,7 +4,7 @@
         <div class="header">
             <h3>{{name}}</h3>
             <i class="iconfont icon-write"></i>
-            <input @change="upload($event)" type="file" accept="image/*" id="bUploadBtn" ref="input">
+            <input @change="uploadFile($event, 'headImg')" class="" type="file" accept="image/*" id="bUploadBtn" ref="input">
         </div>
 
         <!-- 列表 -->
@@ -35,6 +35,7 @@
 </template>
 
 <script>
+import LRZ from 'lrz'
 export default {
     name: 'user',
 
@@ -67,23 +68,33 @@ export default {
         },
 
         // 上传头像
-        upload(event){
-            var formData = new FormData()
-                formData.append("file", event.target.files[0])
-                formData.append("remotePath", '/agent')
-                // formData.append("oid", 'test1234')
-            if(event.target.files[0]){
-                this.loading = true
-                this.$http.post('/upload/uploadFile',formData)
-                .then(rst => {
-                    if(rst.body.res_code === 200){
-                        this.save(rst.body.data.path)
-                    }
+        uploadFile (event, key) {
+            let upload = (formData) => {
+                
+                this.$http.post('/upload/uploadFile',formData
+                ).then((res)=> {
+                    this[key] = res.body.data
+                    this.save(res.body.data.path)
                 })
-                .catch(err => this.$dialog.toast({mes: err.body.msg}))
             }
-        },
+            this.loading = true
+            // 图像处理：压缩、ios竖拍旋转90°bug
+            LRZ(event.target.files[0], {quality: 0.5})
+            .then((rst) => {
+                // 处理成功会执行
+                rst.formData.append("file", rst.file)
+                rst.formData.append("remotePath", '/shop')
 
+                upload(rst.formData)
+            })
+            .catch(function (err) {
+                // 处理失败会执行
+                let formData = new FormData()
+                formData.append("file", event.target.files[0])
+                formData.append("remotePath", '/shop')
+                upload(formData)
+            })
+        },
         // 保存头像
         save(img) {
             this.$http.post('/user/setAvatar',{img: img})

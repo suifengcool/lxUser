@@ -3,10 +3,15 @@
         <vm-infinitescroll :on-infinite="fetchData" class="orderList">
             <ul slot="list">
                 <Li v-for="(item, index) in lists">
-                    <h3 class="border-bottom">{{item.create_time | date("YYYY-MM-DD")}}</h3>
+                    <h3 class="border-bottom">{{item.create_time}}</h3>
                     <div class="msg border-bottom">
                         <div class="img">
-                            <img :src="(item.avatar_img).indexOf('http') > -1 ? item.avatar_img : imgOrigin + item.avatar_img" alt="">
+                            <vm-clip
+                                :src="item.avatar_img && (item.avatar_img).indexOf('http') > -1 ? item.avatar_img : imgOrigin + item.avatar_img"
+                                scale="cover"
+                                width="3.18rem"
+                                height="3.18rem"
+                            ></vm-clip>
                         </div>
                         <div class="main">
                             <h4>{{item.nick_name}}</h4>
@@ -17,10 +22,10 @@
                                         v-for="(star, i) in [0,1,2,3,4]"
                                     ></i> 
                                 </span>
-                                <span class="score fl">{{item.score}}</span>
+                                <span class="score fl">{{item.score && (item.score).toString().length >1 ? item.score : item.score + '.0'}}</span>
                                 <!-- <span class="num fl">45单</span> -->
                             </div>
-                            <p>{{item.COMMENT}}</p>
+                            <p>{{item.comment}}</p>
                         </div>
                     </div>
                 </Li>
@@ -132,6 +137,7 @@ ul li
             margin-right: 1.04rem
             img 
                 width: 100%
+                border-radius: 50%
         .main
             flex: 1
             h4

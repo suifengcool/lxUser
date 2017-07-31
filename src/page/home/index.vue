@@ -4,6 +4,7 @@
         <form class="search center-center" @submit.prevent="search">
             <i v-if="!name" class="iconfont icon-search-in"></i>
             <input type="search" v-model="name" name="keyword" placeholder='搜索'>
+            <span v-if="name" @click="search" class="searchbar-cancel">确认</span>
         </form>
 
         <!-- 热门景点 -->
@@ -32,10 +33,10 @@
         </ul>
 
         <!-- 右边条字母 -->
-        <ul class="nav">
+        <!-- <ul class="nav">
             <router-link to="/viewport/search"><i class="iconfont icon-search-in"></i></router-link>
             <li v-for="(item, index) in lists"><a :href="'#'+item[0].first_letter">{{item[0].first_letter}}</a></li>
-        </ul>
+        </ul> -->
     </vm-layout>
 </template>
 
@@ -77,9 +78,13 @@ export default {
             this.$router.push('/viewport/detail?id=' + id)
         },
 
-        search(){
+        search() {
+            //移除焦点
+            $("form").on("submit",function(){
+                $("#search-btn").blur().focus()
+            })
             this.$router.push('/viewport/search?keyword=' + this.name)
-        }
+        },
     }
 }
 </script>
@@ -113,6 +118,13 @@ export default {
         top: 50%
         transform: translateY(-50%)
         color: #888
+    .searchbar-cancel
+        width: 9.6%
+        border: none
+        height: 2rem
+        line-height: 2rem
+        text-align: center
+        margin-left: .5rem
 // 热门景点
 .hot-point
     font-size: .8rem

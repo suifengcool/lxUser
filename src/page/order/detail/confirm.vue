@@ -16,7 +16,12 @@
         <div class="travel-title border-bottom item">{{init.view_line_name}}</div>
         <div class="guide border-bottom">
             <div class="img">
-                <img :src="init.resource_path && (init.resource_path).indexOf('http')>-1 ? init.resource_path : imgOrigin + init.resource_path" alt="">
+                <vm-clip
+                    :src="init.resource_path && (init.resource_path).indexOf('http')>-1 ? init.resource_path : imgOrigin + init.resource_path"
+                    scale="cover"
+                    width="3.3rem"
+                    height="3.3rem"
+                ></vm-clip>
             </div>
             <div class="guide-desc">
                 <h3 class="cf">
@@ -241,6 +246,7 @@ export default {
         margin-right: .64rem
         img 
             width: 100%
+            border-radius: 50%
     .guide-desc
         flex: 1
         h3

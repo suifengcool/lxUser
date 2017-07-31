@@ -4,7 +4,7 @@
         <div class="headerBox">
             <!-- 轮播图 -->
             <div class="bannerBox">
-                <div class="demo-small-pitch">
+                <!-- <div class="demo-small-pitch">
                     <vm-slider :ready="readySlider" initIndex="0" autoplay="3000">
                         <vm-slider-item v-for="(image, index) in images">
                             <div class="item">
@@ -14,6 +14,11 @@
                             </div>
                         </vm-slider-item>
                     </vm-slider>
+                </div> -->
+                <div class="item">
+                    <img
+                        :src="init.resource_path && (init.resource_path).indexOf('http')>-1 ? init.resource_path : imgOrigin + init.resource_path"
+                    />
                 </div>
             </div>
 
@@ -43,13 +48,19 @@
             <ul slot="list" class="daoyouList">
                 <li v-for="(item, index) in lists" class="border-bottom" @click="createOrder(item,index)">
                     <div class="imgBox">
-                        <img :src="(item.resource_path).indexOf('http') > -1 ? item.resource_path : (imgOrigin+ item.resource_path)" alt="">
+                        <vm-clip
+                            :src="(item.resource_path).indexOf('http') > -1 ? item.resource_path : (imgOrigin+ item.resource_path)"
+                            :defaultSrc="require('../../assets/lazyDefault.jpg')"
+                            scale="cover"
+                            width="3.3rem"
+                            height="3.3rem"
+                        ></vm-clip>
                     </div>
                     <div class="daoyouDesc">
                         <div class="nameSexGoal">
                             <div class="nameSex">
-                                <label for="">导游：</label>
-                                <span class="name">{{item.real_name}}</span>
+                                <!-- <label for="">导游：</label> -->
+                                导游：<span class="name">{{item.real_name}}</span>
                                 <i :class="['iconfont',item.gender == 0 ? 'icon-nv' : 'icon-nan1']"></i>
                             </div>
                             <div class="goal">
@@ -58,18 +69,18 @@
                                         :class="['iconfont', {'red': item.score > i}, Math.round(item.score) > i ? 'icon-xing2' : 'icon-xing1',]"
                                         v-for="(star, i) in [0,1,2,3,4]"
                                     ></i>   
-                                    <span>{{item.score}}</span>
+                                    <span>{{item.score && (item.score).toString().length>1 ? item.score : item.score + '.0'}}</span>
                                 </div>
                             </div>
                         </div>
                         <div class="intersting">
-                            <label for="">介绍：</label>
-                            <span>{{item.introduce || '专业导游二十年'}}</span>
+                            <!-- <label for="">介绍：</label> -->
+                            介绍：{{item.introduce || '专业导游'}}
                         </div>
                         <div class="path">
                             <div class="path-left">
-                                <label for="">路线：</label>
-                                <span>{{item.line_name}}</span>
+                                <!-- <label for="">路线：</label> -->
+                                路线：{{item.line_name}}
                             </div>
                             <div class="money">
                                 <span>￥{{item.price}}</span>
@@ -218,20 +229,22 @@ export default {
 .headerBox
     padding: 0.5rem 0.6rem 0 0.6rem
     // 轮播图
-    .item 
-        text-align: center
-        background: #ccc
-        height: 5.89rem
-        position: relative
-        img
-            position: absolute
-            top: 50%
-            left: 0
-            width: 100%
-            transform: translateY(-50%)
-        span 
-            font-size: 5rem
-            font-weight: 700
+    .bannerBox
+        .item 
+            text-align: center
+            background: #ccc
+            height: 5.89rem
+            position: relative
+            overflow-y: hidden
+            img
+                position: absolute
+                top: 50%
+                left: 0
+                width: 100%
+                transform: translateY(-50%)
+            span 
+                font-size: 5rem
+                font-weight: 700
     // 景区介绍
     .plaseInfo
         background: #fafafa
@@ -293,6 +306,7 @@ export default {
         overflow: hidden
         img 
             width: 100%
+            border-radius: 50%
     .daoyouDesc
         flex: 1
         .nameSexGoal,.path
@@ -323,21 +337,17 @@ export default {
         .intersting
             font-size: 0.6rem
             margin: 0.38rem 0 .3rem 0
-            width: 88%
-            white-space: nowrap
             overflow: hidden
-            text-overflow: ellipsis
+            height: .85rem
+            width: 89%
         .path
-            font-size: 0.5rem
+            font-size: 0.6rem
             .path-left
-                width: 88%
-                white-space: nowrap
                 overflow: hidden
-                text-overflow: ellipsis
+                height: .75rem
+                line-height: .75rem
         .money
             color: #EF667C
-            // span:first-child
-            //     margin-right: 1.5rem  
 </style>
 <style lang="sass">
 </style>
