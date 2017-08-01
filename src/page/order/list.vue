@@ -123,7 +123,8 @@ export default {
             if(item.book_status === 1){
                 this.$router.push(`/order/detail/confirm?orderNum=${item.order_num}`)
             }else if(item.book_status === 5){
-                this.$router.push(`/order/detail/pay?orderNum=${item.order_num}`)
+                // this.$router.push(`/order/detail/pay?orderNum=${item.order_num}`)
+                window.location.href = "#/order/detail/pay?orderNum=" + item.order_num
             }else if(item.book_status === 7){
                 this.$router.push(`/order/detail/success?orderNum=${item.order_num}`)
             }else if(item.book_status === 11){
