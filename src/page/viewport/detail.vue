@@ -107,14 +107,16 @@ export default {
             imgOrigin: '',                     // 图片前缀
             lists: [],                         // 导游列表
             count: null,                       // 导游列表条数
-            page: 0,                           // 分页，页码
+            page: 1,                           // 分页，页码
             pageSize: 10,                      // 分页
             orderBy: 1,                        // 排序字段(1=评分,2=价格,3=性别，默认为1)
             sortType: 0,                       // 排序规则(排序方式,1=正序,0=倒序)
             sortStatus:[],                     // 排序池
-            isShow: true,                     // “更多”箭头朝下
+            isShow: true,                      // “更多”箭头朝下
             readySlider: false,                // slider 初始化
-            images: []
+            images: [],
+            loadOnce: false,                   // 单次请求完毕
+            lastPage: false,                   // 是否为最后一页
         }
     },
 
@@ -137,11 +139,11 @@ export default {
                     this.imgOrigin = res.prefix 
                     this.init = res.data
 
-                    this.images.push(this.init.resource_path)
-                    this.images.push(this.init.resource_path)
-                    this.images.push(this.init.resource_path)
-                    this.images = this.images.splice(0,4)
-                    this.readySlider = true
+                    // this.images.push(this.init.resource_path)
+                    // this.images.push(this.init.resource_path)
+                    // this.images.push(this.init.resource_path)
+                    // this.images = this.images.splice(0,4)
+                    // this.readySlider = true
                     
                     this.fetchGuides()
                 }else{
@@ -165,42 +167,48 @@ export default {
                 this.sortType = 1
             }
             this.orderBy = index + 1
-            this.page = 0
+            this.page = 1
+            this.loadOnce = false
+            this.lastPage = false
+            this.pageSize = 10
             this.lists = []
             this.fetchGuides()
         },
 
         // 获取导游列表
         fetchGuides() {
-            vm.fetch.get({
-                url: `/view/guides/${this.id}`,
-                data: {
-                    pageNo: this.page,
-                    pageSize: this.pageSize,
-                    viewSpotId: this.id,
-                    orderBy: this.orderBy,         
-                    sortType: this.sortType
-                }
-            })
-            .then(res => {
-                const _list = res.data.list
-                this.imgOrigin = res.prefix
-                this.lists = [...this.lists, ..._list]
-                this.count = res.data.totalRow
-                if (_list.length < this.pageSize || Math.floor(this.count / this.pageSize) == this.page) {
-                    // 所有数据加载完毕
-                    setTimeout(()=> {
-                        window.$vm.$emit('vmui.infinitescroll.loadedAll')
-                    })
-                    return
-                }
+            if(!this.loadOnce && !this.lastPage){
+                this.loadOnce = true
+                vm.fetch.get({
+                    url: `/view/guides/${this.id}`,
+                    data: {
+                        pageNo: this.page,
+                        pageSize: this.pageSize,
+                        viewSpotId: this.id,
+                        orderBy: this.orderBy,         
+                        sortType: this.sortType
+                    }
+                })
+                .then(res => {
+                    const _list = res.data.list
+                    this.imgOrigin = res.prefix
+                    this.lists = [...this.lists, ..._list]
+                    this.count = res.data.totalRow
+                    if (_list.length < this.pageSize || Math.floor(this.count / this.pageSize) == this.page) {
+                        // 所有数据加载完毕
+                        setTimeout(()=> {
+                            window.$vm.$emit('vmui.infinitescroll.loadedAll')
+                        })
+                        return
+                    }
 
-                // 单次请求数据完毕
-                window.$vm.$emit('vmui.infinitescroll.loadedOnce')
+                    // 单次请求数据完毕
+                    window.$vm.$emit('vmui.infinitescroll.loadedOnce')
 
-                this.page ++
-            })
-            .catch(err => this.$dialog.toast({mes: err.msg}))
+                    this.page ++
+                })
+                .catch(err => this.$dialog.toast({mes: err.msg}))
+            }
         },
 
         // 点击导游列表项,进入创建订单
