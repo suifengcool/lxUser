@@ -113,8 +113,8 @@ export default {
             sortType: 0,                       // 排序规则(排序方式,1=正序,0=倒序)
             sortStatus:[],                     // 排序池
             isShow: true,                      // “更多”箭头朝下
-            readySlider: false,                // slider 初始化
-            images: [],
+            // readySlider: false,                // slider 初始化
+            // images: [],
             loadOnce: false,                   // 单次请求完毕
             lastPage: false,                   // 是否为最后一页
         }
@@ -131,13 +131,11 @@ export default {
     methods: {
         // 获取景点信息
         fetchViews() {
-            vm.fetch.post({
-                url: `/view/detail/${this.id}`,
-            })
+            this.$http.post(`/view/detail/${this.id}`)
             .then(res => {
-                if(res.res_code === 200){
-                    this.imgOrigin = res.prefix 
-                    this.init = res.data
+                if(res.body.res_code === 200){
+                    this.imgOrigin = res.body.prefix 
+                    this.init = res.body.data
 
                     // this.images.push(this.init.resource_path)
                     // this.images.push(this.init.resource_path)
@@ -147,10 +145,10 @@ export default {
                     
                     this.fetchGuides()
                 }else{
-                    this.$dialog.toast({mes: res.msg})
+                    this.$dialog.toast({mes: res.body.msg})
                 }
             })
-            .catch(err => this.$dialog.toast({mes: err.msg}))
+            .catch(err => this.$dialog.toast({mes: err.body.msg}))
         },
 
         // 点击更多
@@ -179,35 +177,30 @@ export default {
         fetchGuides() {
             if(!this.loadOnce && !this.lastPage){
                 this.loadOnce = true
-                vm.fetch.get({
-                    url: `/view/guides/${this.id}`,
-                    data: {
-                        pageNo: this.page,
-                        pageSize: this.pageSize,
-                        viewSpotId: this.id,
-                        orderBy: this.orderBy,         
-                        sortType: this.sortType
-                    }
-                })
+                this.$http.get(`/view/guides/${this.id}?pageNo=${this.page}&pageSize=${this.pageSize}&viewSpotId=${this.id}&orderBy=${this.orderBy}&sortType=${this.sortType}`
+                )
                 .then(res => {
-                    const _list = res.data.list
-                    this.imgOrigin = res.prefix
+                    const _list = res.body.data.list
+                    this.imgOrigin = res.body.prefix
                     this.lists = [...this.lists, ..._list]
-                    this.count = res.data.totalRow
-                    if (_list.length < this.pageSize || Math.floor(this.count / this.pageSize) == this.page) {
-                        // 所有数据加载完毕
+                    this.count = res.body.data.totalRow
+                    if(res.body && res.body.data && res.body.data.lastPage){
+                        this.lastPage = true
                         setTimeout(()=> {
                             window.$vm.$emit('vmui.infinitescroll.loadedAll')
                         })
                         return
+                    }else{
+                        this.lastPage = false
                     }
+                    this.loadOnce = false
 
                     // 单次请求数据完毕
                     window.$vm.$emit('vmui.infinitescroll.loadedOnce')
 
                     this.page ++
                 })
-                .catch(err => this.$dialog.toast({mes: err.msg}))
+                .catch(err => this.$dialog.toast({mes: err.body.msg}))
             }
         },
 
