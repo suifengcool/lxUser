@@ -127,10 +127,11 @@ export default {
                 window.location.href = "#/order/detail/pay?orderNum=" + item.order_num
             }else if(item.book_status === 7){
                 this.$router.push(`/order/detail/success?orderNum=${item.order_num}`)
-            }else if(item.book_status === 11){
+            }else if(item.book_status === 11 || item.book_status === 9){
                 this.$router.push(`/comment?orderNum=${item.order_num}`)
             }
         }
+        //订单状态:1=待导游确认,2=游客取消,3=导游主动取消,4=导游确认超时,5=待游客付款,6=支付超时,7=已付款,8=已出行完成,9=有投诉待确认,10=已退款,11=待评价,12=已评价
     }
 }
 </script>
