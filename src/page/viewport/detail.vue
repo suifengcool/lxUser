@@ -59,7 +59,6 @@
                     <div class="daoyouDesc">
                         <div class="nameSexGoal">
                             <div class="nameSex">
-                                <!-- <label for="">导游：</label> -->
                                 导游：<span class="name">{{item.real_name}}</span>
                                 <i :class="['iconfont',item.gender == 0 ? 'icon-nv' : 'icon-nan1']"></i>
                             </div>
@@ -113,10 +112,11 @@ export default {
             sortType: 0,                       // 排序规则(排序方式,1=正序,0=倒序)
             sortStatus:[],                     // 排序池
             isShow: true,                      // “更多”箭头朝下
-            // readySlider: false,                // slider 初始化
+            // readySlider: false,             // slider 初始化
             // images: [],
             loadOnce: false,                   // 单次请求完毕
             lastPage: false,                   // 是否为最后一页
+            totalPage: 2                       // 分页，数据总页数
         }
     },
 
@@ -175,7 +175,7 @@ export default {
 
         // 获取导游列表
         fetchGuides() {
-            if(!this.loadOnce && !this.lastPage){
+            if(!this.loadOnce && !this.lastPage && this.page <= this.totalPage){
                 this.loadOnce = true
                 this.$http.get(`/view/guides/${this.id}?pageNo=${this.page}&pageSize=${this.pageSize}&viewSpotId=${this.id}&orderBy=${this.orderBy}&sortType=${this.sortType}`
                 )
@@ -184,6 +184,8 @@ export default {
                     this.imgOrigin = res.body.prefix
                     this.lists = [...this.lists, ..._list]
                     this.count = res.body.data.totalRow
+                    this.totalPage = res.body.data.totalPage
+
                     if(res.body && res.body.data && res.body.data.lastPage){
                         this.lastPage = true
                         setTimeout(()=> {
@@ -340,6 +342,7 @@ export default {
             margin: 0.38rem 0 .3rem 0
             overflow: hidden
             height: .85rem
+            line-height: .85rem
             width: 89%
         .path
             font-size: 0.6rem

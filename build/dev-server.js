@@ -77,6 +77,8 @@ app.use(hotMiddleware)
 var staticPath = path.posix.join(config.dev.assetsPublicPath, config.dev.assetsSubDirectory)
 app.use(staticPath, express.static('./static2'))
 
+// 原本是locahost：XXXX，这样并不利于开发(移动端手机扫码测试)
+
 // module.exports = app.listen(port, function (err) {
 //   if (err) {
 //     console.log(err)
@@ -86,6 +88,7 @@ app.use(staticPath, express.static('./static2'))
 //   console.log('Dev server listening at ' + uri + '\n')
 //   // opn(uri)
 // })
+
 // 获取本机 ip 地址，用于 broswer 打开 server 后，真机扫码测试
 var os = require('os')
 var IPv4

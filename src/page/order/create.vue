@@ -56,6 +56,7 @@
         <div class="startTimeBox border-bottom">
             <!-- vux日历组件 -->
             <datetime 
+                v-if="!rightNow"
                 v-model="minuteListValue" 
                 @on-change="change" 
                 format="YYYY-MM-DD HH:mm" 
@@ -64,6 +65,7 @@
                 <x-button class="timeTitle"><i class="iconfont icon-rl"></i>出发时间</x-button>
             </datetime>
             <p class="timeDetail">{{year}}年{{month}}月{{day}}日{{mintime}}</p>
+            <div v-if="can_go_now" class="rightNowBtn" @click="goRightNow()" :class="{on:rightNow==true}">立即出发<i class="iconfont icon-right"></i></div>
         </div>
 
         <!-- 出游人数 -->
@@ -85,12 +87,12 @@
         </div>
         <div class="chuxingrenInfo border-bottom">
             <div class="nameInputBox chuxingrenInfo-item">
-                <label for="">姓&nbsp;&nbsp;&nbsp;名:</label>
+                <label for="">姓&nbsp;&nbsp;&nbsp;&nbsp;名:</label>
                 <input type="text" placeholder="请输入姓名" v-model.trim="contactName" maxlength="10">
             </div>
             <div class="phoneInputBox">
                 <div class="nameInputBox chuxingrenInfo-item">
-                    <label for="">电&nbsp;&nbsp;&nbsp;话:</label>
+                    <label for="">电&nbsp;&nbsp;&nbsp;&nbsp;话:</label>
                     <input type="text" placeholder="请输入电话" v-model.trim="phone">
                 </div>
                 <button type="button" class="yzBtn" @click="sendCode">{{codeText}}</button>
@@ -113,6 +115,7 @@
             <p>1.该产品自然日支持取消。如需取消，请在公众号留言申请取消，工作人员会在第一时间联系您帮忙取消;</p>
             <p>2.提前48小时免费取消。48小时内，不可取消订单,不支持部分退;</p>        
             <p>3.如需改期，请申请取消后重新预订。</p>
+            <p v-show="info&&info.line_name == '颐和园'">4.注意事项：费用仅包含为游客提供颐和园讲解，无其他内容。</p>
         </div>
 
         <!-- 游客评论 -->
@@ -165,12 +168,14 @@
 
         <!-- 图片放大弹框 -->
         <vm-popup v-model="showPicPop" position="center" width='100%' class="Pop">
-            <vm-clip
-                :src="resource_path.indexOf('http') > -1 ? resource_path : (imgOrigin+ resource_path)"
-                scale="cover"
-                width="18.75rem"
-                height="18.75rem"
-            ></vm-clip>
+            <div style="width=18.75rem;height=18.7rem;background=red;">
+                <vm-clip
+                    :src="resource_path.indexOf('http') > -1 ? resource_path : (imgOrigin+ resource_path)"
+                    scale="cover"
+                    width="18.75rem"
+                    height="18.75rem"
+                ></vm-clip>
+            </div>
         </vm-popup>
     </vm-layout>
 </template>
@@ -198,7 +203,7 @@ export default {
             phone: userInfo2 ? userInfo2.phone : '',         // 游客电话
             code: '',                                        // 验证码
             max_count: '',                                   // 最高出游人数
-            favoriteCnt: null,                               // 收藏人数
+            favoriteCnt: null,                               // 收藏数
             commentList: [],                                 // 评论列表
             chooseCountPop: false,                           // 出游人数弹框
             minuteListValue: '',                             // 选择日期
@@ -213,7 +218,9 @@ export default {
             images: [],
             isShowUp: false,
             showPicPop: false,
-            info: {}                                         // 数据集
+            rightNow: false,
+            info: {},                                         // 数据集
+            can_go_now: false
         }
     },
     created () {
@@ -234,7 +241,7 @@ export default {
     methods: {
         // 获取线路导游信息
         fetchCommentList(){
-            this.$http.get(`/view/guideInfo?oid=test1234&lineId=${this.lineId}`)
+            this.$http.get(`/view/guideInfo?lineId=${this.lineId}`)
             .then(res => {
                 if(res.body.res_code === 200){
                     this.info = res.body.data.info
@@ -247,6 +254,7 @@ export default {
                     this.visit_length =  res.body.data.info && res.body.data.info.visit_length
                     this.resource_path =  res.body.data.info && res.body.data.info.user_img
                     this.image = res.body.data.info && res.body.data.info.view_img
+                    this.can_go_now = res.body.data.info && res.body.data.info.can_go_now === 1 ? true : false
                     this.imgOrigin = res.body.prefix
                     this.images.push(this.image)
                     this.images.push(this.image)
@@ -302,6 +310,11 @@ export default {
             }
         },
 
+        // 点击立即出发
+        goRightNow(){
+            this.rightNow = !this.rightNow
+        },
+
         // 发送验证码
         sendCode() {
             if(!this.phone || !(/^1(3|4|5|7|8)\d{9}$/.test(this.phone))){
@@ -351,6 +364,10 @@ export default {
                 this.$dialog.toast({mes: '请选择正确的出行日期'})
                 return
             }
+            if(!this.rightNow && !this.sendMintime){
+                this.$dialog.toast({mes: '请选择出行时间'})
+                return
+            }
             if(!this.phone || !(/^1(3|4|5|7|8)\d{9}$/.test(this.phone))){
                 this.$dialog.toast({mes: '请输入正确的手机号码'})
                 return
@@ -369,13 +386,12 @@ export default {
             }
             this.$http.post('/user/order/save',{
                 lineId: this.lineId,
-                visitDate: this.year + '-' + this.month + '-'+ this.day,
-                visitTime: this.sendMintime,
+                visitDate: this.rightNow ? '9999-99-99' : this.year + '-' + this.month + '-'+ this.day,
+                visitTime: this.rightNow ? '08:30': this.sendMintime,
                 contactName: this.contactName,
                 phone: this.phone,
                 personCount: this.personCount,
-                code: this.code,
-                oid: 'test1234'
+                code: this.code
             })
             .then(rst => {
                 if(rst.body.res_code === 200){
@@ -383,7 +399,11 @@ export default {
                         mes: '预订成功',
                         timeout: 1500,
                         callback: () => {
-                            this.$router.push(`/order/success?real_name=${this.real_name}`)
+                            if(this.can_go_now && this.rightNow){
+                                this.$router.push(`/order/detail/pay?orderNum=${rst.body.data.orderNum}`)
+                            }else{
+                                this.$router.push(`/order/success?real_name=${this.real_name}`)
+                            }
                         }
                     })
                 }else{
@@ -395,7 +415,7 @@ export default {
 
         // 收藏
         collect(){
-            this.$http.post('/user/favorite/add',{guideId: this.guideId,oid:'test1234'})
+            this.$http.post('/user/favorite/add',{guideId: this.guideId})
             .then(res => {
                 if(res.body.res_code === 200){
                     this.favoriteCnt ++
@@ -455,7 +475,7 @@ export default {
                 font-weight: 300
                 color: #000
             p
-                font-size: .65rem
+                font-size: .7rem
                 color: #666
                 line-height: 1.1rem
                 margin-top: .2rem
@@ -482,9 +502,10 @@ export default {
 .startTimeBox 
     padding: 0.75rem 0 0.8rem 0
     text-align: center
+    position: relative
     .timeTitle
         text-align: center
-        font-size: 0.7rem
+        font-size: 0.75rem
         // margin-bottom: .25rem
         i 
             vertical-align: 0%
@@ -494,6 +515,23 @@ export default {
         color: #00CA9D
         font-size: 0.6rem
         text-align: center
+    .rightNowBtn
+        position: absolute
+        right: 1.3rem
+        top: 50%
+        font-size: .7rem
+        height: 1.1rem
+        line-height: 1.1rem
+        text-align: center
+        color: #000
+        transform: translateY(-50%)
+        .iconfont
+            color: #000
+            margin-left: .15rem
+    .on 
+        color: #00C99D
+        .iconfont
+            color: #00C99D
 // 出游人数
 .chuyouNumBox
     display: flex
@@ -501,7 +539,7 @@ export default {
     height: 2.25rem
     line-height: 2.25rem
     .selectTimeTitle
-        font-size: 0.65rem
+        font-size: .7rem
         margin-left: .9rem
         i 
             margin-right: 0.25rem
@@ -532,7 +570,7 @@ export default {
 // 出行人信息
 .chuxingrenInfo
     padding: 0.1rem 1.1rem
-    font-size: 0.65rem
+    font-size: .7rem
     color: #666
     line-height: 1.3rem
     .chuxingrenInfo-item
@@ -543,7 +581,7 @@ export default {
         padding-left: 0.3rem
     input::-webkit-input-placeholder
         color: #979797
-        font-size: 0.65rem        
+        font-size: 0.7rem        
         text-align: left
     .phoneInputBox
         display: flex
@@ -576,7 +614,7 @@ export default {
         font-weight: 300
         margin-bottom: .25rem
     p
-        font-size: 0.6rem
+        font-size: 0.7rem
         line-height: 1.1rem
         text-align: left
         color: #666
